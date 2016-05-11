@@ -58,7 +58,10 @@ class WechatAction extends CommonAction
                         if ($avatarPath) {
                             $insertInfo['user_avatar'] = $avatarName . '.jpg';
                         }
-                        $userModel->addUser($insertInfo);
+                        $userId = $userModel->addUser($insertInfo);
+                        if (!$userId) {
+                            file_put_contents('a.txt', serialize($wxUserInfo));
+                        }
                     }
                 } elseif ($event === 'unsubscribe') {
                     if (! empty($userInfo)) {
