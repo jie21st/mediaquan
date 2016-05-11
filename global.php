@@ -24,7 +24,7 @@ define('ATTACH_CLASS_GROUP', 'class/group');  // 班级图片上传目录
 define('ATTACH_CLASS_SHARE', 'class/share');  // 课程分享上传目录
 define('ATTACH_DIPLOMA', 'class/diploma');
 #define('ATTACH_EDITOR', 'UEditor');
-#define('ATTACH_AVATAR', 'avatar');
+define('ATTACH_AVATAR', 'avatar');
 #define('ATTACH_CAMP', 'camp');
 #define('ATTACH_CAMP_PLACE', 'camp/place');
 define('ATTACH_SELLER', 'seller');
