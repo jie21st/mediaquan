@@ -12,7 +12,6 @@ class LoginAction extends CommonAction
         session('state', $state);
         // 构造请求参数列表
         $login_url = $wechat->getOauthRedirect(C('MEDIA_SITE_URL') . '/login/callback', $state);
-        echo $login_url;exit();
         redirect($login_url);
     }
     
