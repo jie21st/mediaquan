@@ -14,15 +14,14 @@ return array(
 
     // cookie
     'COOKIE_DOMAIN'     => '.mediaquan.com',
-    'COOKIE_EXPIRE'     => 86400, // 1天
+    'COOKIE_EXPIRE'     => 259200, // 3天
 
     // URL设置
     'URL_MODEL'         => 2, // URL访问模式 0 普通模式, 1 PATHINFO模式(默认), 2 REWRITE模式, 3 兼容模式
     'URL_HTML_SUFFIX'   => 'html',
     
     // 项目配置
-    'MOBILE_SITE_URL'   => 'http://wap.mediaquan.com',
-    'WECHAT_SITE_URL'   => 'http://passport.mediaquan.com',
+    'MEDIA_SITE_URL'   => 'http://test.mediaquan.com',
     'RESOURCE_SITE_URL' => 'http://static.mediaquan.com/resource',
     'UPLOADS_SITE_URL'  => 'http://static.mediaquan.com/uploads',
 
@@ -58,8 +57,9 @@ return array(
     
     // 微信配置
     'WECHAT_TOKEN'      => '',
-    'WECHAT_APPID'      => 'wxf96a2fbcc0b24037',
-    'WECHAT_APPSECRET'  => '05250ace86a17d8ed53d2d24aa748c76',
+    'WECHAT_APPID'      => 'wxd18b1177628b7f9a',
+    'WECHAT_APPSECRET'  => '124f73ec548d7b372bf4a612e81753c4',
+    'WECHAT_ENCODING'   => '',
     
     // 海报
     "POSTER_TIME" => 2592000, // 海报有效期
