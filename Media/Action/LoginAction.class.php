@@ -39,6 +39,7 @@ class LoginAction extends CommonAction
             //$isSubscribe = ($wechatUserInfo && $wechatUserInfo['subscribe'] != 0) ? 1 : 0;
             
             // 写入数据
+            $userInfo = array();
             $userInfo['user_wechatopenid']     = $authUserInfo['openid'];
             $userInfo['user_nickname']         = remove_emoji($authUserInfo['nickname']);
             $userInfo['user_sex']              = $authUserInfo['sex'];

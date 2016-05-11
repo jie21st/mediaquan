@@ -21,6 +21,14 @@ class CommonAction extends Action
      */
     protected function _initialize()
     {
+        if (APP_DEBUG && isset($_GET['debug']) && isset($_GET['user_id'])) {
+            $userModel = new \Common\Model\UserModel;
+            $userInfo = $userModel->getUserByUid($_GET['user_id']);
+            $accountService = new \Media\Service\AccountService();
+            $accountService->createSession($userInfo);
+            
+            exit('登录成功');
+        }
         // 判断是否登录
         if ($this->needAuth) {
             $this->checkLogin();
