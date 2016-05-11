@@ -1,6 +1,8 @@
 <?php
 namespace Media\Action;
 
+use Think\Log;
+
 class LoginAction extends CommonAction
 {
     public function indexOp()
@@ -31,7 +33,7 @@ class LoginAction extends CommonAction
         }
 
         // 查询本地用户
-        $userModel = new UserModel;
+        $userModel = new \Common\Model\UserModel;
         $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $result['openid']]);
         if (empty($userInfo)) {
             Log::write('用户信息不存在, 注册用户', 'INFO');
@@ -40,15 +42,16 @@ class LoginAction extends CommonAction
             
             Log::write('用户信息: '. json_encode($authUserInfo), 'INFO', true);
             // 判断是否关注
-            $userInfo = $wechat->getUserInfo($result['openid']);
-            //$isSubscribe = ($userInfo && $userInfo['subscribe'] != 0) ? 1 : 0;
+            $wechatUserInfo = $wechat->getUserInfo($result['openid']);
+            //$isSubscribe = ($wechatUserInfo && $wechatUserInfo['subscribe'] != 0) ? 1 : 0;
             
             // 写入数据
-            $insert = [
+            $userInfo = [
                 'user_wechatopenid'    => $authUserInfo['openid'],
                 'user_nickname'  => remove_emoji($authUserInfo['nickname']),
                 'user_sex'       => $authUserInfo['sex'],
                 'user_time'  => time(),
+                'user_wechatinfo' => serialize($authUserInfo),
             ];
             // 地区信息
 //            if ($authUserInfo['province'] != '' && $authUserInfo['city'] != '') {
@@ -63,14 +66,15 @@ class LoginAction extends CommonAction
             $avatarSavePath = DIR_UPLOAD . DS . ATTACH_AVATAR;
             $avatarPath = downloadFiles($authUserInfo['headimgurl'], $avatarName, $avatarSavePath, 'jpg');
             if ($avatarPath) {
-                $insert['user_avatar'] = $avatarName . '.jpg';
+                $userInfo['user_avatar'] = $avatarName . '.jpg';
             }
             
-            $userId = $userModel->addUser($insert);
+            $userId = $userModel->addUser($userInfo);
             if (! $userId) {
                 Log::write('注册失败'.$userModel->_sql(), 'ALERT', true);
                 exit('登录失败');
             }
+            $userInfo['user_id'] = $userId;
             Log::write('新注册用户, id为'. $userId, 'INFO', true);
         } else {
             $userId = $userInfo['user_id'];
@@ -78,7 +82,8 @@ class LoginAction extends CommonAction
         }
         
         // 登录
-        
-//        redirect(C('APP_SITE_URL') .'/sync/login');
+        $accountService = new \Media\Service\AccountService();
+        $accountService->createSession($userInfo);
+        redirect(cookie('returnUrl'));
     }
 }
