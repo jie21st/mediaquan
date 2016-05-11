@@ -2,6 +2,7 @@
 namespace Media\Action;
 
 use \Think\Log;
+use \Org\Util\Wechat;
 use \Common\Model\UserModel;
 use \Common\Service\UserService;
 
@@ -24,12 +25,25 @@ class WechatAction extends CommonAction
     public function __construct()
     {
         parent::__construct();
-        $this->wechat = new \Org\Util\Wechat;
+        $this->wechat = new Wechat;
     }
     
     public function receiveOp()
     {
         $this->wechat->valid();
+        $type = $this->wechat->getRev()->getRevType();
+        switch($type) {
+            case Wechat::MSGTYPE_TEXT:
+                $this->wechat->text("hello")->reply();
+                exit;
+                break;
+            case Wechat::MSGTYPE_EVENT:
+                break;
+            case Wechat::MSGTYPE_IMAGE:
+                break;
+            default:
+                $this->wechat->text("help info")->reply();
+        }
     }
     
     /**
