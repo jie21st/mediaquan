@@ -52,6 +52,7 @@ return array(
     'READ_DATA_MAP'     => true,
 
     // 日志记录
+    'LOG_TYPE'          => 'file',
     'LOG_RECORD'        => true,
     'LOG_LEVEL'         => 'EMERG,ALERT,CRIT,ERR',
     
