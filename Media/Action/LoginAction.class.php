@@ -18,7 +18,7 @@ class LoginAction extends CommonAction
         redirect($login_url);
     }
     
-    public function callback()
+    public function callbackOp()
     {
         $wechat = new \Org\Util\Wechat;
         // 验证state防止CSRF攻击
@@ -42,17 +42,14 @@ class LoginAction extends CommonAction
             
             Log::write('用户信息: '. json_encode($authUserInfo), 'INFO', true);
             // 判断是否关注
-            $wechatUserInfo = $wechat->getUserInfo($result['openid']);
+//            $wechatUserInfo = $wechat->getUserInfo($result['openid']);
             //$isSubscribe = ($wechatUserInfo && $wechatUserInfo['subscribe'] != 0) ? 1 : 0;
             
             // 写入数据
-            $userInfo = [
-                'user_wechatopenid'    => $authUserInfo['openid'],
-                'user_nickname'  => remove_emoji($authUserInfo['nickname']),
-                'user_sex'       => $authUserInfo['sex'],
-                'user_time'  => time(),
-                'user_wechatinfo' => serialize($authUserInfo),
-            ];
+            $userInfo['user_wechatopenid']     = $authUserInfo['openid'];
+            $userInfo['user_nickname']         = remove_emoji($authUserInfo['nickname']);
+            $userInfo['user_sex']              = $authUserInfo['sex'];
+            $userInfo['user_wechatinfo']       = serialize($authUserInfo);
             // 地区信息
 //            if ($authUserInfo['province'] != '' && $authUserInfo['city'] != '') {
 //                $region = array(

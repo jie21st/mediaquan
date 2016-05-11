@@ -64,7 +64,7 @@ class UserModel extends CommonModel
     }
 
     /**
-     * addUser
+     * 注册会员
      *
      * @param mixed $data
      * @access public
@@ -72,6 +72,13 @@ class UserModel extends CommonModel
      */
     public function addUser($data)
     {
+        if (empty($data)) {
+            return false;
+        }
+        $data['user_time'] = time();
+        $data['user_login_time'] = $data['user_time'];
+        $data['user_old_login_time'] = $data['user_time'];
+        
         return $this->add($data);
     }
 
