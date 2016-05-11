@@ -43,10 +43,10 @@ return array(
     'DB_PREFIX'         => '', // 数据库表前缀
 
     // 数据缓存
-    'DATA_CACHE_TYPE'   => 'Redis',
-    'REDIS_HOST'        => '10.51.58.34',
-    'REDIS_PORT'        => '6319',
-    'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
+    'DATA_CACHE_TYPE'   => 'File',
+//    'REDIS_HOST'        => '10.51.58.34',
+//    'REDIS_PORT'        => '6319',
+//    'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
 
     // 数据模型
     'READ_DATA_MAP'     => true,
@@ -57,10 +57,10 @@ return array(
     'LOG_LEVEL'         => 'EMERG,ALERT,CRIT,ERR',
     
     // 微信配置
-    'WECHAT_TOKEN'      => '',
+    'WECHAT_TOKEN'      => '86a8c273c5a0110d49a0dd7c724ac3fc',
     'WECHAT_APPID'      => 'wxd18b1177628b7f9a',
     'WECHAT_APPSECRET'  => '124f73ec548d7b372bf4a612e81753c4',
-    'WECHAT_ENCODING'   => '',
+    'WECHAT_ENCODING'   => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
     
     // 海报
     "POSTER_TIME" => 2592000, // 海报有效期

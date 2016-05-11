@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>会员资料完善</title>
+        <style type="text/css">
+            *{margin:0; padding:0; list-style:none; border:0;}
+            html{min-width:320px; max-width:640px;}
+            body{margin:0 auto; padding:0; background:#fff; font-family:"思源黑体 CN Normal"; font-size:1em; color:#303030; }
+            img{width:100%;}
+            .red{color:red; margin:0 4px 0 -10px;}
+            .main{line-height:2em; padding:20px 20px 0 30px;}
+            table{width:90%;min-width:270px; margin:10px auto;}
+            tr{height:2.5em; margin:6px 0;}
+            .word{width:70px; font-size: 14px;}
+            .input{width:auto;}
+            input, select{padding:0 5%;width:90%;min-width:190px; height:2.5em;border:1px solid #ccc; border-radius:3px;-webkit-appearance: none; box-sizing: border-box;}	
+
+            .btn{display:block; text-align:center; max-width:240px;margin:20px auto;padding:10px 0; background-color:#ff7526;color:#fff; font-weight:bold; border-radius:6px; text-decoration: none;}
+            .btn-pay {}
+            .btn-applyed {}
+            .del{text-decoration:line-through; font-size:0.75em; font-weight:500;}
+            .hr{width:80%; border:1px solid #fff; margin:0 auto;}
+        </style>
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/css/mobile-select-area.css">
+    </head>
+    <body>
+        <img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" alt="" />
+        <div class="main">
+            <!--未报名时-->
+            <p>为了方便工作人员与您联系，请完善以下资料。</p>
+            <form name="joinForm" id="applyForm" action="__SELF__" method="post">
+                <table>
+                    <tr>
+                        <td class="word"><p><span class="red">*</span>姓名</p></td>
+                        <td class="input"><input type="text" name="username" value="<{$user_info.user_name}>" maxlength="20" /></td>
+                    </tr>
+                    <tr>
+                        <td class="word"><p><span class="red">*</span>手机号</p></td>
+                        <td class="input"><input type="tel" name="mobile" value="<{$user_info.mobile}>" maxlength="11" /></td>
+                    </tr>
+                    <tr>
+                        <td class="word"><p><span class="red">*</span>微信号</p></td>
+                        <td class="input"><input type="text" name="wechat_id" value="<{$user_info.wechat_id}>" maxlength="20" /></td>
+                    </tr>
+                    <tr>
+                        <td class="word"><p><span class="red">*</span>公司/学校</p></td>
+                        <td class="input"><input type="text" name="company_name" value="<{$user_info.company_name}>" maxlength="50" /></td>
+                    </tr>
+                    <tr>
+                        <td class="word"><p>职位</p></td>
+                        <td class="input"><input type="text" name="job" value="<{$user_info.job}>" maxlength="80" /></td>
+                    </tr>
+                    <tr>
+                        <td class="word"><p>省份</p></td>
+                        <td class="input">
+                            <input type="text" name="area_info" id="txt_area" value="<{$user_info.area_info}>" data-value="" />
+                            <input type="hidden" name="area_ids" id="hd_area" value="<{$user_info.provinceid|default=0}>,<{$user_info.cityid|default=0}>" />
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" name="id" value="<{$class_info.class_id}>" />
+                <input type="hidden" name="dcp" value="<{$Think.get.dcp}>" />
+                <if condition="$class_info['_is_free'] eq true">
+                    <a href="javascript:;" class="btn btn-pay">立即报名</a>
+                <else />
+                    <p style="color:red; font-size: 12px;">注：本课程只支持您当前付费的微信账号听课！</p>
+                    <a href="javascript:;" class="btn btn-pay">
+                        <eq name="class_info.class_price" value="$class_info.final_price">
+                            ¥ <{$class_info.class_price}>
+                        <else/>
+                            会员价：¥ <{$class_info.final_price}>&ensp;&ensp;<span class="del">原价：¥<{$class_info.class_price}></span>
+                        </eq>
+                    </a>
+                </if>
+            </form>
+        </div>
+        <script>
+            function onBridgeReady(){
+                WeixinJSBridge.call('hideOptionMenu');
+            }
+            if (typeof WeixinJSBridge == "undefined"){
+                if( document.addEventListener ){
+                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                }else if (document.attachEvent){
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                }
+            }else{
+                onBridgeReady();
+            }
+        </script>
+        <script src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+        <script src="RESOURCE_SITE_URL/js/dialog.js"></script>
+        <script src="RESOURCE_SITE_URL/js/mobile-select-area.js"></script>
+        <script src="RESOURCE_SITE_URL/js/utils.js"></script>
+        <script>
+            var selectArea = new MobileSelectArea();
+            selectArea.init({
+                trigger:'#txt_area',
+                value:$('#hd_area').val(),
+                level: 2,
+                data:'<{$Think.config.app_site_url}>/api/area'
+            });
+
+            $('.btn-pay').click(function(){
+                try {
+                    var t = $(this);
+                    if(t.is('.disabled')){
+                        return false;
+                        }else{
+                        t.addClass('disabled');
+                    }
+                    params = serialize();
+
+                    if (!chkAll(params) ){
+                        t.removeClass('disabled');
+                        return;
+                    }
+                } catch (e) {}
+
+                $('#applyForm').submit();
+            });
+
+            function chkAll(o) {
+                var status = true,
+                _isBlank = false;
+                //必填项
+                for(var k in o){
+                    if(/(username)|(mobile)|(wechat_id)|(company_name)/.test(k) && $.trim(o[k]) == ''){
+                        _isBlank = true;
+                        break;
+                    }
+                }
+
+                if(_isBlank){
+                    alert('必填项不能为空！');
+                    return false;
+                }
+
+                $('input','#applyForm').each(function(){
+                    var t = $(this);
+                    if ( !chk( t ) || !chkLength( t ) ){
+                        status = false;
+                        return false;
+                    }
+                });
+
+                return status;
+            }
+
+            function serialize(){
+                var paramsArrs = $('#applyForm').serializeArray(),
+                params = {};
+
+                $.each(paramsArrs,function(i,n){
+                    var nn = n['name'],
+                    nv = n['value'];
+                    //alert(nn+'=>'+nv);
+                    params[nn] = nv;
+                });
+
+                return params;
+            }
+
+            function chk(t){
+                var _type = /^[_a-zA-Z\d]+/.exec(t.attr('name'));
+                if(_type == null) return false;
+                var type = _type[0], 
+                value = $.trim(t.val()),
+                rgx = null, msg = '';
+                if(!value) return true;
+                switch(type){
+                    case 'mobile':
+                        rgx = /^1\d{10}$/;
+                        msg = '请填写正确的手机号！';
+                        break;
+                    case 'wechat_id':
+                        rgx = /^[_\-a-zA-Z0-9]{6,20}$/;
+                        msg = '请填写正确的微信号！';
+                        break;
+                }
+                if(value && rgx){
+                    if( !rgx.test(value) ){
+                        alert(msg);
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function chkLength(t){
+                var _type = /^[_a-zA-Z\d]+/.exec(t.attr('name'));
+                if(_type == null) return false;
+                var type = _type[0], 
+                length = 0, msg = '',
+                value = t.val();
+                switch(type){
+                    case 'username':
+                        length = 20;
+                        msg = '姓名长度不能超过20个字符！'
+                        break;
+                    case 'company_name':
+                        length = 50;
+                        msg = '公司名称不能超过50个字符！';
+                        break;
+                    case 'job':
+                        length = 80;
+                        msg = '职位不能超过80个字符！';
+                        break;
+                }
+                if(length && Util.getStrLen(value) > length){
+                    alert(msg);
+                    return false;
+                }
+                return true;
+            }
+
+        </script>
+    </body>
+</html>

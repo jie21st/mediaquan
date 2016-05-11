@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>导出</title>
+    </head>
+    <body>
+        <h3>数据分段下载</h3>
+        <ul>
+        <foreach name="list" item="vo">
+        <li><a href="<{:U('__SELF__', array('curpage'=>$key))}>">下载<{$key}> (<{$vo}>)</a></li>
+        </foreach>
+        </ul>
+    </body>
+</html>
+

@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>报名用户列表</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/reseller/css/index.css" />
+        <style>
+            .banner {width: 100%; height: 240px; position: relative; background: url(RESOURCE_SITE_URL/reseller/images/banner.jpg) no-repeat 50% 50%; background-size: cover;}
+            .banner .lucre { position: absolute; left: 0; bottom: 0;background-color: rgba(0,0,0,0.6);}
+            .banner .lucre .right {border-left: 1px solid #ccc;}
+        </style>
+    </head>
+    <body>
+        <div class="banner" style="background-image:url(UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>);">
+            <div class="lucre">
+                <ul class="left">
+                    <li class="small">今日报名</li>
+                    <li class="small"><{$statistics.today_count}>人</li>
+                    <li class="big">￥<{$statistics.today_amount|glzh_price_format}></li>
+                </ul>
+                <ul class="right">
+                    <li class="small">总共报名</li>
+                    <li class="small"><{$statistics.total_count}>人</li>
+                    <li class="big">￥<{$statistics.total_amount|glzh_price_format}></li>
+                </ul>
+            </div>
+        </div>
+        <div class="list">
+            <h3>报名列表</h3>
+            <div class="list-wapper"></div>
+        </div>
+        <script src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+        <script src="RESOURCE_SITE_URL/js/zepto.loadmore.js"></script>
+        <script src="RESOURCE_SITE_URL/js/utils.js"></script>
+        <script>
+            var apply = {
+                init: function(){
+                    this.$el = $('.list');
+                    this.pageInfo = {pageIndex: 1, pageSize: 20};
+                    setTimeout($.proxy(this, '_bindEvents'), 100);
+                },
+                _bindEvents: function(){
+                    var self = this;
+                    this.getData(function(){
+                        if (self.pageInfo.pageIndex == 2) {
+                            self.$el.loadmore({
+                                load:function(){
+                                    self.getData(function(){
+                                        self.$el.data('scroll_load').afterLoad();
+                                    })
+                                } 
+                            }) 
+                        }
+                    });
+                    $('.list').delegate('dl', 'click', $.proxy(this, 'detailToggle'));
+                },
+                detailToggle: function(e){
+                    var t = $(e.currentTarget);
+                    var item = t.closest('.item');
+                    item.find('.qita').toggle();
+                    item.hasClass('active') ? item.removeClass('active') : item.addClass('active');
+                },
+                getStat: function(){
+
+                },
+                getData: function(callback){
+                    var self = this;
+                    $.ajax({
+                        url: '<{$Think.config.app_site_url}>__URL__/getApplyedList', 
+                        type: 'GET',
+                        data: {
+                            id: '<{$Think.get.id}>',
+                            pageIndex: self.pageInfo.pageIndex,
+                            pageSize: self.pageInfo.pageSize
+                        },
+                        dataType: 'json',
+                        success: function(response){
+                            var list = response.data.list || []; 
+                            if (list.length > 0) {
+                                self.pageInfo.pageIndex++;
+                                self.append(list);
+                                if (callback) callback();
+                                } else {
+                                if (self.pageInfo.pageIndex == 1) {
+                                    self.renderNone();
+                                    } else {
+                                    self.$el.data('scroll_load').lastLoad(); 
+                                }
+                            }
+                        }
+                    });
+                },
+                renderNone: function(){
+                    this.$el.html('<p class="wusc">暂无记录~~</p>'); 
+                },
+                append: function(data){
+                    var html = ''; 
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+                        $('.list-wapper').append(this.itemTpl(item));
+                    }
+                },
+                itemTpl: function(data){
+                    var user = data.user_info || [];
+                    var group = data.group_info || [];
+
+                    html = '<div class="item">'
+                         + '    <dl>'
+                         + '        <dt><img src="' + user.headurl + '" width="60" height="60" /></dt>'
+                         + '        <dd>'
+                         + '        <ul>'
+                         + '            <li><span>姓名：</span>' + user.user_name + '<span class="fxr">' + (data.reseller_info ? data.reseller_info.reseller_name : '') + '</span></li>'
+                         + '            <li><span>报名时间：</span>' + Util.formatDate('yyyy-MM-dd hh:mm:ss', data.apply_time) + '</li>'
+                         + '            <li><span>公司：</span>' + user.company_name + '</li>'
+                         + '            <li class="up">'
+                         + '                <a href="javascript:;" class="arrow"></a></li>'
+                         + '        </ul>'
+                         + '        </dd>'
+                         + '    </dl>'
+                         + '    <ul class="qita">'
+                         + '        <li><span>微信：</span>' + user.wechat_id + '</li>'
+                         + '        <li><span>昵称：</span>' + user.nick_name + '</li>'
+                         + '        <li><span>会员等级：</span>' + user.level_desc + '</li>'
+                         + '        <li><span>手机：</span>' + user.mobile + '</li>'
+                         + '        <li><span>支付金额：</span>￥' + data.order_info.order_amount + '</li>'
+                         + '        <li><span>支付方式：</span>' + data.order_info.payment_name + '</li>'
+                         + '        <li><span>班级：</span>' + group.group_code + '</li>'
+                         + '        <li>' + group.group_name + '</li>'
+                         + '    </ul>'
+                         + '</div>';
+                    return html;
+                }
+            }
+            apply.init();
+        </script>
+
+
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
