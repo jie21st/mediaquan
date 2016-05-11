@@ -24,6 +24,9 @@ class CommonAction extends Action
         if (APP_DEBUG && isset($_GET['debug']) && isset($_GET['user_id'])) {
             $userModel = new \Common\Model\UserModel;
             $userInfo = $userModel->getUserByUid($_GET['user_id']);
+            if (empty($userInfo)) {
+                exit('用户不存在');
+            }
             $accountService = new \Media\Service\AccountService();
             $accountService->createSession($userInfo);
             

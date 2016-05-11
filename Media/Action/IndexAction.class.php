@@ -14,6 +14,8 @@ class IndexAction extends CommonAction
     
     public function indexOp()
     {
+        echo 'session:';
+        dump($_SESSION);
         echo '测试';
     }
 }
