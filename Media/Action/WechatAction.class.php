@@ -38,6 +38,37 @@ class WechatAction extends CommonAction
                 exit;
                 break;
             case Wechat::MSGTYPE_EVENT:
+                $event = $this->wechat->getRev()->getRevEvent();
+                $openId = $this->wechat->getRev()->getRevFrom();
+                $userModel = new \Common\Model\UserModel;
+                $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
+                if ($event === 'subscribe') {
+                    if (empty($userInfo)) {
+                        $wxUserInfo = $this->wechat->getUserInfo($openId);
+                        $insertInfo = [
+                            'user_nickname' => $wxUserInfo['nickname'],
+                            'user_sex' => $wxUserInfo['sex'],
+                            'user_wechatinfo' => serialize($wxUserInfo),
+                            'user_wechatopenid' => $openId,
+                            'subscribe_state' => 1,
+                        ];
+                        $avatarName = uniqid();
+                        $avatarSavePath = DIR_UPLOAD . DS . ATTACH_AVATAR;
+                        $avatarPath = downloadFiles($wxUserInfo['headimgurl'], $avatarName, $avatarSavePath, 'jpg');
+                        if ($avatarPath) {
+                            $insertInfo['user_avatar'] = $avatarName . '.jpg';
+                        }
+                        $userModel->addUser($insertInfo);
+                    }
+                } elseif ($event === 'unsubscribe') {
+                    if (! empty($userInfo)) {
+                        $userModel->editUser([
+                            'subscribe_state' => 0,
+                        ],[
+                            'user_id' => $userInfo['user_id'],
+                        ]);
+                    }
+                }
                 break;
             case Wechat::MSGTYPE_IMAGE:
                 break;
