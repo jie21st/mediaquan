@@ -23,7 +23,7 @@
             .del{text-decoration:line-through; font-size:0.75em; font-weight:500;}
             .hr{width:80%; border:1px solid #fff; margin:0 auto;}
         </style>
-        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/css/mobile-select-area.css">
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/mobile/css/mobile-select-area.css">
     </head>
     <body>
         <img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" alt="" />
@@ -34,29 +34,29 @@
                 <table>
                     <tr>
                         <td class="word"><p><span class="red">*</span>姓名</p></td>
-                        <td class="input"><input type="text" name="username" value="<{$user_info.user_name}>" maxlength="20" /></td>
+                        <td class="input"><input type="text" name="username" value="<{$user_info.user_truename}>" maxlength="20" /></td>
                     </tr>
                     <tr>
                         <td class="word"><p><span class="red">*</span>手机号</p></td>
-                        <td class="input"><input type="tel" name="mobile" value="<{$user_info.mobile}>" maxlength="11" /></td>
+                        <td class="input"><input type="tel" name="mobile" value="<{$user_info.user_mobile}>" maxlength="11" /></td>
                     </tr>
                     <tr>
-                        <td class="word"><p><span class="red">*</span>微信号</p></td>
-                        <td class="input"><input type="text" name="wechat_id" value="<{$user_info.wechat_id}>" maxlength="20" /></td>
+                        <td class="word"><p>微信号</p></td>
+                        <td class="input"><input type="text" name="wechat_id" value="<{$user_info.user_wx}>" maxlength="20" /></td>
                     </tr>
-                    <tr>
+<!--                    <tr>
                         <td class="word"><p><span class="red">*</span>公司/学校</p></td>
                         <td class="input"><input type="text" name="company_name" value="<{$user_info.company_name}>" maxlength="50" /></td>
-                    </tr>
-                    <tr>
+                    </tr>-->
+<!--                    <tr>
                         <td class="word"><p>职位</p></td>
                         <td class="input"><input type="text" name="job" value="<{$user_info.job}>" maxlength="80" /></td>
-                    </tr>
+                    </tr>-->
                     <tr>
                         <td class="word"><p>省份</p></td>
                         <td class="input">
-                            <input type="text" name="area_info" id="txt_area" value="<{$user_info.area_info}>" data-value="" />
-                            <input type="hidden" name="area_ids" id="hd_area" value="<{$user_info.provinceid|default=0}>,<{$user_info.cityid|default=0}>" />
+                            <input type="text" name="area_info" id="txt_area" value="<{$user_info.user_areainfo}>" data-value="" />
+                            <input type="hidden" name="area_ids" id="hd_area" value="<{$user_info.user_provinceid|default=0}>,<{$user_info.user_cityid|default=0}>" />
                         </td>
                     </tr>
                 </table>
@@ -67,11 +67,7 @@
                 <else />
                     <p style="color:red; font-size: 12px;">注：本课程只支持您当前付费的微信账号听课！</p>
                     <a href="javascript:;" class="btn btn-pay">
-                        <eq name="class_info.class_price" value="$class_info.final_price">
                             ¥ <{$class_info.class_price}>
-                        <else/>
-                            会员价：¥ <{$class_info.final_price}>&ensp;&ensp;<span class="del">原价：¥<{$class_info.class_price}></span>
-                        </eq>
                     </a>
                 </if>
             </form>
@@ -91,9 +87,10 @@
                 onBridgeReady();
             }
         </script>
-        <script src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
-        <script src="RESOURCE_SITE_URL/js/dialog.js"></script>
-        <script src="RESOURCE_SITE_URL/js/mobile-select-area.js"></script>
+        <script src="RESOURCE_SITE_URL/vendor/zepto/zepto.min.js"></script>
+        <script src="RESOURCE_SITE_URL/vendor/zepto/touch.js"></script>
+        <script src="RESOURCE_SITE_URL/mobile/js/dialog.js"></script>
+        <script src="RESOURCE_SITE_URL/mobile/js/mobile-select-area.js"></script>
         <script src="RESOURCE_SITE_URL/js/utils.js"></script>
         <script>
             var selectArea = new MobileSelectArea();
@@ -101,7 +98,7 @@
                 trigger:'#txt_area',
                 value:$('#hd_area').val(),
                 level: 2,
-                data:'<{$Think.config.app_site_url}>/api/area'
+                data:'/api/area'
             });
 
             $('.btn-pay').click(function(){
@@ -128,7 +125,7 @@
                 _isBlank = false;
                 //必填项
                 for(var k in o){
-                    if(/(username)|(mobile)|(wechat_id)|(company_name)/.test(k) && $.trim(o[k]) == ''){
+                    if(/(username)|(mobile)/.test(k) && $.trim(o[k]) == ''){
                         _isBlank = true;
                         break;
                     }

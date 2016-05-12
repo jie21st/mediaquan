@@ -37,34 +37,32 @@ class ClassService
     public function createOrder($input, $userId)
     {
         $classModel = new \Common\Model\ClassModel();
-        $classService = new \Common\Service\ClassService();
-        $fields = 'glzh_class.agency_id,glzh_class.agency_name,glzh_class.class_id, glzh_class.class_title, glzh_class.class_price, glzh_class.class_image, glzh_class.class_thumb, '.
-                'glzh_class.class_teacher, IFNULL(glzh_class_price.user_price, glzh_class.class_price) AS class_total';
-        $classInfo = $classService->getClassInfo(['glzh_class.class_id' => $input['id']], $fields);
-        
+        $classInfo = $classModel->getClassInfo(['class_id' => $input['id']]);
         if(empty($classInfo)) {
             return array('error' => '课程不存在');
-        }
-        
+        } 
         $orderSn = $this->makeOrderSn($userId);
         $order = [
             'buyer_id'      => $userId,
-            'buyer_name'    => $input['username'],
             'order_sn'      => $orderSn,
             'agency_id'     => $classInfo['agency_id'],
             'agency_name'   => $classInfo['agency_name'],
             'class_id'      => $classInfo['class_id'],
             'class_title'   => $classInfo['class_title'],
             'class_price'   => $classInfo['class_price'],
-            'order_amount'  => $classInfo['class_total'],
-            'from_seller'   => I('post.dcp', 0, 'intval'),
+            'order_amount'  => $classInfo['class_price'],
+            'payment_code'  => 'online',
+            'order_state'   => $classInfo['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
+            'from_seller'   => $classInfo['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
         ];
-        $orderId = $classModel->addOrder($order);
+        
+        $orderModel = new \Common\Model\OrderModel();
+        $orderId = $orderModel->addOrder($order);
         if(! $orderId){
             return array('error' => '保存订单失败');
         }
         
-        return array('order_sn' => $order['order_sn']);
+        return array('order_sn' => $orderSn);
     }
 
     /**
@@ -75,8 +73,8 @@ class ClassService
      */
     public function makeOrderSn($userId)
     {
-        return '2' . date('y') . date('md')
-              . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT)
+        return date('y') . date('md')
+              . sprintf('%06d', mt_rand(1, 999999))
               . sprintf('%03d', (int) $userId % 1000);
     }
     
@@ -107,68 +105,22 @@ class ClassService
      * 购买成功插入课程用户
      * 
      * @param array $classOrder 课程订单
-     * @param int $groupId 班级id
      * @throws \Exception
      */
-    public function addClassUser(array $classOrder, $groupId = 0)
+    public function addClassUser(array $classOrder)
     {
         $classModel = new \Common\Model\ClassModel;
         $userModel = new \Common\Model\UserModel;
         
-        if (! isset($classOrder['from_seller'])) {
-            $classOrder['from_seller'] = 0;
-        }
-        
         $classInfo = $classModel->getClassInfo(['class_id' => $classOrder['class_id']]);
         $userInfo = $userModel->getUserInfo(['ID' => $classOrder['buyer_id']], 'ID, ClientName');
-        // 计算用户将分配到几班
-        if ($groupId == 0) {
-            // 未指定班级-自动分配
-            $isResellerGovern = false;
-            if ($classOrder['from_seller']) {
-                // 报名用户来自分销商
-                $resellerModel = D('Reseller');
-                $resellerInfo = $resellerModel->getResellerInfo(['reseller_id' => $classOrder['from_seller']]);
-                if ($resellerInfo && $resellerInfo['reseller_govern']) {
-                    $isResellerGovern = true;
-                    // 如果分销商自行维护则分配到分销商班级
-                    $groupInfo = $this->assignResellerGroup($classOrder['class_id'], $resellerInfo['reseller_id']);
-                    if ($groupInfo) {
-                        $groupId = $groupInfo['group_id'];
-                        $update = M('glzh_reseller_class_group')->where(['group_id' => $groupId])->setInc('group_num');
-                        if (! $update) {
-                            throw new \Exception('更新分销商班级信息错误');
-                        }
-                    }
-                }
-            }
-            if (! $isResellerGovern) {
-                $groupInfo = $this->assignGroup($classOrder['class_id']);
-                if ($groupInfo) {
-                    $groupId = $groupInfo['group_id'];
-                    $update = M('glzh_class_group')->where(['group_id' => $groupId])->setInc('group_num');
-                    if (! $update) {
-                        throw new \Exception('更新班级信息错误');
-                    }
-                }
-            }
-        } else {
-            // 获取指定班级信息
-            $groupInfo = $classModel->getClassGroupInfo(['group_id' => $groupId]);
-            // 增加班级人数
-            $update = M('glzh_class_group')->where(['group_id' => $groupId])->setInc('group_num');
-            if (! $update) {
-                throw new \Exception('更新班级信息错误');
-            }
-        }
 
         // 插入课程用户信息
         $data               = array();
         $data['class_id']   = $classOrder['class_id'];
         $data['user_id']    = $classOrder['buyer_id'];
-        $data['group_id']   = $groupId;
         $data['order_id']   = $classOrder['order_id'];
-        $data['reseller_id']= $classOrder['from_seller'];
+//        $data['reseller_id']= $classOrder['from_seller'];
         $data['apply_amount'] = $classOrder['order_amount'];
         $data['apply_time'] = time();
         $data['apply_state']= 1;
@@ -178,23 +130,23 @@ class ClassService
         }
 
         // 微信消息模板通知
-        $tempMsgService = new \Common\Service\TemplateMessageService;
-        $tempMsgService->courseBuyNotify($classOrder['buyer_id'], [
-            'name'      => $classOrder['class_title'],
-            'price'     => glzh_price_format($classOrder['order_amount']),
-            'url'       => C('COURSE_SITE_URL') . sprintf(self::WECHAT_NOTIFY_URL_FORMAT, $classOrder['class_id']),
-            'remark'    => sprintf(self::WECHAT_NOTIFY_REMARK_FORMAT, $classOrder['class_title']),
-        ]);
-        $tempMsgService->notify('500001100001001', $classOrder['class_id'], 1, [
-            'className' => $classOrder['class_title'],
-            'classPrice' => glzh_price_format($classOrder['order_amount']),
-            'teacherName' => $classInfo['class_teacher'],
-            'memberName' => $userInfo['user_name'],
-            'memberId' => $classOrder['buyer_id'],
-            'groupName' => $groupInfo['group_name'],
-            'buyTime' => date('Y-m-d H:i'),
-            'url' => C('MOBILE_SITE_URL') . sprintf(self::CLASS_APPLY_USERS_URL_FORMAT, $classOrder['class_id']),
-        ]);
+//        $tempMsgService = new \Common\Service\TemplateMessageService;
+//        $tempMsgService->courseBuyNotify($classOrder['buyer_id'], [
+//            'name'      => $classOrder['class_title'],
+//            'price'     => glzh_price_format($classOrder['order_amount']),
+//            'url'       => C('COURSE_SITE_URL') . sprintf(self::WECHAT_NOTIFY_URL_FORMAT, $classOrder['class_id']),
+//            'remark'    => sprintf(self::WECHAT_NOTIFY_REMARK_FORMAT, $classOrder['class_title']),
+//        ]);
+//        $tempMsgService->notify('500001100001001', $classOrder['class_id'], 1, [
+//            'className' => $classOrder['class_title'],
+//            'classPrice' => glzh_price_format($classOrder['order_amount']),
+//            'teacherName' => $classInfo['class_teacher'],
+//            'memberName' => $userInfo['user_name'],
+//            'memberId' => $classOrder['buyer_id'],
+//            'groupName' => $groupInfo['group_name'],
+//            'buyTime' => date('Y-m-d H:i'),
+//            'url' => C('MOBILE_SITE_URL') . sprintf(self::CLASS_APPLY_USERS_URL_FORMAT, $classOrder['class_id']),
+//        ]);
     }
 
     /**
@@ -236,32 +188,6 @@ class ClassService
                     return $groupList[0];
                 }
             }
-        }
-    }
-    
-    /**
-     * 分销商自维护课程班级分配
-     * 
-     * @param type $classId
-     */
-    public function assignResellerGroup($classId, $resellerId)
-    {
-        $condition = array();
-        $condition['class_id'] = $classId;
-        $condition['reseller_id'] = $resellerId;
-        $condition['group_num'] = array('neq', 0);
-        
-        $resellerModel = D('Reseller');
-        // 取最新一条已报名班级
-        $groupList = $resellerModel->getClassGroupList($condition, '*', 'group_code desc', 1, 1);
-        $groupInfo = $groupList[0];
-        if ($groupInfo['group_num'] < $groupInfo['group_mcount']) {
-            return $groupInfo;
-        } else {
-            // 取得最先一个未报名班级
-            $condition['group_num'] = array('eq', 0);
-            $groupList = $resellerModel->getClassGroupList($condition, '*', 'group_code asc', 1, 1);
-            return $groupList[0];
         }
     }
     

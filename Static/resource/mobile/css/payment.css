@@ -1,0 +1,68 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2016-1-14, 19:06:48
+    Author     : wangjie
+*/
+*, :after, :before{-webkit-tap-highlight-color: transparent;}
+body{background:#f5f5f9;font-family:"微软雅黑";font-size:14px;line-height:1.5em;color:#222;}
+a {text-decoration: none;}
+img {border: 0;vertical-align: top;}
+blockquote, body, dd, div, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, input, legend, li, ol, p, td, textarea, th, ul{margin: 0;padding: 0}
+.fn-hide{display: none!important;}
+.head{border-bottom:#d2d2d2 1px solid;padding:20px; overflow: hidden;background:#fff;}
+.photo{width:30%;float:left;}
+.photo img {width:100%;}
+.price{float:left;width:65%;margin:30px 0 0 5%;font-size:32px;font-weight:bold;}
+.notice{padding:10px 20px 0; border-bottom:#d2d2d2 10px solid;background:#fff;}
+.notice dt{color:#848484;margin-bottom:10px;}
+.notice dd{float:right;margin-top:-30px;}
+.way{padding-bottom:60px;padding-top:10px;}
+.hr{height:1px;border-bottom:#d2d2d2 1px solid;margin:10px 0;}
+.list-item{padding:.5rem;position: relative;min-height: 32px;background:-webkit-gradient(linear,left top,left bottom,from(#fff),color-stop(.5,#fff),color-stop(.5,transparent)) top left no-repeat,-webkit-gradient(linear,left top,left bottom,from(#fff),to(#fff)) bottom left no-repeat,-webkit-gradient(linear,left top,left bottom,from(#e5e5e5),color-stop(.5,#e5e5e5),color-stop(.5,transparent)) top left no-repeat,-webkit-gradient(linear,left top,left bottom,from(#e5e5e5),to(#e5e5e5)) bottom left no-repeat,#fff;background:-webkit-linear-gradient(0deg,#fff,#fff) top left no-repeat,-webkit-linear-gradient(180deg,#fff,#fff) bottom left no-repeat,-webkit-linear-gradient(0deg,#e5e5e5,#e5e5e5,rgba(229,229,229,0)) top left no-repeat,-webkit-linear-gradient(180deg,#e5e5e5,#e5e5e5,rgba(229,229,229,0)) bottom left no-repeat,#fff;background:linear-gradient(0deg,#fff,#fff) top left no-repeat,linear-gradient(180deg,#fff,#fff) bottom left no-repeat,linear-gradient(0deg,#e5e5e5,#e5e5e5,rgba(229,229,229,0)) top left no-repeat,linear-gradient(180deg,#e5e5e5,#e5e5e5,rgba(229,229,229,0)) bottom left no-repeat,#fff;-webkit-background-size:0 0,0 0,100% 1px,100% 1px;color:#000;vertical-align:middle;margin-left:0;margin-right:0;margin-top:-1px;text-align:left;overflow:inherit;display:-webkit-box;display:-webkit-flex;-webkit-box-align:center;-webkit-align-items:center}
+.pay-list-content{z-index: 2;position: relative;}
+.list-item .pay-list-content{-webkit-box-flex: 1;-webkit-flex: 1;min-height: 60px;}
+.list-item .pay-list-title{margin-top: 10px;vertical-align: middle;line-height: 24px;color: #222;}
+.list-item .pay-list-brief{color: #848484;font-size: 10px;margin-top: 2px;margin-bottom: .2rem;padding-right: 20px;line-height: 1.3em;}
+.checkbox{display: inline-block;position: relative}
+.checkbox input{position: absolute;top: 0;left: 0;opacity: 0;width: 100%;height: 100%;z-index: 999;border: 0;-webkit-appearance: none;}
+.list-item .checkbox{position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: 1;}
+.list-item input{padding-top: 5px;padding-bottom: 5px;font-size: 16px;-webkit-appearance: none;width: 100%;padding: 0;border: none;background-color: transparent;}
+.checkbox .icon-check{position: absolute;top: 50%;width: 18px;height: 18px;margin-right: 2px;margin-top: -10px;border: 1px solid #d9d9d9;-webkit-transform: rotate(0);}
+.checkbox .icon-check{width: 18px;height: 18px;margin-right: 2px;margin-top: -10px;}
+.checkbox .icon-check:after{top: 2px;right: 5px;width: 5px;height: 10px;position: absolute;display: none;border: 2px solid #b2b2b2;border-width: 0 2px 2px 0;content: "\0020";-webkit-transform: rotate(45deg);}
+.checkbox[mode~=radio] .icon-check{-webkit-background-clip: padding-box;border-radius: 14px;}
+.checkbox input:checked+.icon-check{border-color: #878787;background-color: #fff;}
+.checkbox input:checked+.icon-check:after{display: block;border-color: #FF7324;}
+.checkbox input:disabled:checked+.icon-check{background: #d9d9d9;border-color: #d9d9d9;}
+.list-item[mode~=check] .checkbox .icon-check{right:13px;}
+.list-payment-info{padding: 10px 0 0;}
+.list-payment-info .list-item:first-child{padding-left: 20px;padding-right: 20px;}
+.list-payment-info .list-item:first-child .pay-list-label{width: 86px;vertical-align: middle;font-size: 14px;line-height: 24px;font-weight: 700;}
+.pay-list-control{-webkit-box-flex: 1;-webkit-flex: 1;}
+.glzh-pay .list-payment-info .list-item:first-child .pay-list-control input{vertical-align: middle;padding: 0;font-size: 14px;line-height: 16px;color: #eb3d2b;}
+.glzh-pay .list-balance-info .list-item{padding:0 0 0 20px;}
+.glzh-pay .list-balance-info .pay-list-title{font-weight: 700;}
+.glzh-pay .list-payment-info .payment-item{padding: 0 0 0 20px;}
+.list[mode~=chip] .list-item{-webkit-background-size: 12px 1px,12px 1px,100% 1px,100% 1px;}
+.list[mode~=chip] .list-item:first-child{-webkit-background-size: 0 0,12px 1px,100% 1px,100% 1px;}
+.list[mode~=chip] .list-item:last-child{-webkit-background-size: 12px 1px,0 0,100% 1px,100% 1px;}
+.list[mode~=chip] .list-item:first-child:last-child{-webkit-background-size: 0 0,0 0,100% 1px,100% 1px;}
+.btn2{background-color:#ff7526;color:#fff;font-weight:bold;line-height:3em;text-align:center;position: fixed;bottom:0;width:90%;margin:10px 5%;border-radius:4px;max-width:640px;}
+.btn{display: inline-block;background-color: #fff;border: 1px solid #e5e5e5;border-radius: 3px;padding: 5px 4px;margin: 0;font-size: 12px;cursor: pointer;line-height: 18px;text-align: center;-webkit-appearance: none;}
+.btn.btn-block{width: 100%;padding: 11px 10px;font-size: 16px;line-height: 16px;border-radius: 4px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+.btn.btn-orange{color:#fff;background-color: #ff7526;border-color: #ff7526;}
+.btn.btn-white {color:#000; background-color: #fff; border-color: #e5e5e5;}
+.btn.disabled{background-color:#c9c9c9!important;background-image:none!important;border:1px solid transparent!important;color: #fff!important;}
+.bottom-fix{display: block;z-index: 100;position: fixed;left: 0;bottom: 0;width: 100%;text-align: center;padding: 6px 7px;border-top: 1px solid #ccc;-webkit-box-shadow: 0 0 4px rgba(0,0,0,0.2);box-shadow: 0 0 4px rgba(0,0,0,0.2);background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(226,227,231,0.33)), to(rgba(248,248,248,0.33)));background-image: -webkit-linear-gradient(bottom, rgba(226,227,231,0.33) 0%, rgba(248,248,248,0.33) 100%);background-image: -moz-linear-gradient(bottom, rgba(226,227,231,0.33) 0%, rgba(248,248,248,0.33) 100%);background-image: linear-gradient(to top, rgba(226,227,231,0.33) 0%, rgba(248,248,248,0.33) 100%);background-color: #fff;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;font-size: 0;}
+
+.native-pay-box {}
+.native-pay-box .hd {padding:10px 0;}
+.native-pay-box .hd h3 {font-size:18px; font-weight:bold; text-align:center;}
+.native-pay-box .bd {padding:5px;text-align:center;}
+.qrcode {width:148px; height:148px; margin:0 auto;}
+
+.action {padding:0 20px; margin-top: 20px;}

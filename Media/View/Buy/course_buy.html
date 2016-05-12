@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>订单确认</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/payment.css" type="text/css" />
+    </head> 
+    <body>
+        <div class="glzh-pay">
+            <form name="payform">
+                <div class="head">
+                    <div class="photo"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_thumb}>" /></div>
+                    <p class="price order-total">¥ <span class="money"><{$order_info.order_amount|glzh_price_format}></span></p> 
+                </div>
+                <div class="notice">
+                    <dl>
+                        <dt>收款方</dt>
+                        <dd>北京管理智慧网络科技有限公司</dd>
+                        <dt>商品</dt>
+                        <dd><{$order_info.class_title}></dd>
+                    </dl>
+                </div>
+                <div class="action">
+                    <div style="margin-bottom: 10px;">
+                        <a href="javascript:;" class="btn btn-block btn-orange js-pay">微信安全支付</a>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/utils.js"></script>
+        <script>
+            var pay_success_url = '<{$Think.config.app_site_url}>/buy/course_ok?order_sn=<{$order_info.order_sn}>';
+            var pay_data = {
+                order_type: 'course_buy',
+                order_sn: '<{$order_info.order_sn}>',
+                goods_name: '<{$order_info.class_title}>'
+            };
+        </script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/payment.js"></script>
+    </body>
+</html>

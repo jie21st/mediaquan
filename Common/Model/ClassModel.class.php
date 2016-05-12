@@ -56,34 +56,7 @@ class ClassModel extends CommonModel
      */
     public function addClassUser($data)
     {
-        return (new \Think\Model)->table('glzh_class_user')->add($data);
-    }
-
-    /**
-     * addOrder
-     *
-     * @param mixed $data
-     * @access public
-     * @return void
-     */
-    public function addOrder($data)
-    {
-//        $data['order_state'] = C('ORDER_STATE_NEW');
-        $data['create_time'] = time();
-        return (new \Think\Model)->table('glzh_class_order')->add($data);
-    }
-
-    /**
-     * getOrderInfo
-     *
-     * @param mixed $condition
-     * @param string $field
-     * @access public
-     * @return void
-     */
-    public function getOrderInfo($condition, $field = '*')
-    {
-        return (new \Think\Model)->table('glzh_class_order')->field($field)->where($condition)->find();
+        return (new \Think\Model)->table('m_class_user')->add($data);
     }
 
     /**
@@ -96,35 +69,22 @@ class ClassModel extends CommonModel
      */
     public function getOrderList($condition = array(), $field = '*', $order = 'order_id desc', $page = 1, $limit = 1000)
     {
-        return (new \Think\Model)->table('glzh_class_order')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
+        return (new \Think\Model)->table('m_class_order')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
     }
 
     public function totalClassOrderList($condition = array(), $field = 'order_id')
     {
-        return (new \Think\Model)->table('glzh_class_order')->where($condition)->count($field);
-    }
-
-    /**
-     * editOrder
-     *
-     * @param mixed $data
-     * @param mixed $condition
-     * @access public
-     * @return void
-     */
-    public function editOrder($data, $condition)
-    {
-        return (new \Think\Model)->table('glzh_class_order')->where($condition)->save($data);
+        return (new \Think\Model)->table('m_class_order')->where($condition)->count($field);
     }
 
     public function updateClassUser($condition, $data)
     {
-        return (new \Think\Model)->table('glzh_class_user')->where($condition)->save($data);
+        return (new \Think\Model)->table('m_class_user')->where($condition)->save($data);
     }
 
     public function getClassUserCount($condition, $field = '*')
     {
-        return (new \Think\Model)->table('glzh_class_user')->where($condition)->count($field);
+        return (new \Think\Model)->table('m_class_user')->where($condition)->count($field);
     }
 
     /**
@@ -136,7 +96,7 @@ class ClassModel extends CommonModel
      */
     public function getClassUser($condition)
     {
-        return (new \Think\Model)->table('glzh_class_user')->where($condition)->find();
+        return (new \Think\Model)->table('m_class_user')->where($condition)->find();
     }
 
     /**
@@ -188,7 +148,7 @@ class ClassModel extends CommonModel
      */
     public function getClassUserList($condition = array(), $field = '*', $order = 'apply_time desc', $page = 1, $limit = 1000)
     {
-        return (new \Think\Model)->table('glzh_class_user')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
+        return (new \Think\Model)->table('m_class_user')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
     }
 
     /**

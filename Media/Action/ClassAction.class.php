@@ -55,7 +55,7 @@ class ClassAction extends CommonAction
     public function buyOp()
     {
         $classId = I('id', 0, 'intval'); 
-        $userId  = session('user.user_id');
+        $userId  = session('user_id');
         if ($classId <= 0) {
             exit('参数错误'); 
         }
@@ -64,13 +64,12 @@ class ClassAction extends CommonAction
         $classService = new \Common\Service\ClassService;
         
         // 取得课程信息
-        $fields = 'glzh_class.agency_id,glzh_class.agency_name,glzh_class.class_id, glzh_class.class_title, glzh_class.class_price, glzh_class.class_image, glzh_class.class_thumb, '
-                . 'glzh_class.class_teacher, IFNULL(glzh_class_price.user_price, glzh_class.class_price) AS final_price';
-        $classInfo = $classService->getClassInfo(['glzh_class.class_id' => $classId], $fields);
+        $classModel = new \Common\Model\ClassModel();
+        $classInfo = $classModel->getClassInfo(['class_id' => $classId]);
         if (empty($classInfo)) {
-            exit('课程不存在');
+            showMessage('课程不存在');
         }
-        if ($classInfo['final_price'] > 0) {
+        if ($classInfo['class_price'] > 0) {
             $classInfo['_is_free'] = false;
         } else {
             $classInfo['_is_free'] = true;
@@ -81,71 +80,38 @@ class ClassAction extends CommonAction
         if ($applyed) {
             redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
         }
-
         if (IS_POST) {
             // 更新用户信息
             $update = array();
-            $update['ClientName'] = I('post.username');
-            $update['Mobile']     = I('post.mobile');
-            $update['Company']    = I('post.company_name');
-            $update['Place']      = I('post.job');
-            $update['Degree']     = I('post.wechat_id');
-            $update['area_info']  = I('post.area_info', '', 'trim');
+            $update['user_truename']    = I('post.username');
+            $update['user_mobile']      = I('post.mobile');
+            $update['company_name']     = I('post.company_name');
+//            $update['Place']      = I('post.job');
+            $update['user_wx']          = I('post.wechat_id');
+            $update['user_areainfo']    = I('post.area_info', '', 'trim');
             $areaIds = I('post.area_ids');
             if ($areaIds != '') {
                 $split = explode(',', $areaIds); 
-                $update['provinceid'] = $split[0];
-                $update['cityid'] = $split[1];
+                $update['user_provinceid'] = $split[0];
+                $update['user_cityid'] = $split[1];
             }
             $result = $userService->updateUserInfo($update, $userId);
-            if (!$result) {
+            if (! $result) {
                 showMessage('更新信息失败');
             }
             
             // 创建订单
-            $orderSn = $classService->makeOrderSn($userId);
-            $order = [
-                'buyer_id'      => $userId,
-                'buyer_name'    => I('post.username'),
-                'order_sn'      => $orderSn,
-                'agency_id'     => $classInfo['agency_id'],
-                'agency_name'   => $classInfo['agency_name'],
-                'class_id'      => $classInfo['class_id'],
-                'class_title'   => $classInfo['class_title'],
-                'class_price'   => $classInfo['class_price'],
-                'order_amount'  => $classInfo['final_price'],
-                'payment_code'  => 'online',
-                'order_state'   => $classInfo['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
-                'from_seller'   => $classInfo['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
-            ];
-            $classModel = new ClassModel();
-            $orderId = $classModel->addOrder($order);
-            if(! $orderId){
-                showMessage('创建订单失败');
+            $result = $classService->createOrder($_POST, $userId);
+            if (isset($result['error'])) {
+                showMessage($result['error']);
             }
-            $order['order_id'] = $orderId; //后续用到
-
-            // 订单支付
-            if ($classInfo['_is_free'] === true) {
-                // 免费课程直接插入课程报名信息
-                try {
-                    // 添加课程报名
-                    $classService->addClassUser($order);
-                    // 转向听课证
-                    $pay_url = C('APP_SITE_URL') . '/buy/course_ok?order_sn='.$orderSn;
-                } catch (\Exception $e) {
-                    \Think\Log::write('课程报名失败: '.$e->getMessage());
-                    showMessage('课程报名失败');
-                }
-            } else {
-                // 转向到支付页面
-                $pay_url = C('APP_SITE_URL') . '/buy/course_buy?order_sn='.$orderSn;
-            }
+            
+            // 转向到支付页面
+            $pay_url = '/buy/course_buy?order_sn='.$result['order_sn'];
             redirect($pay_url);
         }
         // 获取用户信息
         $userInfo = $userService->getUserFullInfo($userId);
-        
         $this->assign('user_info', $userInfo);
         $this->assign('class_info', $classInfo);
         
