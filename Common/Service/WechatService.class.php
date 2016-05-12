@@ -55,4 +55,9 @@ class WechatService
     {
         return $this->wechat->uploadMedia($data, $type);
     }
+
+    public function sendCustomMessage($data)
+    {
+        return $this->wechat->sendCustomMessage($data);
+    }
 }

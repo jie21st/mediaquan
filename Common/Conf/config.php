@@ -62,9 +62,6 @@ return array(
     'WECHAT_APPSECRET'  => '124f73ec548d7b372bf4a612e81753c4',
     'WECHAT_ENCODING'   => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
     
-    // 海报
-    "POSTER_TIME" => 2592000, // 海报有效期
-    
     // 其他配置
     'DEFAULT_USER_AVATAR' => 'personImg.jpg',  // 默认头像
 );

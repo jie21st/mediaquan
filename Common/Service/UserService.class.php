@@ -1,7 +1,7 @@
 <?php
 namespace Common\Service;
 
-use \Common\Service\ApiService;
+use \Common\Service;
 
 /**
  * 用户服务类
@@ -41,8 +41,8 @@ class UserService
      */
     public function getUserBaseInfo($userId)
     {
-        $model = new Common\Model\UserModel;
-        $field = 'user_id,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar';
+        $model = new \Common\Model\UserModel;
+        $field = 'user_id,user_wechatopenid,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar';
         $data = $model->getUserInfo(['user_id' => $userId], $field);
         return $data;
     }
