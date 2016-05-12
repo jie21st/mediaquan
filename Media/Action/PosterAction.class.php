@@ -12,9 +12,6 @@ class PosterAction extends CommonAction
     /**
      * 获取海报
      */
-    /**
-     * @TODO 写入海报记录
-     */
     public function getPosterOp()
     {
         // 用户信息
@@ -59,6 +56,7 @@ class PosterAction extends CommonAction
         }
 
         $imageSrc['poster_id'] = $state;
+        $imageSrc['poster_end_time'] = $data['poster_end_time'];
         return $imageSrc;
     }
 
@@ -107,7 +105,7 @@ class PosterAction extends CommonAction
         return array(
             'media_id'   => $imagesInfo['media_id'],
             'start_time' => $data['wechat_upload_start_time'],
-            'end_time'   => $data['wechat_upload_end_time']
+            'end_time'   => $imagesInfo['poster_end_time']
         );
     }
 
@@ -127,14 +125,20 @@ class PosterAction extends CommonAction
         );
 
         $wechat->sendCustomMessage($image);
+        $start = date('Y-m-d H:i:s', $mediaInfo['start_time']);
+        $end   = date('Y-m-d H:i:s', $mediaInfo['end_time']);
+        $content = <<<STR
+海报生效时间：
+$start
+海报失效时间：
+$end
+STR;
 
         $text = array(
             'touser'    =>  $userInfo['user_wechatopenid'],
             'msgtype'   =>  'text',
             'text'      =>  array(
-                //'content' => '失效时间：' . date('Y-m-d H:i:s', $mediaInfo['end_time'])
-                'content' => '海报生效时间：
-                海报失效时间'
+                'content' => $content
             )
         );
 
