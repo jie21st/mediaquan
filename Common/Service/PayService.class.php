@@ -61,8 +61,8 @@ class PayService
     
     public function makePaySn()
     {
-        return date('YmdHis')
-            .sprintf('%04d', mt_rand(1, 999999));
+        return date('Ymd')
+            .substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
     }
 
     /**
