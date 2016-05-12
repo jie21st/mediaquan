@@ -4,18 +4,19 @@
  */
 namespace Media\Service;
 
-use Common\Service\ImagesMerger as Images;
+use Common\Service\ImagesMergerService as Images;
+use Common\Service\WechatService as Wechat;
 
 class PosterService
 {
-    public function getPoster($uid)
+    public function getPoster($userInfo)
     {
         // 用户头像地址
-        $this->uid = $uid;
-        $this->_getUserImages($uid);
-        $this->_getWechatRQCode($uid);
+        $this->uid = $userInfo['user_id'];
+        $this->_setUserImageSrc($userInfo['user_avatar']);
+        $this->_getWechatRQCode();
         $this->_setConfig();
-        $this->_getImagePath();
+        return $this->_getImagePath();
     }
 
     /**
@@ -24,30 +25,21 @@ class PosterService
      *
      * @return array 用户信息
      */
-    private function _getUserImages($uid)
+    private function _setUserImageSrc($avatar)
     {
-        $condition = array('user_id' => $uid);
-        $field = 'user_avatar';
-        $userInfo = D('User')->getUserInfo($condition, $field);
-        $this->userImageSrc = DIR_UPLOAD . DS . ATTACH_AVATAR . DS . $userInfo['user_avatar'];
+        $this->userImageSrc = DIR_UPLOAD . DS . ATTACH_AVATAR . DS . $avatar;
     }
 
-    private function _getWechatRQCode($uid, $type = '0', $expire = '2592000')
+
+    /**
+     * 获取微信二维码地址
+     * @param string $type  类型 (临时 QR_SCENE  永久 QR_LIMIT_SCENE)
+     * @param string $expire
+     */
+    private function _getWechatRQCode($type = 'QR_SCENE')
     {
-//        $time = C('POSTER_TIME');
-//        if ($expire > $time) $expire = $time;
-//
-//        $keys = [
-//            'scene_id' => $uid,
-//            'type' => $type,
-//            'expire' => $expire,
-//        ];
-//
-//        $url = new URL;
-//        $res = $url->post(C('RQCodePath'), $keys);
-//        $res = json_decode($res, true);
-//        return $res['data']['url'];
-        $this->wechatRQCode = DIR_UPLOAD . DS .ATTACH_POSTER . DS .'rqcode/10001_wechat.jpg';
+        $wechat = new Wechat;
+        $this->wechatRQCode = $wechat->getQRUrl($this->uid, $type, C('POSTER_TIME'));
     }
 
     /**
@@ -61,7 +53,7 @@ class PosterService
 
         $config = array(
             'dst'       =>  $dst,           // 模板地址(目标图)
-            'isPrint'   =>  true,          // 是否打印
+            'isPrint'   =>  false,          // 是否打印
             'isSave'    =>  true,           // 是否保存
             'savePath'  =>  $savePath,         // 保存路径
             'saveName'  =>  md5($this->uid . time()),                // 保存名字
@@ -97,16 +89,6 @@ class PosterService
     {
         $images = new Images($this->config);
         $images->start();
-        return  $images->pathInfo;
+        return array('pathInfo' => $images->pathInfo, 'pathName' => $images->pathName);
     }
-
-    /**
-     * 写入数据
-     */
-    private function _insertData()
-    {
-
-    }
-
-
 }
