@@ -42,7 +42,7 @@ class WechatAction extends CommonAction
                 $openId = $this->wechat->getRev()->getRevFrom();
                 $userModel = new \Common\Model\UserModel;
                 $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
-                if ($event === 'subscribe') {
+                if ($event['event'] == 'subscribe') {
                     if (empty($userInfo)) {
                         $wxUserInfo = $this->wechat->getUserInfo($openId);
                         $insertInfo = [
@@ -59,11 +59,15 @@ class WechatAction extends CommonAction
                             $insertInfo['user_avatar'] = $avatarName . '.jpg';
                         }
                         $userId = $userModel->addUser($insertInfo);
-                        if (!$userId) {
-                            file_put_contents('a.txt', serialize($wxUserInfo));
-                        }
+                    } else {
+                        $userModel->editUser([
+                            'subscribe_state' => 1,
+                        ],[
+                            'user_id' => $userInfo['user_id'],
+                        ]);
                     }
-                } elseif ($event === 'unsubscribe') {
+                    $this->wechat->text("感谢关注")->reply();
+                } elseif ($event['event'] == 'unsubscribe') {
                     if (! empty($userInfo)) {
                         $userModel->editUser([
                             'subscribe_state' => 0,
