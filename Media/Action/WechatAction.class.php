@@ -45,6 +45,7 @@ class WechatAction extends CommonAction
                 if ($event['event'] == 'subscribe') {
                     if (empty($userInfo)) {
                         $wxUserInfo = $this->wechat->getUserInfo($openId);
+                        $wxUserInfo['nickname'] = remove_emoji($wxUserInfo['nickname']);
                         $insertInfo = [
                             'user_nickname' => $wxUserInfo['nickname'],
                             'user_sex' => $wxUserInfo['sex'],
@@ -59,12 +60,40 @@ class WechatAction extends CommonAction
                             $insertInfo['user_avatar'] = $avatarName . '.jpg';
                         }
                         $userId = $userModel->addUser($insertInfo);
+                        if (!$userId){
+                            \Think\Log::write('微信关注用户注册失败');
+                            exit(); 
+                        }
+                        $userInfo = $userModel->getUserInfo(['user_id' => $userId]);
                     } else {
                         $userModel->editUser([
                             'subscribe_state' => 1,
                         ],[
                             'user_id' => $userInfo['user_id'],
                         ]);
+                    }
+
+                    if (isset($event['key'])) {
+                        \Think\Log::write('关注事件存在key'.$event['key']);
+                        $scene_id = substr($event['key'], 8);
+                        $recomUserInfo = $userModel->getUserInfo(['user_id' => $scene_id]);
+                        if ($recomUserInfo) {
+                            if (empty(intval($userInfo['parent_id'])) && ($recomUserInfo['parent_id'] != $userInfo['user_id'])) {
+                                $update = array();
+                                $update['parent_id'] = $recomUserInfo['user_id'];
+                                $userModel->editUser([
+                                    'parent_id' => $recomUserInfo['user_id']    
+                                ], [
+                                    'user_id' => $userInfo['user_id']       
+                                ]);
+                            }
+                            $msg = array();
+                            $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+                            $msg['msgtype'] = 'text';
+                            $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
+                            $wechatService = new \Common\Service\WechatService;
+                            $wechatService->sendCustomMessage($msg);
+                        }
                     }
                     $this->wechat->text("感谢关注")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
@@ -74,6 +103,27 @@ class WechatAction extends CommonAction
                         ],[
                             'user_id' => $userInfo['user_id'],
                         ]);
+                    }
+                } elseif ($event['event'] == 'SCAN') {
+                    $scene_id = $event['key'];
+                    $recomUserInfo = $userModel->getUserInfo(['user_id' => $scene_id]);
+                    if ($recomUserInfo) {
+                        // 检查扫码人是不是推荐人的东家
+                        if (empty(intval($userInfo['parent_id'])) && ($recomUserInfo['parent_id'] != $userInfo['user_id'])) {
+                            $update = array();
+                            $update['parent_id'] = $recomUserInfo['user_id'];
+                            $userModel->editUser([
+                                'parent_id' => $recomUserInfo['user_id']    
+                            ], [
+                                'user_id' => $userInfo['user_id']       
+                            ]);
+                        }
+                        $msg = array();
+                        $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+                        $msg['msgtype'] = 'text';
+                        $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
+                        $wechatService = new \Common\Service\WechatService;
+                        $wechatService->sendCustomMessage($msg);
                     }
                 }
                 if (isset($event['key'])) {
