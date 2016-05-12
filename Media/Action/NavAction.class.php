@@ -40,7 +40,7 @@ class NavAction extends CommonAction
                         array(
                             "type" => "click",
                             "name" => "获取推广二维码",
-                            "url"  => "WECHAT_QRCODE"
+                            "key"  => "WECHAT_QRCODE"
                         ),
                         array(
                             "type" => "view",
@@ -48,10 +48,10 @@ class NavAction extends CommonAction
                             "url"  => "http://test.mediaquan.com/"
                         ),
                         array(
-                            "type" => "click",
-                            "name" => "test_获取推广二维码",
+                            "type" => "view",
+                            "name" => "二维码",
                             "url"  => "http://test.mediaquan.com/poster/getPoster"
-                        ),
+                        )
                     )
                 )
             )
