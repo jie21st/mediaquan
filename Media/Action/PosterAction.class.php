@@ -17,15 +17,48 @@ class PosterAction extends CommonAction
         // 用户信息
         $uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
+        $posterInfo = $this->getUserPosterInfo($uid);
 
-        //制作海报
-        $imageSrc = $this->_getImageInfo($userInfo);
-        //微信上传
-        $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
+        if(time() > $posterInfo['poster_end_time']) {
+            echo "制作海报";exit();
+            //制作海报
+            $imageSrc   = $this->_getImageInfo($userInfo);
+            //微信上传
+            $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
+        } else if(time() > $posterInfo['wechat_upload_end_time']) {
+            echo "微信海报失效";exit();
+            $imageSrc['pathInfo']   = $posterInfo['poster_src'];
+            $imageSrc['poster_id']  = $posterInfo['id'];
+            $imageSrc['pathName']   = $posterInfo['poster_images_name'];
+            $imageSrc['poster_end_time']  = $posterInfo['poster_end_time'];
+
+            //微信上传
+            $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
+        } else {
+            echo "啥都没有,挺好的";
+            $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
+            $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
+            $mediaInfo['start_time']    = $posterInfo['poster_start_time'];
+            $imageSrc['pathName']       = $posterInfo['poster_images_name'];
+        }
+
         //发送消息
         $this->_sendWechat($userInfo, $mediaInfo);
         $this->assign('imageSrc', $imageSrc['pathName']);
         $this->display();
+    }
+
+    /**
+     * 用户最新海报
+     * @param $uid
+     *
+     * @return mixed
+     */
+    private function getUserPosterInfo($uid)
+    {
+        $poster = D('Poster', 'Model');
+        $condition = array('user_id'=>$uid);
+        return $poster->getUserPoster($condition);
     }
 
     /**
@@ -38,6 +71,10 @@ class PosterAction extends CommonAction
     {
         $poster = D('Poster', 'Service');
         $imageSrc = $poster->getPoster($userInfo);
+
+        if(false === $imageSrc) {
+            exit('海报制作失败!请重新生成或者联系客服人员');
+        }
 
         $data = array(
             'user_id' => $userInfo['user_id'],

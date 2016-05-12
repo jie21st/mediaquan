@@ -11,6 +11,18 @@ class PosterModel extends CommonModel
      */
     protected $trueTableName = 'm_poster';
 
+
+    /**
+     * 获取最新海报
+     * @param $condition
+     *
+     * @return mixed
+     */
+    public function getUserPoster($condition)
+    {
+        return $this->where($condition)->order('id desc')->find();
+    }
+
     /**
      * 添加海报信息
      * @param $data

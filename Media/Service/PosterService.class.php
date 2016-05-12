@@ -14,7 +14,7 @@ class PosterService
         // 用户头像地址
         $this->uid = $userInfo['user_id'];
         $this->_setUserImageSrc($userInfo['user_avatar']);
-        $this->_getWechatRQCode();
+        if(false === $this->_getWechatRQCode()) return false;
         $this->_setConfig();
         return $this->_getImagePath();
     }
@@ -39,7 +39,12 @@ class PosterService
     private function _getWechatRQCode($type = 'QR_SCENE')
     {
         $wechat = new Wechat;
-        $this->wechatRQCode = $wechat->getQRUrl($this->uid, $type, C('POSTER_TIME'));
+        $url = $wechat->getQRUrl($this->uid, $type, C('POSTER_TIME'));
+        if (false === $url) {
+            return false;
+        }
+
+        $this->wechatRQCode = $url;
     }
 
     /**
