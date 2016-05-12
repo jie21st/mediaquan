@@ -76,6 +76,14 @@ class WechatAction extends CommonAction
                         ]);
                     }
                 }
+                if (isset($event['key'])) {
+                    $key = $event['key'];
+                    if ($key == 'WECHAT_QRCODE') {
+                        $url = C('APP_SITE_URL').'/poster/getPoster';
+                        $this->wechat->text('请点击链接获取二维码海报！<a href="'.$url.'">获取海报</a>')->reply();
+                    }
+                    
+                }
                 break;
             case Wechat::MSGTYPE_IMAGE:
                 break;
