@@ -43,10 +43,12 @@ return array(
     'DB_PREFIX'         => 'm_', // 数据库表前缀
 
     // 数据缓存
-    'DATA_CACHE_TYPE'   => 'File',
-//    'REDIS_HOST'        => '10.51.58.34',
-//    'REDIS_PORT'        => '6319',
-//    'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
+    'DATA_CACHE_TYPE'   => 'Redis',
+    'DATA_CACHE_PREFIX' => 'mediaquan',
+    'REDIS_HOST'        => '123.57.210.1',
+    'REDIS_PORT'        => '6319',
+    'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
+    
 
     // 数据模型
     'READ_DATA_MAP'     => true,

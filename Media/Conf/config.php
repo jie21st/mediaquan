@@ -5,7 +5,11 @@
  */
 $config = array(
     // cookie
-    'COOKIE_DOMAIN'     => '.guanlizhihui.com',
+    'COOKIE_DOMAIN'     => 'test.mediaquan.com',
+    
+    // session
+    'SESSION_TYPE'      => 'Redis',
+    'SESSION_PREFIX'    => 'mediaquan:session',
     
     // URL设置
     'URL_ROUTER_ON'     => true,
