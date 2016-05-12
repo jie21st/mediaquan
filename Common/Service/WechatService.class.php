@@ -50,14 +50,35 @@ class WechatService
     
     /**
      * 新增临时素材
+     * @param $data
+     * @param $type
+     *
+     * @return mixed
      */
     public function uploadMedia($data, $type)
     {
         return $this->wechat->uploadMedia($data, $type);
     }
 
+    /**
+     * 发送消息
+     * @param $data
+     *
+     * @return mixed
+     */
     public function sendCustomMessage($data)
     {
         return $this->wechat->sendCustomMessage($data);
+    }
+
+    /**
+     * 创建菜单
+     * @param $data
+     *
+     * @return mixed
+     */
+    public function createMenu($data)
+    {
+        return $this->wechat->createMenu($data);
     }
 }
