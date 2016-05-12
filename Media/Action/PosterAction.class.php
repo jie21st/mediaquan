@@ -96,7 +96,7 @@ class PosterAction extends CommonAction
             'wechat_upload_type'    => $imagesInfo['type'],
             'wechat_media_id'       => $imagesInfo['media_id'],
             'wechat_upload_start_time'  => $imagesInfo['created_at'],
-            'wechat_upload_end_time'    => $imagesInfo['created_at'] + C('POSTER_TIME')
+            'wechat_upload_end_time'    => $imagesInfo['created_at'] + C('UPLOAD_WECHAT_TIME')
         );
         $bool = D('Poster', 'Model')->posterUpdate($condition, $data);
 
@@ -132,11 +132,12 @@ class PosterAction extends CommonAction
             'touser'    =>  $userInfo['user_wechatopenid'],
             'msgtype'   =>  'text',
             'text'      =>  array(
-                'content' => '海报生成时间：' . date('Y-m-d H:i:s', $mediaInfo['start_time'])
-                    . '<br/>&nbsp;海报失效时间：' . date('Y-m-d H:i:s', $mediaInfo['end_time'])
+                //'content' => '失效时间：' . date('Y-m-d H:i:s', $mediaInfo['end_time'])
+                'content' => '海报生效时间：
+                海报失效时间'
             )
         );
-        
+
         $wechat->sendCustomMessage($text);
     }
 
