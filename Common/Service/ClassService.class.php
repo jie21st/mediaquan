@@ -111,9 +111,6 @@ class ClassService
     {
         $classModel = new \Common\Model\ClassModel;
         $userModel = new \Common\Model\UserModel;
-        
-        $classInfo = $classModel->getClassInfo(['class_id' => $classOrder['class_id']]);
-        $userInfo = $userModel->getUserInfo(['ID' => $classOrder['buyer_id']], 'ID, ClientName');
 
         // 插入课程用户信息
         $data               = array();
