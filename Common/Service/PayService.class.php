@@ -62,7 +62,7 @@ class PayService
     public function makePaySn()
     {
         return date('YmdHis')
-            .sprintf('%06', mt_rand(1, 999999));
+            .sprintf('%06d', mt_rand(1, 999999));
     }
 
     /**
