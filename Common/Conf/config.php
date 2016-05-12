@@ -44,7 +44,7 @@ return array(
 
     // 数据缓存
     'DATA_CACHE_TYPE'   => 'Redis',
-    'DATA_CACHE_PREFIX' => 'mediaquan',
+    'DATA_CACHE_PREFIX' => 'mediaquan:',
     'REDIS_HOST'        => '123.57.210.1',
     'REDIS_PORT'        => '6319',
     'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
