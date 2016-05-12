@@ -30,6 +30,8 @@ define('ATTACH_AVATAR', 'avatar');
 define('ATTACH_SELLER', 'seller');
 define('ATTACH_TEACHER', 'teacher');
 
+define('ATTACH_POSTER', 'poster'); // 海报目录
+
 /**
  * 订单状态
  */
