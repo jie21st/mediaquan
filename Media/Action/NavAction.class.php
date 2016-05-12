@@ -1,6 +1,6 @@
 <?php
 /**
- * 海报
+ *　公众号菜单
  */
 namespace Media\Action;
 
@@ -9,12 +9,19 @@ use Common\Service\WechatService as Wechat;
 class NavAction extends CommonAction
 {
 
+    /**
+     * 菜单生成
+     */
     public function CreateNavOp()
     {
         $result = $this->_NavJson();
-        print_r((new Wechat)->createMenu($result));
+        (new Wechat)->createMenu($result);
     }
 
+    /**
+     * 菜单列表
+     * @return array
+     */
     private function _NavJson()
     {
         $json = array(
