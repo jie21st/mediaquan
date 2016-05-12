@@ -24,7 +24,6 @@ class PosterAction extends CommonAction
         $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
         //发送消息
         $this->_sendWechat($userInfo, $mediaInfo);
-
         $this->assign('imageSrc', $imageSrc['pathName']);
         $this->display();
     }
@@ -96,6 +95,7 @@ class PosterAction extends CommonAction
             'wechat_upload_start_time'  => $imagesInfo['created_at'],
             'wechat_upload_end_time'    => $imagesInfo['created_at'] + C('UPLOAD_WECHAT_TIME')
         );
+
         $bool = D('Poster', 'Model')->posterUpdate($condition, $data);
 
         if(!$bool) {
@@ -105,7 +105,7 @@ class PosterAction extends CommonAction
         return array(
             'media_id'   => $imagesInfo['media_id'],
             'start_time' => $data['wechat_upload_start_time'],
-            'end_time'   => $imagesInfo['poster_end_time']
+            'end_time'   => $imageSrc['poster_end_time']
         );
     }
 
