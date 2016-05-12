@@ -89,6 +89,10 @@ class PosterService
     {
         $images = new Images($this->config);
         $images->start();
-        return array('pathInfo' => $images->pathInfo, 'pathName' => $images->pathName);
+        return array(
+            'pathInfo' => $images->pathInfo,
+            'pathName' => $images->pathName,
+            'time'     => time()
+        );
     }
 }

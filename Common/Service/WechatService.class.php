@@ -81,4 +81,15 @@ class WechatService
     {
         return $this->wechat->createMenu($data);
     }
+
+    /**
+     * 失败信息
+     * @return mixed
+     */
+    public function error()
+    {
+        $error['errCode'] = $this->wechat->errCode;
+        $error['errMsg'] = $this->wechat->errMsg;
+        return $error;
+    }
 }
