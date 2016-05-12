@@ -8,7 +8,7 @@ use Common\Service\WechatService as Wechat;
 
 class PosterAction extends CommonAction
 {
-
+    protected $needAuth = true;
     /**
      * 获取海报
      */
@@ -23,9 +23,9 @@ class PosterAction extends CommonAction
 
         //制作海报
         $imageSrc = $this->_getImageInfo($userInfo);
-        print_r($imageSrc);
-        //$mediaId = $this->_uploadMedia($imageSrc['pathInfo'], 'image');
-        //$this->_sendWechat($userInfo, $mediaId);
+        $mediaId = $this->_uploadMedia($imageSrc['pathInfo'], 'image');
+        $this->_sendWechat($userInfo, $mediaId);
+
         $this->assign('imageSrc', $imageSrc['pathName']);
         $this->display();
     }
