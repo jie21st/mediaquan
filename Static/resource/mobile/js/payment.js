@@ -15,7 +15,7 @@
             data: pay_data || {},
             dataType: 'json',
             success: function (res) {
-                t.removeClass('disabled').text('微信安全支付');
+                t.removeClass('disabled').text('立即支付');
                 if (res.code == 1) {
                     params = JSON.parse(res.data);
                     callwxpay();
