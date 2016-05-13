@@ -45,20 +45,15 @@ class NavAction extends CommonAction
                             "url"  => "http://test.mediaquan.com/"
                         ),
                         array(
-                            "type" => "click",
-                            "name" => "获取推广二维码",
-                            "key"  => "WECHAT_QRCODE"
-                        ),
-                        array(
                             "type" => "view",
                             "name" => "售后服务",
                             "url"  => "http://test.mediaquan.com/"
                         ),
                         array(
-                            "type" => "view",
-                            "name" => "二维码",
-                            "url"  => "http://test.mediaquan.com/poster/getPoster"
-                        )
+                            "type" => "click",
+                            "name" => "获取推广二维码",
+                            "key"  => "WECHAT_QRCODE"
+                        ),
                     )
                 )
             )
