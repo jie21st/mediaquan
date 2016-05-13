@@ -32,7 +32,6 @@ class OrderAction extends CommonAction
             }
         }
         
-        dump($orderList);
         $this->assign('order_list', $orderList);
         $this->display();
     }
