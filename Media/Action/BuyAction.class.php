@@ -62,7 +62,7 @@ class BuyAction extends CommonAction
         
         // 跳转到电子听课证
         if ($orderInfo['order_state'] == ORDER_STATE_PAY) {
-            echo '恭喜你购买成功';
+            $this->display();
         } else {
             echo '正在验证订单支付状态，稍后请手动刷新页面';
         }
