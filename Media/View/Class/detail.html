@@ -4,21 +4,35 @@
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <title><{$class_info.class_title}></title>
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/common.css" />
-        <style type="text/css">
-            img { vertical-align: middle;}
-                 
-            .clear{clear:both;}
-            .content img{width:100%;}
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+        <style>
+            body.body-fixed-bottom {padding-bottom:60px;}
+            .body-fixed-bottom .bottom-fix { position: fixed; left: 0; bottom: 0; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; padding: 10px; background: #f1f1f1;border-top:1px solid #dfdfdf;}
+            .bottom-fix a{ display: inline-block; width:100%; height:40px; background:#1ab5ee; border-radius:40px; line-height:40px; text-align:center; color:#fff; font-size:15px;}
         </style>
     </head>
     <body class="body-fixed-bottom">
-        <div class="content">
-            <{$class_info.class_body|html_entity_decode}>
+
+        <div><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" width="100%"/></div> 
+        <div class="jiben">
+            <p>讲师：<span><{$class_info.class_teacher}></span></p>
+            <p>价格：<span class="jg"><{$class_info.class_price|glzh_price_format}></span></p>
+            <p>时间：<span><{$class_info.create_time|date="Y-m-d H:i:s",###}></span></p>
         </div>
-        <div class="copyright">
-            <a href="http://mp.weixin.qq.com/s?__biz=MzA4NzQyMTU5Mg==&mid=441924883&idx=1&sn=43871615603e93820cfa29313875bec2&scene=1&srcid=0305McVf2EFHv1vFHvWufs8z#wechat_redirect">由包子堂提供技术支持</a>
+
+        <div class="con">
+            <p>课程介绍：<span><{$class_info.class_body|html_entity_decode}></span></p>
         </div>
+
+        <div class="con">
+            <p>课程目录：<br />
+                <span>第一章节：最实用的互谅网运营思维</span><br />
+                <span>第二章节：最实用的互谅网运营思维</span><br />
+                <span>第三章节：最实用的互谅网运营思维</span><br />
+                <span>第四章节：最实用的互谅网运营思维</span>
+            </p>
+        </div>
+        <include file="Public/footer" />
         <div class="bottom-fix">
             <a href="javascript:;" class="btn-join" data-link="/order/<{$class_info.class_id}>">立即报名</a>
         </div>
@@ -26,20 +40,20 @@
         <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
         <script type="text/javascript">
-            function onBridgeReady(){
+            function onBridgeReady() {
                 WeixinJSBridge.call('showOptionMenu');
             }
-            if (typeof WeixinJSBridge == "undefined"){
-                if( document.addEventListener ){
+            if (typeof WeixinJSBridge == "undefined") {
+                if (document.addEventListener) {
                     document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                }else if (document.attachEvent){
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
                     document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
                 }
-            }else{
+            } else {
                 onBridgeReady();
             }
-            
+
             $().ready(function () {
                 $('.btn-join').click(function () {
                     window.location.href = $(this).data('link') + window.location.search;
