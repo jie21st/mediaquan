@@ -36,7 +36,7 @@ a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
 .sjzt span{float:right; color:#ff415f;}
 .sjzt .wc{float:right; color:#222;}
 .jxsctk .jiage{color:#ff0000; font-size:15px; margin:50px 0 0 50px;}
-.jxsctk .caoz{padding-top:12px; border-top:dashed 1px #e1dfda; margin-top:100px;}
+.jxsctk .caoz{padding-top:12px; border-top:dashed 1px #e1dfda; margin-top:10px;}
 .jxsctk .caoz a{width:93px; height:30px; border-radius:30px; background:#c2c2c2; float:right; display:inline-block; font-size:14px; color:#fff; line-height:30px; text-align:center;}
 .jxsctk .caoz .fk{background:#1ab5ee; margin-left:10px;}
 .jxsctk .caoz .tk{background:#fe9516;}
@@ -52,6 +52,7 @@ a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
 
 /*听课页面*/
 .ml p{width:94%; height:55px; padding:0 3%; margin-bottom:1px; background:#fff; color:#666666; font-size:15px; line-height:55px;}
+.ml .ts{ font-size:13px; color:#8094af; height:36px; line-height:36px;}
 .ml .bofang a{color:#259fec;}
 .ml a{color:#666;}
 
@@ -69,34 +70,79 @@ a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
 
 .foot{margin-bottom:70px;}
 
+/*报名*/
+.nomargin{margin-top:0;}
+.ml .xm{margin-top:10px; margin-bottom:1px;}
+.ml input{height:45px; line-height:45px; font-size:15px;}
+.qr{width:94%; margin:38px 3% 0; height:40px; line-height:40px; text-align:center; background:#1ab5ee; color:#fff; font-size:15px; border-radius:40px;}
+.guding{ position:fixed; bottom:0; margin-left:100px;}
 
+/*报名确定*/
+.ml p span{color:#222; padding-left:15px;}
+.ml .jiage{margin-top:10px;}
+.ml .jiage span{color:#F00;}
+.zffs{width:94%; padding:0 3%; background:#fff; height:57px; padding-top:16px;}
+.zffs .fs{font-size:15px; color:#222;}
+.zffs .js{font-size:11px; color:#848484; margin-top:2px;}
+.zffs li{float:left;}
+.zffs .dx{float:right; margin-top:10px;}
+
+/*报名成功*/
+.tixian{width:90%; padding:0 5%; margin:0 auto; font-size:16px; padding-top:85px; margin-bottom:75px;}
+.tixian li{ text-align:center; margin-bottom:12px;}
+.tixian .hei{color:#222;}
+.tixian .hui{color:#bbbaba;}
+.btn{width:100%; margin-top:15px;}
+.btn a{height:40px; width:92%; margin:0 4%; background:#1ab5ee; border-radius:20px; display:inline-block; line-height:40px; text-align:center; color:#fff; text-decoration:none;}
+.btn2 a{background:#c2c2c2;}
 
 /*我的粉丝*/
+.bas{background:#fff;}
 h3{font-size:14px; color:#222; font-weight:normal; margin:15px 3% 12px;}
-.gezi{width:24.4%; text-align:center; border:1px solid #dbdbdb; padding-top:7px; padding-bottom:6px; float:left;}
+.gezi{width:24.4%; text-align:center; border:1px solid #f8f6f6; padding-top:7px; padding-bottom:6px; float:left;}
 .gezi p{width:58px; height:58px; border-radius:58px; overflow:hidden; margin:0 auto; margin-bottom:5px;}
 .gezi span{font-size:10px; color:#848484;}
 
+/*大东家*/
+.bg{background:#4fc4cc;}
+.beij{background:url(../images/dbj-bg.jpg) no-repeat center 20px; height:496px;}
+.ddj{height:195px; width:195px; border-radius:195px; overflow:hidden; position:absolute; top:50%; left:50%; margin:-180px 0 0 -120px; border:22px solid #8fdadf;}
+.ddjxm{font-size:25px; color:#094f54; width:100%; text-align:center; position:absolute; top:389px;}
 
 /*提现成功*/
 .tixian .tishi{width:100%; text-align:center; color:#bbbaba; font-size:16px;}
 
 /*账单明细*/
 .zd-top{width:100%; height:237px; background:#0795dd; padding-top:13px;}
+.zd-top2{height:190px;}
 .zdbg{width:90%; height:9px; padding-top:6px; margin:0 auto; border-radius:15px; background:#0578b9; padding-left:5%;}
 .zd-top .neir{width:84.5%; background:url(../images/zdbot-bg.jpg) no-repeat center bottom #fff; height:183px; margin:3px auto;}
+.zd-top .neir2{height:130px;}
 .zd-top .zzj{font-size:18px; color:#5c5c5c; padding-left:20px; padding-top:20px;}
 .zd-top .qianshu{ font-family:"Arial"; font-size:25px; color:#ff4c64; width:90%; margin:0 auto; text-align:center; height:70px; line-height:70px; border-bottom:1px dashed #dedede;}
+.zd-top .qianshu2{border:0;}
 .zd-top .qianshu span{font-size:14px;}
-.zd-top a{font-size:18px; color:#036eb2; text-decoration:underline; width:90%; margin:17px auto; text-align:center;}
+.zd-top a{font-size:18px; color:#036eb2; text-decoration:underline; width:100%; margin:17px auto; text-align:center;}
 
-.zdbt{font-size:14px; color:#222; height:52px; line-height:52px; padding-left:3%;}
-.lists{padding:0 3%; background:#fff;}
-.lists li{float:left;}
+.zdbt{font-size:14px; color:#222; height:52px; line-height:61px; padding-left:3%;}
+.lists{padding:16px 3%; background:#fff; width:94%; overflow:hidden; margin-bottom:1px;}
+.lists li{float:left; color:#848484;}
+
+.list li{font-size:14px; color:#0d93da; width:33.3%; text-align:center;}
+.list .li2{ text-align:left; padding-left:6%; width:25.3%;}
+.list .li3{padding-left:10%; width:23.3%;}
+.list .li4{ text-align:right; padding-right:4%; width:29.3%; float:right;}
 .lists .xinxi{font-size:12px; text-align:left; width:41%;}
-.lists .jiaqian{font-size:18px; color:#ff0000; text-align:center;width:29%; font-family:Helvetica, sans-serif; padding-top:4px;}
+.lists .xinxi2{font-size:12px; text-align:left; width:35%; padding-left:6%; line-height:29px;}
+.lists .jiaqian{font-size:18px; color:#0dba19; text-align:center;width:29%; font-family:Helvetica, sans-serif; padding-top:4px;}
+.lists .tix{color:#ff0000; font-size:18px; text-align:center;width:29%; font-family:Helvetica, sans-serif; padding-top:4px;}
 .lists .time{font-size:12px; color:#848484; text-align:right; float:right;width:30%;font-family:Helvetica, sans-serif;}
 
+/*海报*/
+.nbtx{}
+.hbtx .p2{width:96px; height:96px; border-radius:96px; border:3px solid #f1f1f1; overflow:hidden; display:inline-block; position:absolute; top:61px; left:37%;}
+.hbtx .p3{color:#000; z-index:99; position:absolute; top:173px; width:100%; text-align:center;}
+.ewm{ position:absolute; top:260px; left:20%; }
 
 
 
