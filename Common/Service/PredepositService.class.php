@@ -128,11 +128,11 @@ class PredepositService
             default:
                 throw new \Exception('参数错误');
         }
-        $update = (new \Think\Model)->table('wechat_client')->where(array('ID'=>$data['user_id']))->save($data_pd);
+        $update = (new \Think\Model)->table('__USERS__')->where(array('user_id'=>$data['user_id']))->save($data_pd);
         if (!$update) {
             throw new \Exception('操作失败');
         }
-        $insert = (new \Think\Model)->table('glzh_pd_log')->add($data_log);
+        $insert = (new \Think\Model)->table('__PD_LOG__')->add($data_log);
         if (!$insert) {
             throw new \Exception('操作失败');
         }
