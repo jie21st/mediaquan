@@ -1,76 +1,50 @@
 <!doctype html>
 <html>
     <head>
-        <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-        <title><{$class_info.class_title}></title>
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/common.css" />
-        <style type="text/css">
-            img { vertical-align: middle;}
-                 
-            .clear{clear:both;}
-            .content img{width:100%;}
-        </style>
+        <title>全部课程</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
     </head>
-    <body class="body-fixed-bottom">
-        <div class="content">
-            <{$class_info.class_body|html_entity_decode}>
+    <body>
+        <volist name="class_list" id="class">
+        <div class="jxsctk">
+            <ul>
+                <li class="tp">
+                    <a href="/class/<{$class.class_id}>.html">
+                    <img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class.class_thumb}>" width="119" height="95" />
+                    </a>
+                </li>
+                <li>
+                    <a href="/class/<{$class.class_id}>.html">
+                    <p class="bt"><{$class.class_title}></p>
+                    <p class="zjs">第一章节</p>
+                    <p class="jss"><{$class.class_teacher}></p>
+                    <p class="je">￥<{$class.class_price|glzh_price_format}></p>
+                    </a>
+                </li>
+                <if condition="$class['is_buy']">
+                <li class="qtk"><a href="#">去听课</a></li>
+                <else />
+                <li class="qtk lanse"><a href="/class/<{$class.class_id}>.html">立即抢购</a></li>
+                </if>
+            </ul>
         </div>
-        <div class="copyright">
-            <a href="http://mp.weixin.qq.com/s?__biz=MzA4NzQyMTU5Mg==&mid=441924883&idx=1&sn=43871615603e93820cfa29313875bec2&scene=1&srcid=0305McVf2EFHv1vFHvWufs8z#wechat_redirect">由包子堂提供技术支持</a>
-        </div>
-        <div class="bottom-fix">
-            <a href="javascript:;" class="btn-join" data-link="/order/<{$class_info.class_id}>">立即报名</a>
-        </div>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
-        <script type="text/javascript">
-            function onBridgeReady(){
-                WeixinJSBridge.call('showOptionMenu');
-            }
-            if (typeof WeixinJSBridge == "undefined"){
-                if( document.addEventListener ){
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                }else if (document.attachEvent){
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-                }
-            }else{
-                onBridgeReady();
-            }
-            
-            $().ready(function () {
-                $('.btn-join').click(function () {
-                    window.location.href = $(this).data('link') + window.location.search;
-                })
-            });
-            var shareData = {
-                title: '<{$class_info.fx_title}>',
-                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                desc: '<{$class_info.fx_desc}>'
-            };
-            $.ajax({
-                url: '<{$Think.config.WECHAT_SITE_URL}>/wechat/getJsSign',
-                type: 'GET',
-                data: {
-                    url: encodeURIComponent(window.location.href)
-                },
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                success: function (res) {
-                    WXFX_GLZ.init({
-                        appid: res.data.appId,
-                        nonceStr: res.data.nonceStr,
-                        signature: res.data.signature,
-                        timestamp: res.data.timestamp,
-                        infoTitle: shareData.title,
-                        infoImgUrl: shareData.image,
-                        infoDesc: shareData.desc,
-                        xurl: res.data.url
-                    });
-                }
-            });
-        </script>
+        </volist>
+        <include file="Public/footer" />
     </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

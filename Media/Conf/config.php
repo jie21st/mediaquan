@@ -10,12 +10,13 @@ $config = array(
     // session
     'SESSION_TYPE'      => 'Redis',
     'SESSION_PREFIX'    => 'mediaquan:session',
+    'SESSION_EXPIRE'    => 259200,
     
     // URL设置
     'URL_ROUTER_ON'     => true,
     'URL_ROUTE_RULES'   => array(
         // 课程
-        'class/:id\d'       => 'class/index',
+        'class/:id\d'       => 'class/detail',
         // 订单
         'order/:id\d'       => 'class/buy',
         // 单页面

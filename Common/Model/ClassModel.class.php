@@ -59,19 +59,6 @@ class ClassModel extends CommonModel
         return (new \Think\Model)->table('m_class_user')->add($data);
     }
 
-    /**
-     * 取得订单列表
-     *
-     * @param type $condition
-     * @param type $field
-     * @param type $order
-     * @return type
-     */
-    public function getOrderList($condition = array(), $field = '*', $order = 'order_id desc', $page = 1, $limit = 1000)
-    {
-        return (new \Think\Model)->table('m_class_order')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
-    }
-
     public function totalClassOrderList($condition = array(), $field = 'order_id')
     {
         return (new \Think\Model)->table('m_class_order')->where($condition)->count($field);
@@ -150,85 +137,9 @@ class ClassModel extends CommonModel
     {
         return (new \Think\Model)->table('m_class_user')->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
     }
-
-    /**
-     * 取得课程班级信息
-     *
-     * @param mixed $condition
-     * @access public
-     * @return void
-     */
-    public function getClassGroupInfo($condition, $field = '*')
+    
+    public function editClass($data, $condition)
     {
-        return (new \Think\Model)->table('glzh_class_group')->field($field)->where($condition)->find();
+        return $this->where($condition)->save($data);
     }
-
-    //public function getClassGroupList($condition = array(), $field = '*', $order = '')
-    public function getClassGroupList($condition = array(), $field = '*', $order = '', $page = 1, $limit = 1000)
-    {
-        //return (new \Think\Model)->table('glzh_class_group')->field($field)->where($condition)->order($order)->select();
-        return (new \Think\Model)->table('glzh_class_group')->field($field)->where($condition)->page($page)->limit($limit)->order($order)->select();
-    }
-
-    public function getClassGroupTotal($condition = array(), $field = 'class_id')
-    {
-        return (new \Think\Model)->table('glzh_class_group')->field($field)->where($condition)->count();
-    }
-
-    public function addGroup($data)
-    {
-        return (new \Think\Model)->table('glzh_class_group')->filter(C('DEFAULT_FILTER'))->data($data)->add();
-    }
-
-    /**
-     * 更新课程班级信息
-     *
-     * @param type $data
-     * @param type $condition
-     * @return type
-     */
-    public function updateClassGroupInfo($data, $condition)
-    {
-        return (new \Think\Model)->table('glzh_class_group')->where($condition)->save($data);
-    }
-
-    public function addClassUserPrice($data)
-    {
-        return (new \Think\Model)->table('glzh_class_price')->filter(C('DEFAULT_FILTER'))->data($data)->add();
-    }
-
-    public function getClassUserPrice($condition, $field = '*')
-    {
-        return (new \Think\Model)->table('glzh_class_price')->field($field)->where($condition)->select();
-    }
-
-    public function upClassUserPrice($condition, $data)
-    {
-        return (new \Think\Model)->table('glzh_class_price')->where($condition)->filter(C('DEFAULT_FILTER'))->save($data);
-    }
-
-    /**
-     * 取得未报满班级信息
-     *
-     * @param type $classId
-     * @return int
-     */
-//    public function getAvailableGroupInfo($condition = array())
-    //    {
-    //        // 取得课程最新班级标识
-    //        $maxGroupCode = (new Model())->table('glzh_class_group')->where($condition)->max('group_code');
-    //        if (! $maxGroupCode) {
-    //            return null;
-    //        }
-    //
-    //        $groupInfo = $this->getClassGroupInfo([
-    //            'class_id' => $classId,
-    //            'group_code' => $maxGroupCode
-    //        ]);
-    //        if ($groupInfo['group_num'] < $groupInfo['group_mcount']) {
-    //            return $groupInfo;
-    //        } else {
-    //            return null;
-    //        }
-    //    }
 }

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>我的订单</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+    </head>
+    <body>
+        <volist name="order_list" id="order">
+        <div class="jxsctk">
+            <p class="sjzt"><{$order.create_time|date="Y-m-d H:i:s", ###}><span><{$order.state_desc}></span></p>
+            <ul>
+                <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$order.class_image}>" width="93" height="74" /></li>
+                <li>
+                    <p class="bt"><{$order.class_title}></p>
+                    <p class="zj">&nbsp;</p>
+                    <p class="js">智军</p>
+                </li>
+                <li class="jiage">￥<{$order.order_amount|glzh_price_format}></li>
+            </ul>
+            <p class="caoz">
+                <if condition="!empty($order['pay_amount'])">
+                    <a href="<{$Think.config.APP_SITE_URL}>/buy/course_buy?order_sn=<{$order.order_sn}>" class="fk">去付款</a>
+                </if>
+                <if condition="$order['if_cancel']">
+                <a href="javascript:void(0)" class="qx">取消订单</a>
+                </if>
+                <if condition="$order['if_learn']">
+                    <a href="<{$Think.config.APP_SITE_URL}>/class/<{$order.class_id}>/" class="tk">去听课</a>
+                </if>
+            </p>
+        </div>
+        </volist>
+    <!-- 
+        <div class="jxsctk">
+            <p class="sjzt">2016-06-03  12:00:00<span class="wc">已完成</span></p>
+            <ul>
+                <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
+                <li>
+                    <p class="bt">硬邦邦的案列会说话</p>
+                    <p class="zj">第二章节</p>
+                    <p class="js">智军</p>
+                </li>
+                <li class="jiage">￥199</li>
+            </ul>
+            <p class="caoz"><a href="#" class="tk">去听课</a></p>
+        </div>
+
+       <div class="jxsctk">
+            <p class="sjzt">2016-06-03  12:00:00<span class="wc">交易关闭</span></p>
+            <ul>
+                <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
+                <li>
+                    <p class="bt">硬邦邦的案列会说话</p>
+                    <p class="zj">第二章节</p>
+                    <p class="js">智军</p>
+                </li>
+                <li class="jiage">￥199</li>
+            </ul>
+        </div>-->
+        <include file="Public/footer" />
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

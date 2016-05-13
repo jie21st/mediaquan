@@ -14,7 +14,7 @@ return array(
 
     // cookie
     'COOKIE_DOMAIN'     => '.mediaquan.com',
-    'COOKIE_EXPIRE'     => 259200, // 3天
+//    'COOKIE_EXPIRE'     => 259200, // 3天
 
     // URL设置
     'URL_MODEL'         => 2, // URL访问模式 0 普通模式, 1 PATHINFO模式(默认), 2 REWRITE模式, 3 兼容模式

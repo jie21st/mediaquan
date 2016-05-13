@@ -24,7 +24,7 @@ class WechatService
         }
         $result= $this->wechat->getQRCode($scene_id, $type, $expire);
         if ($result) {
-            $ticket = $result['ticket']; 
+            $ticket = $result['ticket'];
             return $this->wechat->getQRUrl($ticket);
         } else {
             return false;

@@ -28,6 +28,39 @@ class ClassService
     CONST CLASS_APPLY_USERS_URL_FORMAT = '/class/list?id=%d';
     
     /**
+     * 购买：保存订单入库，产生订单号
+     * 
+     * @param type $post
+     * @param type $userId
+     * @return type
+     */
+    public function buy($post, $userId)
+    {
+        $classModel = new \Common\Model\ClassModel();
+        $classInfo = $classModel->getClassInfo(['class_id' => $post['id']]);
+        
+        try {
+            // 开始事务
+            $classModel->startTrans();
+
+            // 生成订单
+            list($orderSn,$orderInfo) = $this->createOrder($classInfo, $userId);
+
+            // 记录订单日志
+            $this->addOrderLog($orderInfo);
+            
+            // 提交事务
+            $classModel->commit();
+        } catch (\Exception $e) {
+            // 回滚事务
+            $classModel->rollback();
+            return array('error' => $e->getMessage());
+        }
+        
+        return array('order_sn' => $orderSn);
+    }
+    
+    /**
      * 创建订单
      * 
      * @param type $input
@@ -36,33 +69,47 @@ class ClassService
      */
     public function createOrder($input, $userId)
     {
-        $classModel = new \Common\Model\ClassModel();
-        $classInfo = $classModel->getClassInfo(['class_id' => $input['id']]);
-        if(empty($classInfo)) {
-            return array('error' => '课程不存在');
-        } 
+        $orderModel = new \Common\Model\OrderModel();
+        
         $orderSn = $this->makeOrderSn($userId);
         $order = [
             'buyer_id'      => $userId,
             'order_sn'      => $orderSn,
-            'agency_id'     => $classInfo['agency_id'],
-            'agency_name'   => $classInfo['agency_name'],
-            'class_id'      => $classInfo['class_id'],
-            'class_title'   => $classInfo['class_title'],
-            'class_price'   => $classInfo['class_price'],
-            'order_amount'  => $classInfo['class_price'],
+            'agency_id'     => $input['agency_id'],
+            'agency_name'   => $input['agency_name'],
+            'class_id'      => $input['class_id'],
+            'class_title'   => $input['class_title'],
+            'class_image'   => $input['class_image'],
+            'class_price'   => $input['class_price'],
+            'order_amount'  => $input['class_price'],
             'payment_code'  => 'online',
-            'order_state'   => $classInfo['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
-            'from_seller'   => $classInfo['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
+            'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
+//            'from_seller'   => $input['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
         ];
         
-        $orderModel = new \Common\Model\OrderModel();
         $orderId = $orderModel->addOrder($order);
         if(! $orderId){
-            return array('error' => '保存订单失败');
+            throw new \Exception('订单保存失败');
         }
+        $order['order_id'] = $orderId;
         
-        return array('order_sn' => $orderSn);
+        return array($orderSn, $order);
+    }
+    
+        
+    /**
+     * 记录订单日志
+     * @param array $orderInfo
+     */
+    public function addOrderLog($orderInfo = array()) {
+        if (empty($orderInfo) || !is_array($orderInfo)) return;
+        $orderModel = new \Common\Model\OrderModel;
+        $data = array();
+        $data['order_id'] = $orderInfo['order_id'];
+        $data['log_role'] = 'buyer';
+        $data['log_msg'] = '提交了订单';
+        $data['log_orderstate'] = ORDER_STATE_NEW;
+        $orderModel->addOrderLog($data);
     }
 
     /**
@@ -144,48 +191,6 @@ class ClassService
 //            'buyTime' => date('Y-m-d H:i'),
 //            'url' => C('MOBILE_SITE_URL') . sprintf(self::CLASS_APPLY_USERS_URL_FORMAT, $classOrder['class_id']),
 //        ]);
-    }
-
-    /**
-     * 分配班级 
-     * 
-     * @param mixed $classId 
-     * @access public
-     * @return void
-     */
-    public function assignGroup($classId)
-    {
-        $condition = array();
-        $condition['class_id'] = $classId;
-        $condition['group_num'] = array('neq', 0);
-        $condition['is_private'] = array('eq', 0);
-        
-        $classModel = D('Class');
-        // 取最新一条已报名班级
-        $groupList = $classModel->getClassGroupList($condition, '*', 'group_code desc', 1, 1);
-        if (empty($groupList)) {
-            $condition['group_num'] = array('eq', 0);
-            $groupList = $classModel->getClassGroupList($condition, '*', 'group_code asc', 1, 1);
-            if (empty($groupList)) {
-                return null;
-            } else {
-                return $groupList[0];
-            }
-        } else {
-            $groupInfo = $groupList[0];
-            if ($groupInfo['group_num'] < $groupInfo['group_mcount']) {
-                return $groupInfo;
-            } else {
-                // 取得最先一个未报名班级
-                $condition['group_num'] = array('eq', 0);
-                $groupList = $classModel->getClassGroupList($condition, '*', 'group_code asc', 1, 1);
-                if (empty($groupList)) {
-                    return null;
-                } else {
-                    return $groupList[0];
-                }
-            }
-        }
     }
     
     /**
@@ -424,26 +429,5 @@ class ClassService
             ->join("glzh_class_price ON glzh_class_price.class_id = glzh_class.class_id AND glzh_class_price.user_level = '{$userLevel}'", 'LEFT')
             ->where($condition)
             ->find();
-    }
-    
-    /**
-     * 获取课程等级价格
-     * 
-     * @param int $classId
-     * @param int $levelId
-     * @return type
-     */
-    public function getClassLevelPrice($classId, $levelId = 0)
-    {
-        $classModel = new \Common\Model\ClassModel();
-        $classInfo = $classModel->getClassInfo(['class_id' => $classId]);
-        $condition = array();
-        $condition['class_id'] = $classId;
-        $condition['user_level'] = $levelId;
-        $result = $classModel->getClassUserPrice($condition);
-        if ($result) {
-            return $result[0]['user_price'];
-        }
-        return $classInfo['class_price'];
     }
 }

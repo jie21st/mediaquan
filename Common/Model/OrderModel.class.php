@@ -17,6 +17,16 @@ class OrderModel extends CommonModel
     }
     
     /**
+     * 插入订单扩展表信息
+     * 
+     * @param array $data
+     * @return int 返回 insert_id
+     */
+    public function addOrderClass($data) {
+        return $this->table('order_goods')->add($data);
+    }
+    
+    /**
      * addOrderPay 
      * 
      * @param mixed $data 
@@ -26,6 +36,15 @@ class OrderModel extends CommonModel
     public function addOrderPay($data)
     {
         return (new \Think\Model())->table('m_order_pay')->add($data);
+    }
+    
+    /**
+     * 添加订单日志
+     */
+    public function addOrderLog($data) {
+       $data['log_role'] = str_replace(array('buyer','seller','system'),array('买家','商家','系统'), $data['log_role']);
+       $data['log_time'] = time();
+       return (new \Think\Model())->table('m_order_log')->add($data);
     }
     
     /**
@@ -39,6 +58,20 @@ class OrderModel extends CommonModel
     public function getOrderInfo($condition, $field = '*')
     {
         return $this->field($field)->where($condition)->find();
+    }
+    
+    
+    /**
+     * 取得订单列表
+     *
+     * @param type $condition
+     * @param type $field
+     * @param type $order
+     * @return type
+     */
+    public function getOrderList($condition = array(), $field = '*', $order = 'order_id desc', $page = 1, $limit = 1000)
+    {
+        return $this->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
     }
 
     /**

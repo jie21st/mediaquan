@@ -31,9 +31,24 @@ class ClassAction extends CommonAction
     }
     
     /**
-     * 课程主页
-     */
+     * 课程列表
+     */   
     public function indexOp()
+    {
+        $classModel = new ClassModel();
+        $classService = new \Common\Service\ClassService();
+        $classList = $classModel->select();
+        foreach ($classList as &$class) {
+            $class['is_buy'] = $classService->checkClassUser($class['class_id'], session('user_id'));
+        }
+        $this->assign('class_list', $classList);
+        $this->display();
+    }
+    
+    /**
+     * 课程详情
+     */
+    public function detailOp()
     {
         $classId = I('get.id', 0, 'intval');
         if ($classId <= 0) {
@@ -101,7 +116,7 @@ class ClassAction extends CommonAction
             }
             
             // 创建订单
-            $result = $classService->createOrder($_POST, $userId);
+            $result = $classService->buy(I('post.'), $userId);
             if (isset($result['error'])) {
                 showMessage($result['error']);
             }

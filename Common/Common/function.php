@@ -120,10 +120,10 @@ function orderPaymentName($payment_code) {
  * @param array $orderInfo 订单数组
  * @return string $state 描述输出
  */
-function classOrderState($orderInfo) {
+function orderState($orderInfo) {
     switch ($orderInfo['order_state']) {
         case ORDER_STATE_NEW:
-            $state = '未付款';
+            $state = '等待付款';
             break;
         case ORDER_STATE_PAY:
             $state = '已付款';
