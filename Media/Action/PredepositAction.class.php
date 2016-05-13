@@ -86,7 +86,6 @@ class PredepositAction extends CommonAction
         
         // 查询用户信息
         $userInfo = $userService->getUserFullInfo(session('user_id'));
-        
         // 取今日已提现总额
         $totalAmount = $pdService->getTodayCashTotalAmount(session('user_id'));
         
@@ -104,12 +103,12 @@ class PredepositAction extends CommonAction
             if ($pdcAmount > self::CASH_MAX_LIMIT) {
                 exit('提现金额不能大于最高限额');
             }
-            $count = $pdService->getTodayCashCount($this->user['user_id']);
+            $count = $pdService->getTodayCashCount(session('user_id'));
             if ($count >= self::CASH_NUM_LIMIT) {
                 exit('今日提现次数已达上限');
             }
             
-            $totalAmount = $pdService->getTodayCashTotalAmount($this->user['user_id']);
+            $totalAmount = $pdService->getTodayCashTotalAmount(session('user_id'));
             if ((floatval($totalAmount) + $pdcAmount) > self::CASH_MAX_LIMIT) {
                 exit('今日提现金额已达上限');
             }
@@ -124,7 +123,7 @@ class PredepositAction extends CommonAction
                 
                 $data = array();
                 $data['pdc_sn'] = $pdcSn;
-                $data['pdc_user_id'] = $this->user['user_id'];
+                $data['pdc_user_id'] = session('user_id');
                 $data['pdc_user_name'] = $pdcUserName;
                 $data['pdc_amount'] = $pdcAmount;
                 $data['pdc_create_time'] = time();
@@ -135,22 +134,22 @@ class PredepositAction extends CommonAction
                 }
                 //冻结可用预存款
                 $data = array();
-                $data['user_id'] = $this->user['user_id'];
+                $data['user_id'] = session('user_id');
                 $data['amount'] = $pdcAmount;
                 $data['order_sn'] = $pdcSn;
                 $pdService->changePd('cash_apply',$data);
                 $pdModel->commit();
                 
                 // 内部消息通知
-                $tplmsgService = new \Common\Service\TemplateMessageService;
-                $tplmsgService->notify('500001005010010', '', 3, [
-                    'name' => $userInfo['user_name'],
-                    'amount' => glzh_price_format($pdcAmount),
-                    'time' => date('Y-m-d H:i:s'),
-                ]);
+//                $tplmsgService = new \Common\Service\TemplateMessageService;
+//                $tplmsgService->notify('500001005010010', '', 3, [
+//                    'name' => $userInfo['user_name'],
+//                    'amount' => glzh_price_format($pdcAmount),
+//                    'time' => date('Y-m-d H:i:s'),
+//                ]);
                 
                 // 显示成功页面
-                $this->display('cashsuccess');
+                $this->display('cash.success');
             } catch (\Exception $e) {
                 $pdModel->rollback();
                 exit($e->getMessage());
@@ -160,7 +159,7 @@ class PredepositAction extends CommonAction
             $avCashAmount = self::CASH_MAX_LIMIT - floatval($totalAmount);
             $this->assign('amount_limit', min([$avCashAmount, floatval($userInfo['available_predeposit'])]));
             $this->assign('user_info', $userInfo);
-            $this->display();
+            $this->display('cash.apply');
         }
     }
     
