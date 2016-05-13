@@ -19,6 +19,14 @@ class NavAction extends CommonAction
     }
 
     /**
+     * 删除菜单
+     */
+    public function DelOp()
+    {
+        (new Wechat)->deleteMenu();
+    }
+
+    /**
      * 菜单列表
      * @return array
      */

@@ -83,6 +83,15 @@ class WechatService
     }
 
     /**
+     * 删除菜单
+     * @return mixed
+     */
+    public function deleteMenu()
+    {
+        return $this->wechat->deleteMenu();
+    }
+
+    /**
      * 失败信息
      * @return mixed
      */
