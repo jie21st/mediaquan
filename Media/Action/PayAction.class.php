@@ -51,7 +51,7 @@ class PayAction extends CommonAction
 
         /* 取得用户的openid */
         $userModel = new \Common\Model\UserModel;
-        $userInfo = $userModel->getUserInfo($orderInfo['buyer_id']);
+        $userInfo = $userModel->getUserInfo(['user_id' => $orderInfo['buyer_id']]);
 
         /* 交易类型 */
         $trade_type = (isset($_GET['trade_type']) && in_array(strtoupper($_GET['trade_type']), array('JSAPI', 'NATIVE')))
