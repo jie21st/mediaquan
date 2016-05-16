@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>我的课程</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+    </head>
+<body>
+    <volist name="apply_list" id="apply">
+    <div class="jxsctk">
+    	<ul>
+            <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$apply.class_info.class_image}>" width="119" height="95" /></li>
+            <li>
+            	<p class="bt"><{$apply.class_info.class_title}></p>
+                <p class="zjs">第一章节</p>
+                <p class="jss"><{$apply.class_info.class_teacher}></p>
+                <p class="je">￥<{$apply.apply_amount}></p>
+            </li>
+            <li class="qtk"><a href="#">去听课</a></li>
+        </ul>
+    </div>
+    </volist>
+    
+    
+    <ul class="footer guding">
+    	<li><a href="#">首页</a></li>
+        <li class="margin"><a href="#">会员中心</a></li>
+        <li><a href="#">帮助</a></li>
+    </ul>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

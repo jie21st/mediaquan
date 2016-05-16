@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>大东家</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+    </head>
+<body class="bas">
+	
+<h3>共<{$count}>个粉丝</h3>
+    <volist name="user_list" id="user">
+    <div class="gezi">
+        <p><img src="<{$user.user_avatar|getMemberAvatar}>" width="58" height="58" /></p>
+        <span><{$user.user_nickname}></span>
+    </div>
+    </volist>
+    <ul class="footer guding">
+    	<li><a href="#">首页</a></li>
+        <li class="margin"><a href="#">会员中心</a></li>
+        <li><a href="#">帮助</a></li>
+    </ul>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
