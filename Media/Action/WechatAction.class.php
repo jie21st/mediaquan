@@ -220,7 +220,14 @@ class WechatAction extends CommonAction
         ]);
         
         // 奖励推荐人
-        
+        if (C('PREDEPOSIT_SPREAD_USER')) {
+            $pdService = new \Common\Service\PredepositService;
+            $pd_data = array();
+            $pd_data['user_id'] = $recomUserInfo['user_id'];
+            $pd_data['amount'] = C('PREDEPOSIT_SPREAD_USER');
+            $pd_data['name'] = '发展用户'.$userInfo['user_nickname'];
+            $pdService->changePd('sale_income', $pd_data);
+        }
         
         // 通知推荐人
         $msg = array();
