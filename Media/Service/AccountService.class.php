@@ -42,7 +42,7 @@ class AccountService
                 'user_old_login_time'=> $userInfo['user_login_time'],
             );
             $userModel = new \Common\Model\UserModel;
-            $userModel->editUser($update, $userInfo['user_id']);
+            $userModel->editUser($update, ['user_id' => $userInfo['user_id']]);
         }
     }
 }
