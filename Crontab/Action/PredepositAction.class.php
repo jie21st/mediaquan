@@ -29,7 +29,6 @@ class PredepositAction extends \Think\Action
         // 分配支付，每批100个
         for ($i = 1; $i <= $page; $i++) {
             $cashList = $pdModel->getPdCashList($condition, $i, '', 'pdc_create_time asc', 100);
-            print_r($cashList);
             if ($cashList) {
                 $tempArr = array(); // 由于微信给统一用户操作频繁限制，采取同一用户每次只处理一条提现记录
                 foreach ($cashList as $key => $cashInfo) {
@@ -54,10 +53,10 @@ class PredepositAction extends \Think\Action
         
         $pdModel = new \Common\Model\PredepositModel();
         $pdService = new \Common\Service\PredepositService();
-        $userService = new \Common\Service\UserService();
+        $userModel = new \Common\Model\UserModel();
         
         /* 取得用户信息 */
-        $userInfo = $userService->getUserDetail($cashInfo['pdc_user_id']);
+        $userInfo = $userModel->getUserInfo(['user_id' => $cashInfo['pdc_user_id']]);
         
         $partner_trade_no = (string) $cashInfo['pdc_sn'];
         /* 企业付款金额，以分为单位 */
