@@ -16,18 +16,20 @@ class PredepositAction extends CommonAction
     {
         $userId = session('user_id');
         $userService = new \Common\Service\UserService;
-        $pdService = new \Common\Service\PredepositService;
         
         // 查询用户信息
         $userInfo = $userService->getUserFullInfo($userId);
+        $userInfo['total_predeposit'] = $userInfo['available_predeposit'] + $userInfo['freeze_predeposit'];
         
-        // 取今日已提现总额
-        $totalAmount = $pdService->getTodayCashTotalAmount($userId);
+        // 查询所有收支明细
+        $pdModel = new \Common\Model\PredepositModel;
+        $condition = array();
+        $condition['lg_user_id'] = $userId;
+        $condition['lg_av_amount'] = ['neq', 0];
+        $field = 'lg_id,lg_user_id,lg_name,lg_av_amount,lg_create_time';
+        $logList = $pdModel->getPdLogList($condition, $field, 'lg_create_time desc');
         
-        // 可提现金额    最大上限 - 已申请提现总额
-        $avCashAmount = self::CASH_MAX_LIMIT - floatval($totalAmount);
-        
-        $this->assign('amount_limit', min([$avCashAmount, floatval($userInfo['available_predeposit'])]));
+        $this->assign('pdlog_list', $logList);
         $this->assign('user_info', $userInfo);
         $this->display();
     }
