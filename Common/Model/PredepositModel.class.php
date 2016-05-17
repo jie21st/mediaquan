@@ -116,7 +116,7 @@ class PredepositModel extends CommonModel
      * @return type
      */
     public function getPdLogAmountSum($condition = array(), $field = 'lg_av_amount') {
-        return (new \Think\Model())->table('glzh_pd_log')->where($condition)->sum($field);
+        return (new \Think\Model())->table('m_pd_log')->where($condition)->sum($field);
     }
     
     /**
@@ -130,6 +130,6 @@ class PredepositModel extends CommonModel
      * @return type
      */
     public function getPdLogList($condition = array(), $fields = '', $order = '', $page = 1, $limit = 100) {
-        return (new \Think\Model())->table('glzh_pd_log')->field($fields)->where($condition)->order($order)->limit($limit)->page($page)->select();
+        return (new \Think\Model())->table('m_pd_log')->field($fields)->where($condition)->order($order)->limit($limit)->page($page)->select();
     }
 }
