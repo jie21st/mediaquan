@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
     </head>
 <body>
+    <notempty name="apply_list">
     <volist name="apply_list" id="apply">
     <div class="jxsctk">
     	<ul>
@@ -21,8 +22,10 @@
         </ul>
     </div>
     </volist>
-    
-    
+    <else/>
+    <div class="wucon"><img src="RESOURCE_SITE_URL/mobile/images/wkcbg.jpg" width="99" height="77" /></div>
+    <p class="wukc">暂无课程</p>
+    </notempty>
     <ul class="footer guding">
     	<li><a href="#">首页</a></li>
         <li class="margin"><a href="#">会员中心</a></li>
