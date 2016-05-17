@@ -15,6 +15,7 @@ class MyAction extends \Media\Action\CommonAction
         
         $userModel = new \Common\Model\UserModel;
         $userInfo['fans_num'] = $userModel->where(['parent_id' => session('user_id')])->count();
+        $userInfo['total_predeposit'] = $userInfo['available_predeposit'] + $userInfo['freeze_predeposit'];
         $this->assign('user_info', $userInfo);
         $this->display();
     }
