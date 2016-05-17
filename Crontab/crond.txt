@@ -1,0 +1,5 @@
+# 提现支付 - 每天8:00至23:00之间每隔30分钟
+0,30  8-23/1  *  *  * /usr/local/php/bin/php /mnt/www/mediaquan/Crontab/index.php predeposit/cashPay >> /mnt/www/mediaquan/Crontab/Logs/predeposit_cashpay.log
+
+# 订单取消 - 每5分钟
+*/5  *  *  *  * /usr/local/php/bin/php /mnt/www/mediaquan/Crontab/index.php order/order_expire >> /mnt/www/mediaquan/Crontab/Logs/order_cancle.log
