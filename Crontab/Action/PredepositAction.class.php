@@ -63,7 +63,7 @@ class PredepositAction extends \Think\Action
         $amount = floatval($cashInfo['pdc_amount']) * 100;
         
         $mchPay = new \Mch_pay_pub();
-        $mchPay->setParameter("openid", $userInfo['openid']);
+        $mchPay->setParameter("openid", $userInfo['user_wechatopenid']);
         $mchPay->setParameter("partner_trade_no", $partner_trade_no);
         $mchPay->setParameter("check_name", "OPTION_CHECK");
         $mchPay->setParameter("re_user_name", $cashInfo['pdc_user_name']);
