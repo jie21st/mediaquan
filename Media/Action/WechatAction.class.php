@@ -45,27 +45,6 @@ class WechatAction extends CommonAction
                 if ($event['event'] == 'subscribe') {
                     // 如果用户不存在，注册用户，否则修改为已关注状态
                     if (empty($userInfo)) {
-//                        $this->registerOp($openId);
-//                        $wxUserInfo = $this->wechat->getUserInfo($openId);
-//                        $wxUserInfo['nickname'] = remove_emoji($wxUserInfo['nickname']);
-//                        $insertInfo = [
-//                            'user_nickname' => $wxUserInfo['nickname'],
-//                            'user_sex' => $wxUserInfo['sex'],
-//                            'user_wechatinfo' => serialize($wxUserInfo),
-//                            'user_wechatopenid' => $openId,
-//                            'subscribe_state' => 1,
-//                        ];
-//                        $avatarName = uniqid();
-//                        $avatarSavePath = DIR_UPLOAD . DS . ATTACH_AVATAR;
-//                        $avatarPath = downloadFiles($wxUserInfo['headimgurl'], $avatarName, $avatarSavePath, 'jpg');
-//                        if ($avatarPath) {
-//                            $insertInfo['user_avatar'] = $avatarName . '.jpg';
-//                        }
-//                        $userId = $userModel->addUser($insertInfo);
-//                        if (!$userId){
-//                            \Think\Log::write('微信关注用户注册失败');
-//                            exit(); 
-//                        }
                         $userInfo = $this->registerOp($openId);
                     } else {
                         $userModel->editUser([
@@ -80,7 +59,7 @@ class WechatAction extends CommonAction
                         \Think\Log::write('关注事件存在key'.$event['key']);
                         $scene_id = substr($event['key'], 8);
                         
-                        $this->userspread($userInfo, substr($event['key'], 8));
+                        $this->userspread($userInfo, substr($event['key'], 8), 'subscribe');
 //                        $recomUserInfo = $userModel->getUserInfo(['user_id' => $scene_id]);
 //                        if ($recomUserInfo) {
 //                            if (empty(intval($userInfo['parent_id'])) && ($recomUserInfo['parent_id'] != $userInfo['user_id'])) {
@@ -110,7 +89,7 @@ class WechatAction extends CommonAction
                         ]);
                     }
                 } elseif ($event['event'] == 'SCAN') {
-                    $this->userspread($userInfo, $event['key']);
+                    $this->userspread($userInfo, $event['key'], 'scan');
 //                    $scene_id = $event['key'];
 //                    $recomUserInfo = $userModel->getUserInfo(['user_id' => $scene_id]);
 //                    if ($recomUserInfo) {
@@ -187,7 +166,7 @@ class WechatAction extends CommonAction
      * @param type $sceneId
      * @return type
      */
-    private function userspread($userInfo, $sceneId){
+    private function userspread($userInfo, $sceneId, $stage = 'scan'){
         $userModel = new \Common\Model\UserModel;
         if ($userInfo['user_id'] == $sceneId) {
             Log::write('推荐人扫描自己的二维码');
@@ -230,10 +209,15 @@ class WechatAction extends CommonAction
         }
         
         // 通知推荐人
+        if ($stage == 'subscribe') {
+            $content = $userInfo['user_nickname'].'成为了您的粉丝';
+        } else {
+            $content = $userInfo['user_nickname'].'扫描了您分享的二维码';
+        }
         $msg = array();
         $msg['touser'] = $recomUserInfo['user_wechatopenid'];
         $msg['msgtype'] = 'text';
-        $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
+        $msg['text'] = ['content' => $content];
         $wechatService = new \Common\Service\WechatService;
         $wechatService->sendCustomMessage($msg);
     }
