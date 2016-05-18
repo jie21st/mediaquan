@@ -54,8 +54,8 @@ class WechatAction extends CommonAction
                         'user_id' => $userInfo['user_id'],
                     ]);
 
-                    // 通过扫描带参数二维码
-                    if (isset($event['key'])) {
+                    // 用户未关注时，进行关注后的事件推送
+                    if (! empty($event['key'])) {
                         \Think\Log::write('关注事件存在key'.$event['key']);
                         $scene_id = substr($event['key'], 8);
                         
