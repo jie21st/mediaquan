@@ -42,17 +42,17 @@ class WechatAction extends CommonAction
                 $openId = $this->wechat->getRev()->getRevFrom();
                 $userModel = new \Common\Model\UserModel;
                 $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
+                if (empty($userInfo)) {
+                    $userInfo = $this->registerOp($openId);
+                }
+                    
                 if ($event['event'] == 'subscribe') {
-                    // 如果用户不存在，注册用户，否则修改为已关注状态
-                    if (empty($userInfo)) {
-                        $userInfo = $this->registerOp($openId);
-                    } else {
-                        $userModel->editUser([
-                            'subscribe_state' => 1,
-                        ],[
-                            'user_id' => $userInfo['user_id'],
-                        ]);
-                    }
+                    // 修改为已关注状态
+                    $userModel->editUser([
+                        'subscribe_state' => 1,
+                    ],[
+                        'user_id' => $userInfo['user_id'],
+                    ]);
 
                     // 通过扫描带参数二维码
                     if (isset($event['key'])) {
