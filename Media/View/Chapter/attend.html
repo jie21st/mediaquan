@@ -112,7 +112,7 @@
         <div class="ml">
             <foreach name="chapterList" item="vo">
                 <p <if condition="$vo.chapter_id eq $chapterId">class="bofang"</if>>
-                    <a href="javascript:void(0)" onclick="window.location.href='?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>'"><{$vo.chapter_title}>：<{$vo.title}>
+                    <a href="javascript:void(0)" onclick="window.location.href='?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>'"><{$vo.chapter_title}>
                     </a>
                 </p>
             </foreach>
