@@ -119,6 +119,10 @@
         </div>
 
         <include file="Public/footer" />
+        <input type="hidden" name="class_id" value="<{$Think.get.class_id}>">
+        <input type="hidden" name="chapter_id" value="<{$Think.get.chapter_id}>">
+        <input type="hidden" name="user_id" value="<{$user_id}>">
+        <input type="hidden" name="time" value="<{$time}>">
         <!--<ul class="footer guding">-->
         <!--<li><a href="#">首页</a></li>-->
         <!--<li class="margin"><a href="#">会员中心</a></li>-->
@@ -135,9 +139,13 @@
             var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
             var media = new Audio;
             var id, endedId;
+            var updateUrl = '<{$Think.config.APP_SITE_URL}>/chapter/update';
+
             var audio = {
                 init: function () {
                     media.src = audioSrc;
+                    media.currentTime = $('input[name=time]').val();
+
                     // 开始按钮
                     $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
                     $('.audioplayer-bar').nstSlider({
@@ -151,6 +159,7 @@
                                 $('.audioplayer-time-current').html(currentTime);
                                 if (!media.paused) {
                                     media.play();
+//                                    setTimeData();
                                 }
                             }
                             leftValues = leftValue;
@@ -161,6 +170,7 @@
                     // 开始播放
                     if (!media.autoPlay) {
                         $('.audioplayer-playpause')[0].click();
+                        postAjax();
                     };
 
                 },
@@ -168,19 +178,25 @@
                 playpauseClick: function (e) {
                     var player = e.delegateTarget; // 图标
                     var playpause = e.currentTarget; // 标识
+                    var time = $('input[name=time]').val();
+                    console.log(time);
+
                     if ($(playpause).attr('title') == 'Pause') {
                         // 暂停
                         $(player).removeClass('audioplayer-playing');
                         $(playpause).attr({'title': 'Play'}).find('a').html('Play');
                         media.pause();
                         UnSetTime();
+                        setTimeData();
                     } else {
                         // 开始
                         $(player).addClass('audioplayer-playing');
                         $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
+//
                         media.play();
                         SetTime();
                         aduioEnd();//开启监听
+                        setTimeData();
                     }
                 },
             }
@@ -217,10 +233,12 @@
                     }
                 }, 1000)
             }
+
             var UnSetTime = function () {
                 clearInterval(id);
                 clearInterval(endedId);
             }
+
             // 时间算法
             var timeDispose = function (number) {
                 var minute = parseInt(number / 60);
@@ -229,10 +247,9 @@
                 second = second >= 10 ? second : "0" + second;
                 return minute + ":" + second;
             }
+
             //播放进度条的转变事件
             var DurationProcessRange = function (rangeVal) {
-                // if(NaN )
-//        console.log(media.duration)
                 if (!isNaN(media.duration)){
 
                     media.currentTime = rangeVal * media.duration / 100;
@@ -244,6 +261,23 @@
                 }
 
             }
+
+            var setTimeData = function(){
+                var class_id = $('input[name=class_id]').val();
+                var chapter_id = $('input[name=chapter_id]').val();
+                var user_id = $('input[name=user_id]').val();
+                var time = media.currentTime;
+                // console.log(media.currentTime);
+                $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
+            }
+
+            var postAjax = function()
+            {
+                setInterval(function () {
+                    setTimeData();
+                }, 5000)
+            }
+
             audio.init();
         </script>
 

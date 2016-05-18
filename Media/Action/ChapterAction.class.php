@@ -63,15 +63,23 @@ class ChapterAction extends CommonAction
                 redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
             }
 
-            // 获取课程章节
-            $chapterInfo = D('Chapter')->getCourseInfo(['class_id' => $classId, 'chapter_id' => $chapterId]);
-
+            //章节列表
             $chapterList = $this->getChapterList($classId);
+
+            $condition = ['class_id' => $classId, 'chapter_id' => $chapterId];
+            // 章节详情
+            $chapterInfo = D('Chapter')->getCourseInfo($condition);
+
+            // 上次播放时间
+            $time = D('ChapterUser')->getCoursesClientTime($condition);
+
 
             $this->assign('ext', 'jpg');
             $this->assign('chapterList', $chapterList);
             $this->assign('chapterId', $chapterId);
+            $this->assign('user_id', $userId);
             $this->assign('info', $chapterInfo);
+            $this->assign('time', ($time) ? $time['time'] : 0);
             $this->display();
 
         } else {
@@ -81,6 +89,40 @@ class ChapterAction extends CommonAction
         
     }
 
+
+    public function updateOp()
+    {
+        ignore_user_abort(true); // 后台运行
+        set_time_limit(0); // 取消脚本运行时间的超时上限
+
+        $classId = I('class_id');
+        $chapterId = I('chapter_id');
+        $userId = I('user_id');
+        $time = I('time');
+
+        $updata = [
+            'class_id' => $classId,
+            'chapter_id' => $chapterId,
+            'user_id'   => $userId,
+            'create_time' => date('Y-m-d H:i:s'),
+            'time' => $time,
+        ];
+
+//        print_r($updata);exit();
+
+
+        try{
+            $id = D('ChapterUser')->data($updata)->add();
+            if (! $id) {
+                throw new \Exception("db not find");
+            } else {
+                echo json_encode(['code'=>1, 'msg'=>'success']);
+            }
+        }catch(\Exception $e){
+            echo json_encode(['code'=>-1, 'msg'=>$e->getMessage()]);
+        }
+
+    }
 
     private function getChapterList($classId)
     {
