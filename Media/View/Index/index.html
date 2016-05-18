@@ -24,7 +24,7 @@
                     </a>
                 </li>
                 <if condition="$class['is_buy']">
-                <li class="qtk"><a href="#">去听课</a></li>
+                    <li class="qtk"><a href="/chapter/classList?class_id=<{$class.class_id}>">去听课</a></li>
                 <else />
                 <li class="qtk lanse"><a href="/class/<{$class.class_id}>.html">立即抢购</a></li>
                 </if>
