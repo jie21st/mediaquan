@@ -76,10 +76,10 @@ class PayService
      */
     public function updateCourseBuy($paySn, $paymentCode, $orderInfo, $tradeNo = '')
     {
-        $orderModel = D('Order');
-        $classModel = new \Common\Model\ClassModel;
+        $orderModel = new \Common\Model\OrderModel;
         try {
             $orderModel->startTrans();
+            
             // 更新支付单信息
             $data = array();
             $data['api_pay_state'] = 1;
@@ -101,6 +101,17 @@ class PayService
             ]);
             if (! $update) {
                 throw new \Exception('更新订单状态失败');
+            }
+            
+            // 记录订单日志
+            $data = array();
+            $data['order_id'] = $orderInfo['order_id'];
+            $data['log_role'] = 'buyer';
+            $data['log_msg'] = '完成了付款 ( 支付平台交易号 : '.$tradeNo.' )';
+            $data['log_orderstate'] = ORDER_STATE_PAY;
+            $insert = $orderModel->addOrderLog($data);
+            if (!$insert) {
+                throw new Exception('记录订单日志出现错误');
             }
 
             // 添加课程用户
