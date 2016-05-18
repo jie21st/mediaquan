@@ -17,7 +17,7 @@ class IndexAction extends CommonAction
      */   
     public function indexOp()
     {
-        $classModel = new ClassModel();
+        $classModel = new \Common\Model\ClassModel();
         $classService = new \Common\Service\ClassService();
         $classList = $classModel->select();
         foreach ($classList as &$class) {
