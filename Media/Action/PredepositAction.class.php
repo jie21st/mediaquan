@@ -170,7 +170,7 @@ class PredepositAction extends CommonAction
      */
     public function cash_okOp()
     {
-        $this->display('cashsuccess');
+        $this->display('cash.success');
     }
     
     /**
