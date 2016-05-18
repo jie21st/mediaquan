@@ -33,7 +33,7 @@
         </div>
         <include file="Public/footer" />
         <div class="bottom-fix">
-            <if condition="<{$class_info.is_buy}>">
+            <if condition="$class_info['is_buy']">
                 <a href="/chapter/classList?class_id=<{$class_info.class_id}>">立即听课</a>
             <else />
                 <a href="/order/<{$class_info.class_id}>">立即报名</a>
