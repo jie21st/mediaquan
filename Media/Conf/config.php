@@ -36,7 +36,7 @@ $config = array(
     
     // 推广用户
     'PREDEPOSIT_SPREAD_USER' => 0,
-    
+    'USER_DEFAULT_PARENT'   => array(10013, 10014),  // 默认推荐人列表
 );
 
 // 加载调试配置文件
