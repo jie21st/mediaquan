@@ -66,7 +66,7 @@ class WechatAction extends CommonAction
                         $parentId = end($defaultParents);
                         \Think\Log::write('关注事件默认parent_id='.$parentId);
                     }
-                    $this->userspread($userInfo, $parentId, 'subscribe');
+                    $this->userspread($userInfo, $parentId);
                     $this->wechat->text("感谢关注")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
                     if (! empty($userInfo)) {
@@ -77,7 +77,16 @@ class WechatAction extends CommonAction
                         ]);
                     }
                 } elseif ($event['event'] == 'SCAN') { // 用户已关注时的事件推送
-                    $this->userspread($userInfo, $event['key'], 'scan');
+                    // 给用户提示一下
+                    $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
+                    if (!empty($recomUserInfo)) {
+                        $msg = array();
+                        $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+                        $msg['msgtype'] = 'text';
+                        $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
+                        $wechatService = new \Common\Service\WechatService;
+                        $wechatService->sendCustomMessage($msg);
+                    }
                 } elseif ($event['event'] == 'CLICK') {
                     if ($event['key'] == 'WECHAT_QRCODE') {
                         $url = C('APP_SITE_URL').'/poster/getPoster';
@@ -134,7 +143,7 @@ class WechatAction extends CommonAction
      * @param type $parentId
      * @return type
      */
-    private function userspread($userInfo, $parentId, $stage = 'scan'){
+    private function userspread($userInfo, $parentId){
 
         $userModel = new \Common\Model\UserModel;
 
@@ -178,17 +187,11 @@ class WechatAction extends CommonAction
             $pdService->changePd('sale_income', $pd_data);
         }
         
-        $content = $userInfo['user_nickname'].'成为了您的粉丝';
         // 通知推荐人
-        if ($stage == 'subscribe') {
-            $content = $userInfo['user_nickname'].'成为了您的粉丝';
-        } else {
-            $content = $userInfo['user_nickname'].'扫描了您分享的二维码';
-        }
         $msg = array();
         $msg['touser'] = $recomUserInfo['user_wechatopenid'];
         $msg['msgtype'] = 'text';
-        $msg['text'] = ['content' => $content];
+        $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
         $wechatService = new \Common\Service\WechatService;
         $wechatService->sendCustomMessage($msg);
     }
