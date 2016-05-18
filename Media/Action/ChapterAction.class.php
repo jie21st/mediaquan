@@ -7,10 +7,11 @@ class ChapterAction extends CommonAction
 
     protected $needAuth = true;
 
-    public function listOp()
+    public function classListOp()
     {
 
         $classId = I('get.class_id', 0, 'intval');
+
         $userId  = session('user_id');
 
         // 取得课程信息
@@ -20,18 +21,21 @@ class ChapterAction extends CommonAction
             showMessage('课程不存在');
         }
 
+
+
         $classService = new \Common\Service\ClassService;
         // 验证用户是否已报名
         $applyed = $classService->checkClassUser($classId, $userId);
 
         if (! $applyed) {
-            //redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
+            redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
         }
 
         // 课程列表
+        $chapterList = $this->getChapterList($classId);
 
-
-        $this->display();
+        $this->assign('list', $chapterList);
+        $this->display('Chapter:list');
     }
 
 
@@ -56,7 +60,7 @@ class ChapterAction extends CommonAction
             $applyed = $classService->checkClassUser($classId, $userId);
 
             if (!$applyed) {
-                //redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
+                redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
             }
 
             // 获取课程章节
@@ -64,15 +68,11 @@ class ChapterAction extends CommonAction
 
             $chapterList = $this->getChapterList($classId);
 
-//            print_r($chapterList);
             $this->assign('ext', 'jpg');
             $this->assign('chapterList', $chapterList);
             $this->assign('chapterId', $chapterId);
             $this->assign('info', $chapterInfo);
             $this->display();
-
-
-
 
         } else {
             showMessage('404');

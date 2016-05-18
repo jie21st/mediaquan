@@ -2,53 +2,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <title>课程章节</title>
     <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
 </head>
 
 <body>
 
-    <div class="jxsctk">
-        <ul>
-            <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
-            <li>
-                <p class="bt">硬邦邦的案列会说话</p>
-                <p class="zj">第一章节</p>
-                <p class="js">智军</p>
-            </li>
-            <li class="anniu"><a href="#">去听课</a></li>
-        </ul>
-    </div>
+    <foreach name="list" item="vo">
+        <div class="jxsctk">
+            <ul>
+                <li class="tp"><img src="UPLOADS_SITE_URL/<{$vo.cover_img_url}>" width="93" height="74" /></li>
+                <li>
+                    <p class="bt"><{$vo.title}></p>
+                    <p class="zj"><{$vo.chapter_title}></p>
+                    <p class="js"><{$vo.teacher_name}></p>
+                </li>
+                <li class="anniu">
+                    <a href="/Chapter/attend?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>">去听课</a>
+                </li>
+            </ul>
+        </div>
+    </foreach>
 
-    <div class="jxsctk">
-        <ul>
-            <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
-            <li>
-                <p class="bt">硬邦邦的案列会说话</p>
-                <p class="zj">第二章节</p>
-                <p class="js">智军</p>
-            </li>
-            <li class="anniu"><a href="#">去听课</a></li>
-        </ul>
-    </div>
+    <include file="Public/footer" />
 
-    <div class="jxsctk">
-        <ul>
-            <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
-            <li>
-                <p class="bt">硬邦邦的案列会说话</p>
-                <p class="zj">第三章节</p>
-                <p class="js">智军</p>
-            </li>
-            <li class="anniu"><a href="#">去听课</a></li>
-        </ul>
-    </div>
-
-    <ul class="footer guding">
-        <li><a href="#">首页</a></li>
-        <li class="margin"><a href="#">会员中心</a></li>
-        <li><a href="#">帮助</a></li>
-    </ul>
+    <!--<ul class="footer guding">-->
+        <!--<li><a href="#">首页</a></li>-->
+        <!--<li class="margin"><a href="#">会员中心</a></li>-->
+        <!--<li><a href="#">帮助</a></li>-->
+    <!--</ul>-->
 </body>
 </html>
