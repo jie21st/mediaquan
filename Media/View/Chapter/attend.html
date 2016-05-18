@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+        <title>听课页面</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/swiper.min.css">
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/style.css"/>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/audioplayer.css"/>
+        <style>
+            html { overflow: hidden; }
+        </style>
+
+        <style>
+            html, body {
+                /*position: relative;*/
+                /*height: 100%;*/
+            }
+            body {
+                /*background: #eee;*/
+                /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
+                /*font-size: 14px;*/
+                /*color:#000;*/
+                /*margin: 0;*/
+                /*padding: 0;*/
+            }
+            .swiper-container {
+                width: 100%;
+                height: 100%;
+            }
+            .swiper-slide {
+                text-align: center;
+                font-size: 18px;
+                background: #fff;
+
+                /* Center slide text vertically */
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: -webkit-flex;
+                display: flex;
+                -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                -webkit-justify-content: center;
+                justify-content: center;
+                -webkit-box-align: center;
+                -ms-flex-align: center;
+                -webkit-align-items: center;
+                align-items: center;
+            }
+
+            /*播放器*/
+            #warp {
+                height: 50px;
+            }
+            .audioplayer {
+                height:100%;
+
+            }
+            .audioplayer-bar {
+                background: #fff;
+            }
+
+            .bar, .audioplayer-bar{
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+            }
+
+            .leftGrip {
+                width: 20px;
+                height: 20px;
+                top: -3px;
+                -webkit-border-radius: 10px;
+                -moz-border-radius: 10px;
+                background: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="swiper-container-header" style="width:100%;height: 233px;">
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+
+                    <for start="1" end="$info.ppt_length" comparison="elt">
+                        <div class="swiper-slide" style="background: #f2f2f2;">
+                            <if condition="$i lt 10 ">
+                                <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}>0<{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
+                                <else />
+                                <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}><{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
+                            </if>
+                            <div class="swiper-lazy-preloader"></div>
+                        </div>
+                    </for>
+                </div>
+            </div>
+        </div>
+
+        <!-- 播放音频的div -->
+        <div class="" id="warp" style="background: #000">
+            <div class="audioplayer">
+                <div class="audioplayer-playpause" title="Play"><a href="#">Play</a></div>
+
+                <div class="audioplayer-time audioplayer-time-current">00:00</div>
+                <div class="audioplayer-bar" style="z-index: 3" data-range_min="0" data-range_max="100" data-cur_min="0" data-cur_max="0">
+                    <div class="bar" sytle="width:0px"></div>
+                    <div class="leftGrip" id='slider' style="width: 20px;height: 20px;top: -3px;left:-10px"></div>
+                </div>
+                <div class="audioplayer-time audioplayer-time-duration">00:00</div>
+            </div>
+        </div>
+
+        <div class="ml">
+            <foreach name="chapterList" item="vo">
+                <p <if condition="$vo.chapter_id eq $chapterId">class="bofang"</if>>
+                    <a href="javascript:void(0)" onclick="window.location.href='?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>'"><{$vo.chapter_title}>：<{$vo.title}>
+                    </a>
+                </p>
+            </foreach>
+        </div>
+
+        <include file="Public/footer" />
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
+
+        <script>
+            var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
+            var media = new Audio;
+            var id, endedId;
+            var audio = {
+                init: function () {
+                    media.src = audioSrc;
+                    // 开始按钮
+                    $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
+                    $('.audioplayer-bar').nstSlider({
+                        "left_grip_selector": ".leftGrip",
+                        "value_bar_selector": ".bar",
+                        "value_changed_callback": function(cause, leftValue, rightValue) {
+                            if (!isNaN(media.duration) && leftValue >= 0) {
+
+                                media.currentTime = Math.round((leftValue / 100) * media.duration);
+                                var currentTime = timeDispose(media.currentTime);
+                                $('.audioplayer-time-current').html(currentTime);
+                                if (!media.paused) {
+                                    media.play();
+                                }
+                            }
+                            leftValues = leftValue;
+                            $(this).find('.bar').css('background', '#0080FF');
+                        }
+                    });
+
+                    // 开始播放
+                    if (!media.autoPlay) {
+                        $('.audioplayer-playpause')[0].click();
+                    };
+
+                },
+                // 开始播放
+                playpauseClick: function (e) {
+                    var player = e.delegateTarget; // 图标
+                    var playpause = e.currentTarget; // 标识
+                    if ($(playpause).attr('title') == 'Pause') {
+                        // 暂停
+                        $(player).removeClass('audioplayer-playing');
+                        $(playpause).attr({'title': 'Play'}).find('a').html('Play');
+                        media.pause();
+                        UnSetTime();
+                    } else {
+                        // 开始
+                        $(player).addClass('audioplayer-playing');
+                        $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
+                        media.play();
+                        SetTime();
+                        aduioEnd();//开启监听
+                    }
+                },
+            }
+            var SetTime = function () {
+                id = setInterval(function () {
+                    var left = $(".audioplayer-bar-gun").css('left');
+                    // console.log(media.duration);
+                    if (!isNaN(media.duration)) {
+                        // 设置时间
+                        duration = timeDispose(Math.round(media.duration));
+
+                        currentTime = timeDispose(Math.round(media.currentTime));
+
+                        $('.audioplayer-time-current').html(currentTime);
+                        $('.audioplayer-time-duration').html(duration);
+
+                        //滑动条
+                        var width = $(".audioplayer-bar").width();
+                        var playedY = parseInt((width / media.duration) * Math.round(media.currentTime, 2));
+
+                        $(".bar").css("width", playedY);
+                        // var gundY = $(".audioplayer-bar-played").width();
+                        $(".leftGrip").css("left", playedY - 10);
+                    }
+                }, 1000);
+            }
+            // 监听
+            var aduioEnd = function () {
+                endedId = setInterval(function () {
+                    // console.log(media.ended);
+                    if (media.ended === true) {
+                        $('.audioplayer-playpause')[0].click();
+                        clearInterval(endedId);
+                    }
+                }, 1000)
+            }
+            var UnSetTime = function () {
+                clearInterval(id);
+                clearInterval(endedId);
+            }
+            // 时间算法
+            var timeDispose = function (number) {
+                var minute = parseInt(number / 60);
+                var second = parseInt(number % 60);
+                minute = minute >= 10 ? minute : "0" + minute;
+                second = second >= 10 ? second : "0" + second;
+                return minute + ":" + second;
+            }
+            //播放进度条的转变事件
+            var DurationProcessRange = function (rangeVal) {
+                // if(NaN )
+//        console.log(media.duration)
+                if (!isNaN(media.duration)){
+
+                    media.currentTime = rangeVal * media.duration / 100;
+                    var currentTime = timeDispose(media.currentTime);
+                    $('.audioplayer-time-current').html(currentTime);
+                    if (!media.paused) {
+                        media.play();
+                    }
+                }
+
+            }
+            audio.init();
+        </script>
+
+
+        <!-- Initialize Swiper -->
+        <script>
+            $(function(){
+                var leftValues = 0;
+                var swiper = new Swiper('.swiper-container', {
+//                    effect : 'coverflow',
+                    lazyLoading: true,
+                    lazyLoadingInPrevNext : true,
+                    lazyLoadingInPrevNextAmount : 1,
+                    onInit: function(swiper){
+                        orientationChange();
+                    }
+                });
+
+                $(window).on('orientationchange', function(){
+                    orientationChange();
+                });
+                $(window).resize(function(){
+                    orientationChange();
+                })
+
+            })
+
+            function orientationChange(){
+                var warpHeight = $('#warp').height();
+                var width = $(window).width(),
+                        height = $(window).height();
+
+                if(width > height) {
+                    $('.swiper-container-header').css({'height':height - warpHeight});
+                    $('img').css({'width':'auto', 'height':100 + '%'});
+                } else if(width < height) {
+                    $('img').css({'width':100 + '%', 'height':'auto'});
+                    $('.swiper-container-header').css({'height':233});
+                }
+
+            }
+        </script>
+
+
+    </body>
+</html>
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+    <!--<meta charset="utf-8">-->
+    <!--<title>Swiper demo</title>-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">-->
+
+    <!--&lt;!&ndash; Link Swiper's CSS &ndash;&gt;-->
+    <!--<link rel="stylesheet" href="RESOURCE_SITE_URL/css/swiper.min.css">-->
+
+    <!--&lt;!&ndash; Demo styles &ndash;&gt;-->
+
+<!--</head>-->
+<!--<body>-->
+<!--&lt;!&ndash; Swiper &ndash;&gt;-->
+<!--<div class="swiper-container">-->
+    <!--<div class="swiper-wrapper">-->
+        <!--<div class="swiper-slide">Slide 1</div>-->
+        <!--<div class="swiper-slide">Slide 2</div>-->
+        <!--<div class="swiper-slide">Slide 3</div>-->
+        <!--<div class="swiper-slide">Slide 4</div>-->
+        <!--<div class="swiper-slide">Slide 5</div>-->
+        <!--<div class="swiper-slide">Slide 6</div>-->
+        <!--<div class="swiper-slide">Slide 7</div>-->
+        <!--<div class="swiper-slide">Slide 8</div>-->
+        <!--<div class="swiper-slide">Slide 9</div>-->
+        <!--<div class="swiper-slide">Slide 10</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash; Add Pagination &ndash;&gt;-->
+    <!--<div class="swiper-pagination"></div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Swiper JS &ndash;&gt;-->
+<!--&lt;!&ndash;<script src="http://www.swiper.com.cn/dist/js/swiper.min.js"></script>&ndash;&gt;-->
+<!--<script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>-->
+<!--&lt;!&ndash; Initialize Swiper &ndash;&gt;-->
+<!--<script>-->
+    <!--var swiper = new Swiper('.swiper-container');-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
