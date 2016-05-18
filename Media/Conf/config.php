@@ -16,6 +16,7 @@ $config = array(
     'URL_ROUTER_ON'     => true,
     'URL_ROUTE_RULES'   => array(
         // 课程
+        'class/:class_id/:chapter_id'  => 'chapter/attend?class_id=:1&chapter_id=:2',
         'class/:id\d'       => 'class/detail',
         // 订单
         'order/:id\d'       => 'class/buy',
