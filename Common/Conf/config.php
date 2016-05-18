@@ -66,4 +66,5 @@ return array(
     
     // 其他配置
     'DEFAULT_USER_AVATAR' => 'personImg.jpg',  // 默认头像
+    'ORDER_EXPIRE'      => 7200,    // 订单有效时间
 );

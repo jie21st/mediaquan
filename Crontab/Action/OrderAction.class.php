@@ -21,7 +21,7 @@ class OrderAction extends \Think\Action
         $orderModel = new \Common\Model\OrderModel();
         $condition = array();
         $condition['order_state'] = ORDER_STATE_NEW;
-        $condition['create_time'] = ['gt', time() - 7200];
+        $condition['expire_time'] = ['lt', time()];
         
         $orderList = $orderModel->where($condition)->select();
         echo $orderModel->_sql();

@@ -81,6 +81,7 @@ class ClassService
             'class_price'   => $input['class_price'],
             'class_teacher' => $input['class_teacher'],
             'order_amount'  => $input['class_price'],
+            'expire_time'   => (time() + C('ORDER_EXPIRE')),
             'payment_code'  => '',
             'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
 //            'from_seller'   => $input['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
