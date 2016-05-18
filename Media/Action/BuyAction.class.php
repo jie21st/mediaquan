@@ -59,6 +59,7 @@ class BuyAction extends CommonAction
         if (empty($orderInfo)) {
             showMessage('支付单信息不存在');
         }
+        $this->assign('order_info', $orderInfo);
         
         // 跳转到电子听课证
         if ($orderInfo['order_state'] == ORDER_STATE_PAY) {
@@ -66,35 +67,5 @@ class BuyAction extends CommonAction
         } else {
             echo '正在验证订单支付状态，稍后请手动刷新页面';
         }
-    }
-    
-    /**
-     * 预存款充值支付
-     */
-    public function pd_payOp()
-    {
-        $paySn	= I('get.pay_sn'); //$_GET['pay_sn'];
-        if (! preg_match('/^\d{15}$/',$paySn)){
-            showMessage('参数错误');
-        }
-        // 查询支付单信息
-        $orderModel= new \Common\Model\PredepositModel();
-        $pdrInfo = $orderModel->getPdRechargeInfo(['pdr_sn' => $paySn, 'pdr_user_id' => session('user.user_id')]);
-        if(empty($pdrInfo)){
-            showMessage('参数错误');
-        }
-        if (intval($pdrInfo['pdr_payment_state'])) {
-            showMessage('您的订单已经支付，请勿重复支付');
-        }
-        $this->assign('pdr_info', $pdrInfo);
-        $this->display();
-    }
-    
-    /**
-     * 充值成功页面
-     */
-    public function pd_okOp()
-    {
-        $this->display();
     }
 }
