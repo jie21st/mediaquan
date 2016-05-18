@@ -20,9 +20,10 @@
                     </li>
                     <li class="jiage">￥<{$order.order_amount|glzh_price_format}></li>
                 </ul>
+                <if condition="$order['if_pay'] or $order['if_cancel'] or $order['if_learn']">
                 <p class="caoz">
-                    <if condition="!empty($order['pay_amount'])">
-                        <a href="<{$Think.config.APP_SITE_URL}>/buy/course_buy?order_sn=<{$order.order_sn}>" class="fk">去付款</a>
+                    <if condition="$order['if_pay']">
+                        <a href="<{$Think.config.APP_SITE_URL}>/buy/course_buy?order_sn=<{$order.order_sn}>" class="fk js-btn-pay">去付款</a>
                     </if>
                     <if condition="$order['if_cancel']">
                     <a href="javascript:void(0)" class="qx js-btn-cancal">取消订单</a>
@@ -31,6 +32,7 @@
                         <a href="<{$Think.config.APP_SITE_URL}>/class/<{$order.class_id}>/" class="tk">去听课</a>
                     </if>
                 </p>
+                </if>
             </div>
         </volist>
         <else/>
@@ -68,9 +70,44 @@
         <include file="Public/footer" />
         -->
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+        <script src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
         <script>
             $('.js-btn-cancal').on('click', function(e){
                 var t = $(this);
+                var tr = t.closest('.jxsctk');
+                var orderid = tr.data('id');
+                
+                
+                layer.open({
+                    style: 'width:220px;',
+                    content: '你确定要取消该订单吗？',
+                    btn: ['确认', '取消'],
+                    shadeClose: false,
+                    yes: function(){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/order/cancel',
+                            data: {order_id: orderid},
+                            dataType: 'json',
+                            success: function (res) {
+                                if(res.code == 1) {
+                                    layer.open({
+                                        style: 'width:220px',
+                                        time: 1,
+                                        content: '取消成功'
+                                    });
+                                    tr.find('.caoz').remove();
+                                } else {
+                                    layer.open({
+                                        style: 'width:220px',
+                                        time: 1,
+                                        content: '取消失败',
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
             })
         </script>
     </body>

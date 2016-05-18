@@ -41,10 +41,9 @@ class MyAction extends \Media\Action\CommonAction
             //显示去听课
             $order['if_learn'] = $orderService->getOrderOperateState('learn', $order);
             
-            //如果有在线支付且未付款的订单则显示合并付款链接
-            if ($order['order_state'] == ORDER_STATE_NEW) {
-                $order['pay_amount'] = $order['order_amount'];
-            }
+            //显示支付
+            $order['if_pay'] = $orderService->getOrderOperateState('pay', $order);
+            
         }
         
         $this->assign('order_list', $orderList);
