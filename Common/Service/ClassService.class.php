@@ -75,14 +75,13 @@ class ClassService
         $order = [
             'buyer_id'      => $userId,
             'order_sn'      => $orderSn,
-            'agency_id'     => $input['agency_id'],
-            'agency_name'   => $input['agency_name'],
             'class_id'      => $input['class_id'],
             'class_title'   => $input['class_title'],
             'class_image'   => $input['class_image'],
             'class_price'   => $input['class_price'],
+            'class_teacher' => $input['class_teacher'],
             'order_amount'  => $input['class_price'],
-            'payment_code'  => 'online',
+            'payment_code'  => '',
             'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
 //            'from_seller'   => $input['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
         ];
