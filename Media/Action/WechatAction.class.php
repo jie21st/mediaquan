@@ -32,6 +32,7 @@ class WechatAction extends CommonAction
     {
         $this->wechat->valid();
         $type = $this->wechat->getRev()->getRevType();
+        \Think\Log::write('事件名称：'.$type);
         switch($type) {
             case Wechat::MSGTYPE_TEXT:
                 $this->wechat->text("hello")->reply();
@@ -42,11 +43,12 @@ class WechatAction extends CommonAction
                 $openId = $this->wechat->getRev()->getRevFrom();
                 $userModel = new \Common\Model\UserModel;
                 $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
-                if (empty($userInfo)) {
-                    $userInfo = $this->registerOp($openId);
-                }
                     
+                \Think\Log::write('事件类型和key：'.json_encode($event));
                 if ($event['event'] == 'subscribe') {
+                    if (empty($userInfo)) {
+                        $userInfo = $this->registerOp($openId);
+                    }
                     // 修改为已关注状态
                     $userModel->editUser([
                         'subscribe_state' => 1,
@@ -55,14 +57,16 @@ class WechatAction extends CommonAction
                     ]);
 
                     // 用户未关注时，进行关注后的事件推送
-                    if (! empty($event['key'])) {
-                        \Think\Log::write('关注事件存在key'.$event['key']);
-                        $scene_id = substr($event['key'], 8);
-                        
-                        $this->userspread($userInfo, substr($event['key'], 8), 'subscribe');
+                    if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
+                        $parentId = substr($event['key'], 8);
+                        \Think\Log::write('关注事件自带parent_id='.$parentId);
                     } else {
-                        $this->userspread($userInfo, array_rand(C('USER_DEFAULT_PARENT')), 'subscribe');
+                        $defaultParents = C('USER_DEFAULT_PARENT');
+                        shuffle($defaultParents);
+                        $parentId = end($defaultParents);
+                        \Think\Log::write('关注事件默认parent_id='.$parentId);
                     }
+                    $this->userspread($userInfo, $parentId, 'subscribe');
                     $this->wechat->text("感谢关注")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
                     if (! empty($userInfo)) {
@@ -72,7 +76,7 @@ class WechatAction extends CommonAction
                             'user_id' => $userInfo['user_id'],
                         ]);
                     }
-                } elseif ($event['event'] == 'SCAN') {
+                } elseif ($event['event'] == 'SCAN') { // 用户已关注时的事件推送
                     $this->userspread($userInfo, $event['key'], 'scan');
                 } elseif ($event['event'] == 'CLICK') {
                     if ($event['key'] == 'WECHAT_QRCODE') {
@@ -131,7 +135,9 @@ class WechatAction extends CommonAction
      * @return type
      */
     private function userspread($userInfo, $parentId, $stage = 'scan'){
+
         $userModel = new \Common\Model\UserModel;
+
         if ($userInfo['user_id'] == $parentId) {
             Log::write('推荐人扫描自己的二维码');
             return;
@@ -172,6 +178,7 @@ class WechatAction extends CommonAction
             $pdService->changePd('sale_income', $pd_data);
         }
         
+        $content = $userInfo['user_nickname'].'成为了您的粉丝';
         // 通知推荐人
         if ($stage == 'subscribe') {
             $content = $userInfo['user_nickname'].'成为了您的粉丝';
