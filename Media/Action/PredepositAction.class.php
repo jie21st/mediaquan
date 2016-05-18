@@ -121,47 +121,47 @@ class PredepositAction extends CommonAction
             
             try {
                 $pdModel->startTrans();
-                $pdcSn = $pdService->makeSn();
                 
-                $data = array();
-                $data['pdc_sn'] = $pdcSn;
-                $data['pdc_user_id'] = session('user_id');
-                $data['pdc_user_name'] = $pdcUserName;
-                $data['pdc_amount'] = $pdcAmount;
-                $data['pdc_create_time'] = time();
-                $data['pdc_payment_state'] = 0;
-                $insert = $pdModel->addPdCash($data);
-                if (! $insert) {
+                // 生成提现单
+                $pdcSn = $pdService->makeSn();
+                $cash_data = array();
+                $cash_data['pdc_sn'] = $pdcSn;
+                $cash_data['pdc_user_id'] = session('user_id');
+                $cash_data['pdc_user_name'] = $pdcUserName;
+                $cash_data['pdc_amount'] = $pdcAmount;
+                $cash_data['pdc_create_time'] = time();
+                $cash_data['pdc_payment_state'] = 1;
+                $pdcId = $pdModel->addPdCash($cash_data);
+                if (! $pdcId) {
                     throw new \Exception('提现申请添加失败');
                 }
-                //冻结可用预存款
+                $cash_data['pdc_id'] = $pdcId;
+                
+                // 扣除预存款
                 $data = array();
                 $data['user_id'] = session('user_id');
                 $data['amount'] = $pdcAmount;
                 $data['order_sn'] = $pdcSn;
-                $pdService->changePd('cash_apply',$data);
+                $pdService->changePd('cash', $data);
+                
+                // 支付提现
+                $pdService->cashPay($cash_data);
+                
+                // 提交事务
                 $pdModel->commit();
                 
-                // 内部消息通知
-//                $tplmsgService = new \Common\Service\TemplateMessageService;
-//                $tplmsgService->notify('500001005010010', '', 3, [
-//                    'name' => $userInfo['user_name'],
-//                    'amount' => glzh_price_format($pdcAmount),
-//                    'time' => date('Y-m-d H:i:s'),
-//                ]);
-                
-                // 显示成功页面
-                $this->display('cash.success');
+                $this->returnJson(1, 'SUCCESS');
             } catch (\Exception $e) {
                 $pdModel->rollback();
-                exit($e->getMessage());
+                \Think\Log::write('提现失败: '.$e->getMessage());
+                $this->returnJson(0, '提现失败');
             }
         } else {
             // 可提现金额    最大上限 - 已申请提现总额
             $avCashAmount = self::CASH_MAX_LIMIT - floatval($totalAmount);
             $this->assign('amount_limit', min([$avCashAmount, floatval($userInfo['available_predeposit'])]));
             $this->assign('user_info', $userInfo);
-            $this->display('cash.apply');
+            $this->display();
         }
     }
     

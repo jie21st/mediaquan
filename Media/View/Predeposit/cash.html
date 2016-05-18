@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/layer.css" />
     </head>
     <body>
         <div class="zd-top zd-top2">
@@ -16,14 +17,14 @@
         </div>
 
         <p class="zdbt">账单明细</p>
-        <form id="field" action="__SELF__" method="post">
+        <form id="field">
         <div class="ml">
             <p class="xm">提现账户:<span><input type="text" name="pdc_user_name" value="" placeholder="微信实名认证姓名" /></span></p>
             <p class="sjh">提现金额:<span><input type="number" name="pdc_amount" placeholder="本次最多提现<{$amount_limit|number_format=2}>元" data-max-amount="<{$amount_limit}>" /></span></p>
             <p class="ts">提现金额将自动存入微信零钱中</p>
         </div>
         </form>
-        <a href="#" class="qr btn-next">确认</a>
+        <a href="javascript:;" class="qr btn-next">确认</a>
 
         <ul class="footer guding">
             <li><a href="#">首页</a></li>
@@ -47,12 +48,13 @@
             }
         </script>
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+        <script src="RESOURCE_SITE_URL/mobile/js/layer.js"></script>
         <script>
             $(document).ready(function () {
                 $('input[name=pdc_amount]').val('');
                 $('.btn-next').click(function () {
+                    var t = $(this);
                     try {
-                        var t = $(this);
                         if (t.is('.disabled')) {
                             return false;
                         } else {
@@ -67,9 +69,27 @@
 
                     } catch (e) {
                         alert('页面错误');
+                        return false;
                     }
-                    console.log(params);
-                    $('#field').submit();
+                    
+                    $.ajax({
+                        type: 'POST',
+                        url: '/predeposit/cash',
+                        data: params,
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.code == 1) {
+                                window.location.replace('/predeposit/cash_ok.html');
+                            } else {
+                                layer.open({
+                                    content: '提现失败，请稍后重试！',
+                                    btn: ['确认']
+                                });
+                                t.removeClass('disabled');
+                                return false;
+                            }
+                        }
+                    })
                 });
             })
 
@@ -77,23 +97,35 @@
             {
 
                 if ($.trim(o.pdc_user_name) === '') {
-                    alert('请输入真实姓名');
+                    layer.open({
+                        content: '请输入真实姓名',
+                        btn: ['确认']
+                    });
                     return false;
                 }
 
                 if ($.trim(o.pdc_amount) === '') {
-                    alert('请输入提现金额');
+                    layer.open({
+                        content: '请输入提现金额',
+                        btn: ['确认']
+                    });
                     return false;
                 }
                 /* 金额计算 */
                 var avAmount = ($('input[name=pdc_amount]').data('max-amount') - 0).toFixed(2) - 0;
                 var pdc_amount = parseFloat(o.pdc_amount);
                 if (pdc_amount < 1) {
-                    alert('提现金额不能少于1元');
+                    layer.open({
+                        content: '提现金额不能少于1元',
+                        btn: ['确认']
+                    });
                     return false;
                 }
                 if (pdc_amount > avAmount) {
-                    alert('提现金额超限');
+                    layer.open({
+                        content: '提现金额超限',
+                        btn: ['确认']
+                    });
                     return false;
                 }
                 return true;
