@@ -18,16 +18,15 @@ class IndexAction extends CommonAction
     public function indexOp()
     {
         $classModel = new \Common\Model\ClassModel();
+        $chapterModel = new \Common\Model\ChapterModel;
         $classService = new \Common\Service\ClassService();
         $classList = $classModel->select();
-        foreach ($classList as &$class) {
+        foreach ($classList as &$classInfo) {
             // 课程是否已购买
-            $class['is_buy'] = $classService->checkClassUser($class['class_id'], session('user_id'));
+            $classInfo['is_buy'] = $classService->checkClassUser($classInfo['class_id'], session('user_id'));
             
             // 课程章节数
-            $class['chapter_num'] = rand(1, 99);
-            
-            // 课程播放链接
+            $classInfo['chapter_num'] = $chapterModel->getCourseCount(['class_id' => $classInfo['class_id']]);
         }
         $this->assign('class_list', $classList);
         $this->display();

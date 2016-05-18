@@ -38,6 +38,17 @@ class ChapterModel extends CommonModel
     {
         return $this->field($field)->where($condition)->order('chapter_id asc')->select();
     }
+    
+    /**
+     * 取得章节数量
+     * 
+     * @param type $condition
+     * @return type
+     */
+    public function getCourseCount($condition)
+    {
+        return $this->where($condition)->count();
+    }
 
     /**
      * 判断课程是否可用 
