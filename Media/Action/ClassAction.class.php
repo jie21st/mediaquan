@@ -31,27 +31,6 @@ class ClassAction extends CommonAction
     }
     
     /**
-     * 课程列表
-     */   
-    public function indexOp()
-    {
-        $classModel = new ClassModel();
-        $classService = new \Common\Service\ClassService();
-        $classList = $classModel->select();
-        foreach ($classList as &$class) {
-            // 课程是否已购买
-            $class['is_buy'] = $classService->checkClassUser($class['class_id'], session('user_id'));
-            
-            // 课程章节数
-            $class['chapter_num'] = rand(1, 99);
-            
-            // 课程播放链接
-        }
-        $this->assign('class_list', $classList);
-        $this->display();
-    }
-    
-    /**
      * 课程详情
      */
     public function detailOp()
