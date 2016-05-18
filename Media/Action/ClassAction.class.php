@@ -45,6 +45,10 @@ class ClassAction extends CommonAction
             showMessage('课程不存在');
         }
         
+        // 获取课程章节列表
+        $chapterModel = new \Common\Model\ChapterModel();
+        $classInfo['chapter_list'] = $chapterModel->getCourseList(['class_id' => $classId]);
+        
         $this->assign('class_info', $classInfo);
         $this->display();
     }

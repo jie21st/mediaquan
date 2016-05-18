@@ -26,10 +26,9 @@
 
         <div class="con">
             <p>课程目录：<br />
-                <span>第一章节：最实用的互谅网运营思维</span><br />
-                <span>第二章节：最实用的互谅网运营思维</span><br />
-                <span>第三章节：最实用的互谅网运营思维</span><br />
-                <span>第四章节：最实用的互谅网运营思维</span>
+                <volist name="class_info.chapter_list" id="vo">
+                    <span><a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html"><{$vo.chapter_title}></a></span><br />
+                </volist>
             </p>
         </div>
         <include file="Public/footer" />
