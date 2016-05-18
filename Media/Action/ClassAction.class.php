@@ -47,7 +47,7 @@ class ClassAction extends CommonAction
         
         // 是否已购买
         $classService = new \Common\Service\ClassService();
-        $class['is_buy'] = $classService->checkClassUser($class['class_id'], session('user_id'));
+        $classInfo['is_buy'] = $classService->checkClassUser($class['class_id'], session('user_id'));
         
         // 获取课程章节列表
         $chapterModel = new \Common\Model\ChapterModel();
