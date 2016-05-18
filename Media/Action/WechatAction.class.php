@@ -144,54 +144,55 @@ class WechatAction extends CommonAction
      * @return type
      */
     private function userspread($userInfo, $parentId){
+        try {
+            $userModel = new \Common\Model\UserModel;
 
-        $userModel = new \Common\Model\UserModel;
+            if ($userInfo['user_id'] == $parentId) {
+                throw new \Exception('推荐人扫描自己的二维码');
+            }
 
-        if ($userInfo['user_id'] == $parentId) {
-            Log::write('推荐人扫描自己的二维码');
-            return;
+            $recomUserInfo = $userModel->getUserInfo(['user_id' => $parentId]);
+            if (empty($recomUserInfo)) {
+                throw new \Exception('推荐人用户信息不存在');
+            }
+
+            if (intval($userInfo['parent_id'])) {
+                throw new \Exception('该用户已存在推荐人');
+            }
+
+            if ($userInfo['user_id'] == $recomUserInfo['parent_id']) {
+                throw new \Exception('该用户是当前推荐人的推荐人');
+            }
+
+            // 绑定关系
+            $update = array();
+            $update['parent_id'] = $recomUserInfo['user_id'];
+            $userModel->editUser([
+                'parent_id' => $recomUserInfo['user_id']
+            ], [
+                'user_id' => $userInfo['user_id']
+            ]);
+
+            // 奖励推荐人
+            if (C('PREDEPOSIT_SPREAD_USER')) {
+                $pdService = new \Common\Service\PredepositService;
+                $pd_data = array();
+                $pd_data['user_id'] = $recomUserInfo['user_id'];
+                $pd_data['amount'] = C('PREDEPOSIT_SPREAD_USER');
+                $pd_data['name'] = '发展用户'.$userInfo['user_nickname'];
+                $pdService->changePd('sale_income', $pd_data);
+            }
+        
+            $msgcontent = $userInfo['user_nickname'].'成为了您的粉丝';
+        } catch (\Exception $e) {
+            $msgcontent = $userInfo['user_nickname'].'扫描了您分享的二维码';
+            \Think\Log::write('推广用户失败: '.$e->getMessage());
         }
-        
-        $recomUserInfo = $userModel->getUserInfo(['user_id' => $parentId]);
-        if (empty($recomUserInfo)) {
-            Log::write('推荐人用户信息不存在');
-            return;
-        }
-        
-        if (intval($userInfo['parent_id'])) {
-            Log::write('该用户已存在推荐人');
-            return;
-        }
-        
-        if ($userInfo['user_id'] == $recomUserInfo['parent_id']) {
-            Log::write('该用户是当前推荐人的推荐人');
-            return;
-        }
-        
-        // 绑定关系
-        $update = array();
-        $update['parent_id'] = $recomUserInfo['user_id'];
-        $userModel->editUser([
-            'parent_id' => $recomUserInfo['user_id']
-        ], [
-            'user_id' => $userInfo['user_id']
-        ]);
-        
-        // 奖励推荐人
-        if (C('PREDEPOSIT_SPREAD_USER')) {
-            $pdService = new \Common\Service\PredepositService;
-            $pd_data = array();
-            $pd_data['user_id'] = $recomUserInfo['user_id'];
-            $pd_data['amount'] = C('PREDEPOSIT_SPREAD_USER');
-            $pd_data['name'] = '发展用户'.$userInfo['user_nickname'];
-            $pdService->changePd('sale_income', $pd_data);
-        }
-        
         // 通知推荐人
         $msg = array();
         $msg['touser'] = $recomUserInfo['user_wechatopenid'];
         $msg['msgtype'] = 'text';
-        $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
+        $msg['text'] = ['content' => $msgcontent];
         $wechatService = new \Common\Service\WechatService;
         $wechatService->sendCustomMessage($msg);
     }
