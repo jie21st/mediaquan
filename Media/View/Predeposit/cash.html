@@ -82,6 +82,7 @@
                                 window.location.replace('/predeposit/cash_ok.html');
                             } else {
                                 layer.open({
+                                    style: 'width:220px;',
                                     content: '提现失败，请稍后重试！',
                                     btn: ['确认']
                                 });
@@ -98,6 +99,7 @@
 
                 if ($.trim(o.pdc_user_name) === '') {
                     layer.open({
+                        style: 'width:220px;',
                         content: '请输入真实姓名',
                         btn: ['确认']
                     });
@@ -106,6 +108,7 @@
 
                 if ($.trim(o.pdc_amount) === '') {
                     layer.open({
+                        style: 'width:220px;',
                         content: '请输入提现金额',
                         btn: ['确认']
                     });
@@ -116,6 +119,7 @@
                 var pdc_amount = parseFloat(o.pdc_amount);
                 if (pdc_amount < 1) {
                     layer.open({
+                        style: 'width:220px;',
                         content: '提现金额不能少于1元',
                         btn: ['确认']
                     });
@@ -123,6 +127,7 @@
                 }
                 if (pdc_amount > avAmount) {
                     layer.open({
+                        style: 'width:220px;',
                         content: '提现金额超限',
                         btn: ['确认']
                     });
