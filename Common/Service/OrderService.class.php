@@ -14,6 +14,10 @@ class OrderService
     {
         if (!is_array($orderInfo) || empty($orderInfo)) return false;
         switch ($operate) {
+            // 支付
+            case 'pay':
+                $state = ($orderInfo['order_state'] == ORDER_STATE_NEW);
+                break;
             // 买家取消订单
             case 'buyer_cancel':
                 $state = ($orderInfo['order_state'] == ORDER_STATE_NEW);
