@@ -37,39 +37,6 @@ class PredepositService
                 $data_log['lg_desc'] = '下单，支付预存款，订单号: '.$data['order_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
                 break;
-            case 'reward':
-                $data_log['lg_name'] = $data['name'] ? : '打赏';
-                $data_log['lg_av_amount'] = -$data['amount'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
-                $data_log['lg_desc'] = '打赏，打赏单号: '.$data['order_sn'];
-                $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
-                break;
-            case 'reward_income':
-                $data_log['lg_name'] = $data['name'] ? : '打赏收益';
-                $data_log['lg_av_amount'] = $data['amount'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
-                $data_log['lg_desc'] = '打赏收益，打赏单号: '.$data['order_sn'];
-                $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
-                break;
-//            case 'order_freeze':
-//                $data_log['lg_av_amount'] = -$data['amount'];
-//                $data_log['lg_freeze_amount'] = $data['amount'];
-//                $data_log['lg_desc'] = '下单，冻结预存款，订单号: '.$data['order_sn'];
-//                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit+'.$data['amount']);
-//                $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
-//                break;
-//            case 'order_cancel':
-//                $data_log['lg_av_amount'] = $data['amount'];
-//                $data_log['lg_freeze_amount'] = -$data['amount'];
-//                $data_log['lg_desc'] = '取消订单，解冻预存款，订单号: '.$data['order_sn'];
-//                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit-'.$data['amount']);
-//                $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
-//                break;
-//            case 'order_comb_pay':
-//                $data_log['lg_freeze_amount'] = -$data['amount'];
-//                $data_log['lg_desc'] = '下单，支付被冻结的预存款，订单号: '.$data['order_sn'];
-//                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit-'.$data['amount']);
-//                break;
             case 'recharge':
                 $data_log['lg_name'] = '充值';
                 $data_log['lg_av_amount'] = $data['amount'];
@@ -85,46 +52,13 @@ class PredepositService
                 $data_log['lg_trade_no'] = $data['order_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
                 break;
-//            case 'refund':
-//                $data_log['lg_av_amount'] = $data['amount'];
-//                $data_log['lg_desc'] = '确认退款，订单号: '.$data['order_sn'];
-//                $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
-//                break;
-            case 'cash_apply':
+    	    case 'cash':
                 $data_log['lg_name'] = '提现';
-                $data_log['lg_av_amount'] = -$data['amount'];
-                $data_log['lg_freeze_amount'] = $data['amount'];
-                $data_log['lg_desc'] = '申请提现，冻结预存款，提现单号: '.$data['order_sn'];
+    	        $data_log['lg_av_amount'] = -$data['amount'];
+    	        $data_log['lg_desc'] = '提现，提现单号: '.$data['order_sn'];
                 $data_log['lg_trade_no'] = $data['order_sn'];
-                $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
-                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit+'.$data['amount']);
-                break;
-    	    case 'cash_pay':
-                $data_log['lg_name'] = '提现成功';
-    	        $data_log['lg_freeze_amount'] = -$data['amount'];
-    	        $data_log['lg_desc'] = '提现成功，提现单号: '.$data['order_sn'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
-    	        //$data_log['lg_admin_name'] = $data['admin_name'];
-    	        $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit-'.$data['amount']);
+    	        $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
     	        break;
-            case 'cash_fail':
-                $data_log['lg_name'] = '提现退回';
-                $data_log['lg_av_amount'] = $data['amount'];
-                $data_log['lg_freeze_amount'] = -$data['amount'];
-                $data_log['lg_desc'] = '提现失败，解冻预存款，提现单号: '.$data['order_sn'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
-                $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
-                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit-'.$data['amount']);
-                break;
-            case 'cash_del':
-                $data_log['lg_name'] = '提现取消';
-                $data_log['lg_av_amount'] = $data['amount'];
-                $data_log['lg_freeze_amount'] = -$data['amount'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
-                $data_log['lg_desc'] = '取消提现申请，解冻预存款，提现单号: '.$data['order_sn'];
-                $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
-                $data_pd['freeze_predeposit'] = array('exp','freeze_predeposit-'.$data['amount']);
-                break;
             default:
                 throw new \Exception('参数错误');
         }
@@ -194,5 +128,49 @@ class PredepositService
         
         return $pdModel->getPdLogAmountSum($condition, 'lg_av_amount');
     }
+    
+    /**
+     * 提现支付
+     * 
+     * @param type $cashInfo
+     * @throws \Exception
+     */
+    public function cashPay($cashInfo)
+    {
+        vendor("Payment.Wxpay.WxPayPubHelper");
+        
+        $pdModel = new \Common\Model\PredepositModel();
+        $userModel = new \Common\Model\UserModel();
+        
+        /* 取得用户信息 */
+        $userInfo = $userModel->getUserInfo(['user_id' => $cashInfo['pdc_user_id']]);
+        
+        $partner_trade_no = (string) $cashInfo['pdc_sn'];
+        /* 企业付款金额，以分为单位 */
+        $amount = floatval($cashInfo['pdc_amount']) * 100;
+        
+        $mchPay = new \Mch_pay_pub();
+        $mchPay->setParameter("openid", $userInfo['user_wechatopenid']);
+        $mchPay->setParameter("partner_trade_no", $partner_trade_no);
+        $mchPay->setParameter("check_name", "OPTION_CHECK");
+        $mchPay->setParameter("re_user_name", $cashInfo['pdc_user_name']);
+        $mchPay->setParameter("amount", "{$amount}");
+        $mchPay->setParameter("desc", "提现");
+        $result = $mchPay->request();
+        
+        // 记录结果日志
+        \Think\Log::write('提现支付返回结果: '.  json_encode($result), \Think\Log::INFO);
+
+        if ($result['return_code'] === 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+            // 更改提现为支付状态
+            $update = $pdModel->editPdCash(['pdc_trade_no' => $result['payment_no']], ['pdc_sn' => $cashInfo['pdc_sn']]);
+            if (!$update) {
+                \Think\Log::write('提现: 提现支付成功但更新tradeno失败, tradeno='. $result['payment_no']);
+            }
+            return true;
+        } else {
+            throw new \Exception('提现支付失败: '.$result['err_code']);
+        }
+    }  
 }
 
