@@ -9,10 +9,13 @@ use Common\Service\WechatService as Wechat;
 
 class PosterService
 {
-    public function getPoster($userInfo)
+    public function getPoster($userInfo, $wechatTime, $times)
     {
         // 用户头像地址
         $this->uid = $userInfo['user_id'];
+        $this->wechatTime = $wechatTime;
+        $this->times = $times;
+
         $this->_setUserImageSrc($userInfo['user_avatar']);
         if(false === $this->_getWechatRQCode()) return false;
         $this->_setConfig();
@@ -39,7 +42,7 @@ class PosterService
     private function _getWechatRQCode($type = 'QR_SCENE')
     {
         $wechat = new Wechat;
-        $url = $wechat->getQRUrl($this->uid, $type, C('POSTER_TIME'));
+        $url = $wechat->getQRUrl($this->uid, $type, $this->wechatTime);
         if (false === $url) {
             return false;
         }
@@ -56,7 +59,7 @@ class PosterService
         $fontPath = DIR_RESOURCE . DS . ATTACH_POSTER .'/Font/SourceHanSansK-Medium.ttf';
         $dst = DIR_RESOURCE . DS .ATTACH_POSTER . DS . 'poster.jpg';
         $savePath = DIR_UPLOAD . DS .ATTACH_POSTER . DS;
-        $today = date('m月d日', time()+C('POSTER_TIME'));
+        $today = date('m月d日', $this->times + $this->wechatTime);
 
         $config = array(
             'dst'       =>  $dst,           // 模板地址(目标图)
@@ -109,8 +112,7 @@ class PosterService
         $images->start();
         return array(
             'pathInfo' => $images->pathInfo,
-            'pathName' => $images->pathName,
-            'time'     => time()
+            'pathName' => $images->pathName
         );
     }
 }

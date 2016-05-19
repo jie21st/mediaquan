@@ -18,6 +18,8 @@ class PosterAction extends CommonAction
         $uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
         $posterInfo = $this->getUserPosterInfo($uid);
+
+
         if(time() > $posterInfo['poster_end_time']) {
             //制作海报
             $imageSrc   = $this->_getImageInfo($userInfo);
@@ -28,7 +30,6 @@ class PosterAction extends CommonAction
             $imageSrc['poster_id']  = $posterInfo['id'];
             $imageSrc['pathName']   = $posterInfo['poster_images_name'];
             $imageSrc['poster_end_time']  = $posterInfo['poster_end_time'];
-
             //微信上传
             $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
         } else {
@@ -66,7 +67,16 @@ class PosterAction extends CommonAction
     private function _getImageInfo($userInfo)
     {
         $poster = D('Poster', 'Service');
-        $imageSrc = $poster->getPoster($userInfo);
+
+        //　计算海报，二维码时效
+        $todayStartTime = time();
+        $y = date('Y');
+        $m = date('m');
+        $d = date('d');
+        $todayEndTime = mktime(23, 59, 59, $m, $d, $y) - $todayStartTime;
+        $wechatTime = 29 * 86400 + $todayEndTime;
+        $imageSrc = $poster->getPoster($userInfo, $wechatTime, $todayStartTime);
+
 
         if(false === $imageSrc) {
             exit('海报制作失败!请重新生成或者联系客服人员');
@@ -76,8 +86,8 @@ class PosterAction extends CommonAction
             'user_id' => $userInfo['user_id'],
             'poster_images_name' => $imageSrc['pathName'],
             'poster_src' => $imageSrc['pathInfo'],
-            'poster_create_time' => $imageSrc['time'],
-            'poster_end_time' => ($imageSrc['time'] + C('POSTER_TIME')),
+            'poster_create_time' => $todayStartTime,
+            'poster_end_time' => ($todayStartTime + $wechatTime),
             'poster_status' => ($imageSrc['pathName'] != '') ? 1 : 0,
         );
 
@@ -137,8 +147,6 @@ class PosterAction extends CommonAction
 
         return array(
             'media_id'   => $imagesInfo['media_id'],
-            'start_time' => $data['wechat_upload_start_time'],
-            'end_time'   => $imageSrc['poster_end_time']
         );
     }
 
@@ -156,26 +164,7 @@ class PosterAction extends CommonAction
             'msgtype'   =>  'image',
             'image'     =>  array('media_id' => $mediaInfo['media_id'])
         );
-
         $wechat->sendCustomMessage($image);
-        $start = date('Y-m-d H:i:s', $mediaInfo['start_time']);
-        $end   = date('Y-m-d H:i:s', $mediaInfo['end_time']);
-        $content = <<<STR
-海报生效时间：
-$start
-海报失效时间：
-$end
-STR;
-
-        $text = array(
-            'touser'    =>  $userInfo['user_wechatopenid'],
-            'msgtype'   =>  'text',
-            'text'      =>  array(
-                'content' => $content
-            )
-        );
-
-        $wechat->sendCustomMessage($text);
     }
 
 }
