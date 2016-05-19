@@ -18,7 +18,7 @@ class PosterAction extends CommonAction
         $uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
         $posterInfo = $this->getUserPosterInfo($uid);
-
+        $imageSrc   = $this->_getImageInfo($userInfo);exit();
         if(time() > $posterInfo['poster_end_time']) {
             //制作海报
             $imageSrc   = $this->_getImageInfo($userInfo);

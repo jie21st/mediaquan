@@ -53,8 +53,10 @@ class PosterService
      */
     private function _setConfig()
     {
+        $fontPath = DIR_RESOURCE . DS . ATTACH_POSTER .'/Font/SourceHanSansK-Medium.ttf';
         $dst = DIR_RESOURCE . DS .ATTACH_POSTER . DS . 'poster.jpg';
         $savePath = DIR_UPLOAD . DS .ATTACH_POSTER . DS;
+        $today = date('m月d日', time()+C('POSTER_TIME'));
 
         $config = array(
             'dst'       =>  $dst,           // 模板地址(目标图)
@@ -78,6 +80,17 @@ class PosterService
                     'srcW'      =>  '200',      // 图片宽度
                     'srcH'      =>  '200',      // 图片高度
                 ),
+            ),
+            'font' => array(
+                 array(
+                     'text'      => '该二维码30天('.$today.'前)有效，过期请重新获取', 	// 字体路径
+                     'fontPath'  => $fontPath,// 字体路径
+                     'fontSize'  => '16', 				// 字体大小
+                     'fontColor' => '91,91,91', 			// 字体颜色
+                     'fontX'     => '167', 				// X轴位置 支持center(自动居中)
+                     'fontY'     => '920',					// Y轴位置
+                     'adjust'    => '0' 					// 位置调整
+                 ),
             ),
         );
 
