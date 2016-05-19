@@ -58,7 +58,7 @@ class PosterService
 
         $config = array(
             'dst'       =>  $dst,           // 模板地址(目标图)
-            'isPrint'   =>  false,          // 是否打印
+            'isPrint'   =>  true,          // 是否打印
             'isSave'    =>  true,           // 是否保存
             'savePath'  =>  $savePath,         // 保存路径
             'saveName'  =>  md5($this->uid . time()),                // 保存名字
@@ -66,17 +66,17 @@ class PosterService
             'src' => array(
                 array(
                     'srcPath'   =>  $this->wechatRQCode,     // 图片路径
-                    'srcX'      =>  '147',      // X轴位置
-                    'srcY'      =>  '407',      // Y轴位置
-                    'srcW'      =>  '270',      // 图片宽度
-                    'srcH'      =>  '270',      // 图片高度
+                    'srcX'      =>  '167',      // X轴位置
+                    'srcY'      =>  '460',      // Y轴位置
+                    'srcW'      =>  '416',      // 图片宽度
+                    'srcH'      =>  '420',      // 图片高度
                 ),
                 array(
                     'srcPath'   =>  $this->userImageSrc,   // 图片路径
-                    'srcX'      =>  '230',      // X轴位置
+                    'srcX'      =>  '275',      // X轴位置
                     'srcY'      =>  '167',      // Y轴位置
-                    'srcW'      =>  '111',      // 图片宽度
-                    'srcH'      =>  '111',      // 图片高度
+                    'srcW'      =>  '200',      // 图片宽度
+                    'srcH'      =>  '200',      // 图片高度
                 ),
             ),
         );
