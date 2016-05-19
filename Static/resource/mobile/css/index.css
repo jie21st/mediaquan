@@ -145,7 +145,7 @@ a{display:block; text-decoration:none; color: #666}
 .m-fans .fans-hd{font-size:14px; color:#222; font-weight:normal; margin:15px 3% 0 0; border-bottom:1px solid #f8f6f6; padding-bottom:12px; padding-left:3%;}
 .m-fans .fans-list { overflow: hidden; background: #fff;}
 .m-fans .fans-list li{width:25%; text-align:center; border-right:1px solid #f8f6f6; border-bottom:1px solid #f8f6f6; padding-top:7px; padding-bottom:6px; float:left; box-sizing:border-box; background: #fff;}
-.m-fans .fans-list li:nth-child(4n+1){border-right:0;}
+.m-fans .fans-list li:nth-child(4n){border-right:0;}
 .m-fans .fans-list li p{width:58px; height:58px; border-radius:58px; overflow:hidden; margin:0 auto; margin-bottom:5px;}
 .m-fans .fans-list li span{font-size:10px; color:#848484; width:90px; display:inline-block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; height:20px;}
 
