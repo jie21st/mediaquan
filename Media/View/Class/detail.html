@@ -8,7 +8,7 @@
         <style>
             body.body-fixed-bottom {padding-bottom:60px;}
             .body-fixed-bottom .bottom-fix { position: fixed; left: 0; bottom: 0; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; padding: 10px; background: #f1f1f1;border-top:1px solid #dfdfdf;}
-            .bottom-fix a{ display: inline-block; width:100%; height:40px; background:#1ab5ee; border-radius:40px; line-height:40px; text-align:center; color:#fff; font-size:15px;}
+            .bottom-fix a{ line-height:30px; font-size:16px;}
         </style>
     </head>
     <body class="body-fixed-bottom">
@@ -27,15 +27,15 @@
         <div class="con">
             <p>课程目录：<br />
                 <volist name="class_info.chapter_list" id="vo">
-                    <span><a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html"><{$vo.chapter_title}></a></span><br />
+                    <a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html"><{$vo.chapter_title}></a>
                 </volist>
             </p>
         </div>
         <div class="bottom-fix">
             <if condition="$class_info['is_buy']">
-                <a href="/chapter/classList?class_id=<{$class_info.class_id}>">立即听课</a>
+                <a class="btn btn-block btn-blue" href="/chapter/classList?class_id=<{$class_info.class_id}>">立即听课</a>
             <else />
-                <a href="/order/<{$class_info.class_id}>">立即报名</a>
+                <a class="btn btn-block btn-blue" href="/order/<{$class_info.class_id}>">立即报名</a>
             </if>
             
         </div>

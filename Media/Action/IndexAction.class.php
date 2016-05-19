@@ -20,6 +20,7 @@ class IndexAction extends CommonAction
         $classModel = new \Common\Model\ClassModel();
         $chapterModel = new \Common\Model\ChapterModel;
         $classService = new \Common\Service\ClassService();
+        
         $classList = $classModel->select();
         foreach ($classList as &$classInfo) {
             // 课程是否已购买

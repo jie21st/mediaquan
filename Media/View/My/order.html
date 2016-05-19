@@ -13,24 +13,23 @@
             <div class="jxsctk" data-id="<{$order.order_id}>" data-ordersn="<{$order.order_sn}>">
                 <p class="sjzt"><{$order.create_time|date="Y-m-d H:i:s", ###}><span><{$order.state_desc}></span></p>
                 <ul>
-                    <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$order.class_image}>" width="93" height="74" /></li>
+                    <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$order.class_image}>" width="76" height="60" /></li>
                     <li>
-                        <p class="bt"><{$order.class_title}></p>
-                        <p class="zj">&nbsp;</p>
-                        <p class="js"><{$order.class_teacher}></p>
+                        <p class="bt bt2"><{$order.class_title}></p>
+                        <p class="js js2"><{$order.class_teacher}></p>
                     </li>
-                    <li class="jiage">￥<{$order.order_amount|glzh_price_format}></li>
+                    <li class="jiage jiage2">￥<{$order.order_amount|glzh_price_format}></li>
                 </ul>
                 <if condition="$order['if_pay'] or $order['if_cancel'] or $order['if_learn']">
                 <p class="caoz">
-                    <if condition="$order['if_pay']">
-                        <a href="<{$Think.config.APP_SITE_URL}>/buy/course_buy?order_sn=<{$order.order_sn}>" class="fk js-btn-pay">去付款</a>
-                    </if>
                     <if condition="$order['if_cancel']">
-                    <a href="javascript:void(0)" class="qx js-btn-cancal">取消订单</a>
+                    <a href="javascript:void(0)" class="btn btn-gray js-btn-cancal">取消订单</a>
                     </if>
                     <if condition="$order['if_learn']">
-                        <a href="<{$Think.config.APP_SITE_URL}>/class/<{$order.class_id}>/" class="tk">去听课</a>
+                        <a class="btn btn-orange" href="<{$Think.config.APP_SITE_URL}>/class/<{$order.class_id}>/" class="tk">去听课</a>
+                    </if>
+                    <if condition="$order['if_pay']">
+                        <a class="btn btn-orange" href="<{$Think.config.APP_SITE_URL}>/buy/course_buy?order_sn=<{$order.order_sn}>" class="fk js-btn-pay">去付款</a>
                     </if>
                 </p>
                 </if>

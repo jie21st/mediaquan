@@ -33,30 +33,25 @@ class PredepositService
             case 'order_pay':
                 $data_log['lg_name'] = $data['name'];
                 $data_log['lg_av_amount'] = -$data['amount'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
                 $data_log['lg_desc'] = '下单，支付预存款，订单号: '.$data['order_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
                 break;
             case 'recharge':
                 $data_log['lg_name'] = '充值';
                 $data_log['lg_av_amount'] = $data['amount'];
-                $data_log['lg_trade_no'] = $data['pdr_sn'];
                 $data_log['lg_desc'] = '充值，充值单号: '.$data['pdr_sn'];
-                //$data_log['lg_admin_name'] = $data['admin_name'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
                 break;
             case 'sale_income':
                 $data_log['lg_name'] = $data['name'];
                 $data_log['lg_av_amount'] = $data['amount'];
                 $data_log['lg_desc'] = '分销收益，订单号: '.$data['order_sn'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
                 break;
     	    case 'cash':
                 $data_log['lg_name'] = '提现';
     	        $data_log['lg_av_amount'] = -$data['amount'];
     	        $data_log['lg_desc'] = '提现，提现单号: '.$data['order_sn'];
-                $data_log['lg_trade_no'] = $data['order_sn'];
     	        $data_pd['available_predeposit'] = array('exp','available_predeposit-'.$data['amount']);
     	        break;
             default:

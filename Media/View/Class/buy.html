@@ -9,10 +9,9 @@
     <body>
         <div class="jxsctk nomargin">
             <ul>
-                <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" width="119" height="95" /></li>
+                <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" width="90" height="72" /></li>
                 <li>
                     <p class="bt"><{$class_info.class_title}></p>
-                    <p class="zjs">第一章节</p>
                     <p class="jss"><{$class_info.class_teacher}></p>
                     <p class="je">￥<{$class_info.class_price|glzh_price_format}></p>
                 </li>
@@ -30,7 +29,7 @@
                     <input type="tel" name="mobile" value="<{$user_info.user_mobile}>" maxlength="11" />
                 </p>
             </div>
-            <a href="#" class="qr btn-pay">确认</a>
+            <a href="javascript:;" class="qr btn-pay">确认</a>
         </form>
     <script>
         function onBridgeReady() {

@@ -35,50 +35,6 @@ class PredepositAction extends CommonAction
     }
     
     /**
-     * 充值
-     */
-    /*
-    public function rechargeOp()
-    {
-        if (IS_POST) {
-            $pdrAmount = abs(floatval(I('post.amount')));
-            if ($pdrAmount <= 0) {
-                showMessage('充值金额不能小于或等于0');
-            }
-
-            $pdModel = new \Common\Model\PredepositModel();
-            $pdService = new \Common\Service\PredepositService();
-            $data = array();
-            $data['pdr_sn'] = $paySn = $pdService->makeSn();
-            $data['pdr_user_id'] = session('user.user_id');
-            $data['pdr_amount'] = $pdrAmount;
-            $data['pdr_create_time'] = NOW_TIME;
-            $insert = $pdModel->addPdRecharge($data);
-            if ($insert) {
-                // 转向到支付页面
-                redirect(C('APP_SITE_URL').'/buy/pd_pay?pay_sn='.$paySn);
-            } else {
-                showMessage('创建充值订单失败');
-            }
-        }
-        
-        // 重定向链接，充值完成后跳转
-        if(empty($_GET['redirect_url'])) {
-            cookie('_redirectUrl_', getReferer());
-        } else {
-            cookie('_redirectUrl_', $_GET['redirect_url']);
-        }
-        
-        // 查询用户信息
-        $userService = new \Common\Service\UserService;
-        $userInfo = $userService->getUserFullInfo($this->user['user_id']);
-
-        $this->assign('user_info', $userInfo);
-        $this->display();
-    }
-    */
-    
-    /**
      * 提现
      */
     public function cashOp()
@@ -150,6 +106,16 @@ class PredepositAction extends CommonAction
                 // 提交事务
                 $pdModel->commit();
                 
+                // 消息通知
+                $wechatService = new \Common\Service\WechatService();
+                $wechatService->sendCustomMessage([
+                    'touser' => session('openid'),
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => '提现成功，提现金额'.glzh_price_format($pdcAmount)
+                    ]
+                ]);
+                
                 $this->returnJson(1, 'SUCCESS');
             } catch (\Exception $e) {
                 $pdModel->rollback();
@@ -171,71 +137,6 @@ class PredepositAction extends CommonAction
     public function cash_okOp()
     {
         $this->display('cash.success');
-    }
-    
-    /**
-     * 资产
-     */
-    public function assetsOp()
-    {
-        $userId = session('user.user_id');
-        // 查询账户余额
-        $userService = new \Common\Service\UserService;
-        $userInfo = $userService->getUserFullInfo($userId);
-        $this->assign('available_predeposit', $userInfo['available_predeposit']);
-        
-        // 查询今日收益
-        $pdService = new \Common\Service\PredepositService();
-        $todayIncomeTotals = $pdService->getTodayIncomeTotalAmount($userId);
-        $this->assign('income_today', $todayIncomeTotals);
-        
-        // 查询总收益
-        $incomeTotals = $pdService->getIncomeTotalsAmount($userId);
-        $this->assign('income_total', $incomeTotals);
-        
-        // 查询所有收支明细
-        $pdModel = new \Common\Model\PredepositModel;
-        $condition = array();
-        $condition['lg_user_id'] = $userId;
-        $condition['lg_av_amount'] = ['neq', 0];
-//        $condition['lg_type'] = ['in', ['order_pay', 'recharge', 'sale_income', 'cash_apply', 'cash_fail', 'cash_del']];
-        $field = 'lg_id,lg_user_id,lg_name,lg_av_amount,lg_create_time';
-        $logList = $pdModel->getPdLogList($condition, $field, 'lg_create_time desc');
-        $this->assign('pdlog_list', $logList);
-        
-        $this->display();
-    }
-    
-    /**
-     * 收支明细
-     */
-    public function recordOp()
-    {
-        $flow = I('get.flow');
-        if (empty($flow) || ! in_array($flow, ['out', 'in'])) {
-            $flow = $_GET['flow'] = 'in';
-        }
-        
-        $condition = array();
-        $condition['lg_user_id'] = session('user.user_id');
-        switch ($flow) {
-            case 'in':
-//                $condition['lg_type'] = ['in', ['recharge', 'sale_income', 'cash_fail']];
-                $condition['lg_av_amount'] = ['gt', 0];
-                break;
-            case 'out':
-//                $condition['lg_type'] = ['in', ['order_pay', 'cash_apply']];
-                $condition['lg_av_amount'] = ['lt', 0];
-                break;
-        }
-        
-        // 查询所有收支明细
-        $pdModel = new \Common\Model\PredepositModel;
-        $field = 'lg_id,lg_user_id,lg_name,lg_av_amount,lg_create_time';
-        $logList = $pdModel->getPdLogList($condition, $field, 'lg_create_time desc');
-        $this->assign('pdlog_list', $logList);
-        $this->display();
-        
     }
 }
 

@@ -7,6 +7,10 @@
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/layer.css" />
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+        <style>
+            .action {padding:0 20px; margin-top: 35px;}
+            .action .btn {line-height: 30px;}
+        </style>
     </head>
     <body>
         <div class="zd-top zd-top2">
@@ -25,7 +29,9 @@
             <p class="ts">提现金额将自动存入微信零钱中</p>
         </div>
         </form>
-        <a href="javascript:;" class="qr btn-next">确认</a>
+        <div class="action">
+            <a href="javascript:;" class="btn btn-block btn-blue btn-next">确认</a>
+        </div>
         <include file="Public/footer" />
         <script>
             function onBridgeReady() {

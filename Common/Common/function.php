@@ -122,6 +122,9 @@ function orderPaymentName($payment_code) {
  */
 function orderState($orderInfo) {
     switch ($orderInfo['order_state']) {
+        case ORDER_STATE_CANCEL:
+            $state = '交易关闭';
+            break;
         case ORDER_STATE_NEW:
             $state = '等待付款';
             break;

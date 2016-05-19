@@ -85,6 +85,7 @@ class ClassService
             'payment_code'  => '',
             'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
 //            'from_seller'   => $input['_is_free'] ? 0 : I('post.dcp', 0, 'intval'),
+            'commis_rate'   => $input['commis_rate'],
         ];
         
         $orderId = $orderModel->addOrder($order);
@@ -415,19 +416,80 @@ class ClassService
     }
     
     /**
-     * 获取订单详细信息和最终价格（等级价格）
-     * @param type $condition
-     * @param type $fields
-     * @return type
+     * 订单结算
+     * 
+     * @param type $orderInfo
      */
-    public function getClassInfo($condition, $fields = '')
+    public function orderBill($orderInfo)
     {
+        if ($orderInfo['commis_rate'] == 0) {
+            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'该订单佣金比例为0');
+            return;
+        }
+        
         $userModel = new \Common\Model\UserModel;
-        $userLevel = $userModel->where(['ID' => session('user.user_id')])->getField('Level');
-        $classModel = new \Common\Model\ClassModel();
-        return $classModel->field($fields)
-            ->join("glzh_class_price ON glzh_class_price.class_id = glzh_class.class_id AND glzh_class_price.user_level = '{$userLevel}'", 'LEFT')
-            ->where($condition)
-            ->find();
+        $buyerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['buyer_id']]);
+        if ($buyerInfo['parent_id'] == 0) {
+            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'该用户没有推荐人');
+            return;
+        }
+        
+        $seller_level_rate = C('SELLER_LEVEL_RATE');
+        if (empty($seller_level_rate)) {
+            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'未设置销售员分销比例');
+            return;
+        }
+        
+        $parents = $this->getUserParents($orderInfo['buyer_id'], 3);
+        if (is_array($parents) && !empty($parents)) {
+            $parentsCount = count($parents);
+            $model = D('orderBill');
+            $pdService = new PredepositService();
+            
+            for ($i = 0; $i < $parentsCount; $i++) {
+                $sellerId = $parents[$i];
+
+                $sellerRate = $seller_level_rate[$parentsCount-1][$i]/100;
+                // 订单佣金金额
+                $orderCommisAmount = $orderInfo['order_amount'] * $orderInfo['commis_rate'] / 100;
+                // 获得佣金金额
+                $commisAmount = round($orderCommisAmount * $sellerRate, 2, PHP_ROUND_HALF_DOWN);
+                // 收益记录
+                $insertId = $model->add([
+                    'user_id' => $sellerId,
+                    'buyer_id' => $orderInfo['buyer_id'],
+                    'order_id' => $orderInfo['order_id'],
+                    'gains_amount' => $commisAmount,
+                    'gains_time' => time(),
+                    'level_val'  => $i+1,
+                    'level_rate' => $sellerRate*100,
+                ]);
+                if (! $insertId) {
+                    throw new \Exception('分销收益记录失败');
+                }
+                
+                // 收益入账
+                $pdData = array();
+                $pdData['user_id'] = $sellerId;
+                $pdData['amount'] = $commisAmount;
+                $pdData['name'] = $buyerInfo['user_nickname'].' 购买了 '.$orderInfo['class_title'];
+                $pdData['order_sn'] = $orderInfo['order_sn'];
+
+                $pdService->changePd('sale_income', $pdData);
+            }
+        }
+    }
+    
+    private function getUserParents($userId, $level = 3) {
+        static $list=array();
+        if ($level-- > 0) {
+            $userModel = new \Common\Model\UserModel;
+            $childInfo = $userModel->getUserInfo(['user_id' => $userId]);
+            if (intval($childInfo['parent_id']) != 0) {
+                $list[] = $childInfo['parent_id'];
+                return $this->getUserParents($childInfo['parent_id'], $level);
+            }
+        }
+        return $list;
     }
 }

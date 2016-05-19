@@ -119,8 +119,7 @@ class PayService
             $classService->addClassUser($orderInfo);
 
             // 订单分销结算
-//            $billService = new \Common\Service\BillService();
-//            $billService->courseOrderBill($orderInfo);
+            $classService->orderBill($orderInfo);
             
             // 提交事务
             $orderModel->commit();

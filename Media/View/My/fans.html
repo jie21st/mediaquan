@@ -6,37 +6,24 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-        <style>
-            .fans-hd {margin: 15px 3% 12px;}
-        </style>
     </head>
-<body class="bas">
+    <body>
     <notempty name="user_list">
-    <h3 class="fans-hd">共<{$count}>个粉丝</h3>
-    <volist name="user_list" id="user">
-    <div class="gezi">
-        <p><img src="<{$user.user_avatar|getMemberAvatar}>" width="58" height="58" /></p>
-        <span><{$user.user_nickname}></span>
-    </div>
-    </volist>
-    <else/>
-    <div class="wucon"><img src="RESOURCE_SITE_URL/mobile/images/wfsbg.jpg" width="99" height="77" /></div>
-    <p class="wukc">暂无粉丝</p>
+        <div class="m-fans">
+            <h3 class="fans-hd">共<{$count}>个粉丝</h3>
+            <ul class="fans-list">
+                <volist name="user_list" id="user">
+                    <li class="gezi">
+                        <p><img src="<{$user.user_avatar|getMemberAvatar}>" width="58" height="58" /></p>
+                        <span><{$user.user_nickname}></span>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+        <else/>
+        <div class="wucon"><img src="RESOURCE_SITE_URL/mobile/images/wfsbg.jpg" width="99" height="77" /></div>
+        <p class="wukc">暂无粉丝</p>
     </notempty>
     <include file="Public/footer" />
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

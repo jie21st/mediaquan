@@ -37,6 +37,9 @@
 .list[mode~=chip] .list-item:first-child{-webkit-background-size: 0 0,12px 1px,100% 1px,100% 1px;}
 .list[mode~=chip] .list-item:last-child{-webkit-background-size: 12px 1px,0 0,100% 1px,100% 1px;}
 .list[mode~=chip] .list-item:first-child:last-child{-webkit-background-size: 0 0,0 0,100% 1px,100% 1px;}
+
+.page-pay .action {padding: 0 20px; margin-top: 30px;}
+.page-pay .action a {line-height: 30px;}
         </style>
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
@@ -44,10 +47,9 @@
 
         <div class="jxsctk nomargin">
             <ul>
-                <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" width="119" height="95" /></li>
+                <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.class_image}>" width="90" height="72" /></li>
                 <li>
                     <p class="bt"><{$class_info.class_title}></p>
-                    <p class="zjs">第一章节</p>
                     <p class="jss"><{$class_info.class_teacher}></p>
                     <p class="je">￥<{$order_info.order_amount|glzh_price_format}></span></p>
                 </li>
@@ -91,7 +93,10 @@
                         </div>
                     </div>
                 </div>
-        <a href="javascript:;" class="qr js-pay">确认支付</a>
+        <div class="action">
+            <a href="javascript:;" class="btn btn-block btn-blue js-pay">确认支付</a>
+        </div>
+        
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/utils.js"></script>
         <script>

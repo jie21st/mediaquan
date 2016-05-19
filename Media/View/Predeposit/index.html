@@ -8,44 +8,44 @@
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
 
-<body>
+    <body>
 
-	<div class="zd-top">
-    	<p class="zdbg"><img src="RESOURCE_SITE_URL/mobile/images/zdtop-bg2.jpg" width="94% " height="12" /></p>
-        <div class="neir">
-        	<p class="zzj">总资金</p>
-            <p class="qianshu"><{$user_info.total_predeposit|glzh_price_format}><span>&nbsp;&nbsp;&nbsp;元</span></p>
-            <a href="/predeposit/cash">我要提现</a>
+        <div class="zd-top">
+            <p class="zdbg"><img src="RESOURCE_SITE_URL/mobile/images/zdtop-bg2.jpg" width="94% " height="12" /></p>
+            <div class="neir">
+                <p class="zzj">总资金</p>
+                <p class="qianshu"><{$user_info.total_predeposit|glzh_price_format}><span>&nbsp;&nbsp;&nbsp;元</span></p>
+                <a href="/predeposit/cash">我要提现</a>
+            </div>
         </div>
-    </div>
-    
-    <p class="zdbt">账单明细</p>
-    
-    <ul class="lists list">
-    	<li class="li2">详情</li>
-        <li class="li3">收入/提现</li>
-        <li class="li4">时间</li>
-    </ul>
+
+        <p class="zdbt">账单明细</p>
+
+        <ul class="lists list">
+            <li class="li2">详情</li>
+            <li class="li3">收入/提现</li>
+            <li class="li4">时间</li>
+        </ul>
     <notempty name="pdlog_list">
-    <volist name="pdlog_list" id="vo">
-    <ul class="lists">
-    	<li class="xinxi">
-            <p><{$vo.lg_name}></p>
-        </li>
-        <gt name="vo.lg_av_amount" value="0">
-        <li class="jiaqian">+ <{$vo.lg_av_amount|floatval|abs|glzh_price_format}></li>
+        <volist name="pdlog_list" id="vo">
+            <ul class="lists">
+                <li class="xinxi">
+                    <p><{$vo.lg_name}></p>
+                </li>
+                <gt name="vo.lg_av_amount" value="0">
+                <li class="jiaqian">+ <{$vo.lg_av_amount|floatval|abs|glzh_price_format}></li>
+                <else />
+                <li class="tix">- <{$vo.lg_av_amount|floatval|abs|glzh_price_format}></li>
+                </gt>
+                <li class="time">
+                    <p><{$vo.lg_create_time|date="Y-m-d", ###}></p>
+                    <p><{$vo.lg_create_time|date="H:i", ###}></p>
+                </li>
+            </ul>
+        </volist>
         <else />
-        <li class="tix">- <{$vo.lg_av_amount|floatval|abs|glzh_price_format}></li>
-        </gt>
-        <li class="time">
-        	<p><{$vo.lg_create_time|date="Y-m-d", ###}></p>
-            <p><{$vo.lg_create_time|date="H:i", ###}></p>
-        </li>
-    </ul>
-    </volist>
-    <else />
-    <div class="wucon"><img src="RESOURCE_SITE_URL/mobile/images/wzdbg.jpg" width="99" height="77" /></div>
-    <p class="wukc">暂无账单记录</p>
+        <div class="wucon"><img src="RESOURCE_SITE_URL/mobile/images/wzdbg.jpg" width="99" height="77" /></div>
+        <p class="wukc">暂无账单记录</p>
     </notempty>
     <include file="Public/footer" />
 </body>
