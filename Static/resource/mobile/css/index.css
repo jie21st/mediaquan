@@ -2,7 +2,7 @@
 /* CSS Document */
 *{ margin:0; padding:0; border:0; list-style:none;}
 body{max-width:640px; min-width:320px; margin:0 auto; font-family:"微软雅黑"; background:#f2f2f2;}
-a{text-decoration:none; display:inline-block;}
+a{display:inline-block; text-decoration:none; color: #666}
 
 .layermbtn span {color:#0795dd;}
 
