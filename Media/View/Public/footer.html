@@ -1,5 +1,12 @@
-<ul class="footer">
-    <li><a href="/">首页</a></li>
-    <li class="margin"><a href="/my/">会员中心</a></li>
-    <li><a href="/help/">帮助</a></li>
-</ul>
+<div class="footer">
+    <a href="/">首页</a>
+    <a href="/my/">会员中心</a>
+    <a href="/help/">帮助</a>
+</div>
+<script>
+    $(function() {
+        if ($(document).height() <= $(window).height()) {
+            $('.footer').addClass('guding');
+        }
+    });
+</script>

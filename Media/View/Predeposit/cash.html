@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/layer.css" />
+        <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
     <body>
         <div class="zd-top zd-top2">
@@ -25,13 +26,7 @@
         </div>
         </form>
         <a href="javascript:;" class="qr btn-next">确认</a>
-
-        <ul class="footer guding">
-            <li><a href="#">首页</a></li>
-            <li class="margin"><a href="#">会员中心</a></li>
-            <li><a href="#">帮助</a></li>
-        </ul>
-
+        <include file="Public/footer" />
         <script>
             function onBridgeReady() {
                 WeixinJSBridge.call('hideOptionMenu');
@@ -47,7 +42,6 @@
                 onBridgeReady();
             }
         </script>
-        <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
         <script src="RESOURCE_SITE_URL/mobile/js/layer.js"></script>
         <script>
             $(document).ready(function () {
