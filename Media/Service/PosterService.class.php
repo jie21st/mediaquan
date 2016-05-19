@@ -60,7 +60,7 @@ class PosterService
 
         $config = array(
             'dst'       =>  $dst,           // 模板地址(目标图)
-            'isPrint'   =>  true,          // 是否打印
+            'isPrint'   =>  false,          // 是否打印
             'isSave'    =>  true,           // 是否保存
             'savePath'  =>  $savePath,         // 保存路径
             'saveName'  =>  md5($this->uid . time()),                // 保存名字
