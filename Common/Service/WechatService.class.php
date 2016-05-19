@@ -68,7 +68,29 @@ class WechatService
      */
     public function sendCustomMessage($data)
     {
-        return $this->wechat->sendCustomMessage($data);
+        $messageModel = D('wechatMessage');
+        $messageId = $messageModel->add([
+            'message_type' => 'kfmsg',
+            'message_data' => json_encode($data),
+            'message_time' => time(),
+        ]);
+        if (!$messageId) {
+            \Think\Log::write('客服消息记录失败');
+            return false;
+        }
+        $json = $this->wechat->sendCustomMessage($data);
+        if ($json) {
+            $messageModel->where(['message_id' => $messageId])->save([
+                'message_state' => 1,
+                'return_msg_id' => $json['msgid']
+            ]);
+        } else {
+            $messageModel->where(['message_id' => $messageId])->save([
+                'message_state' => 2,
+                'message_faildesc' => $json['error']
+            ]);
+        }
+        return true;
     }
 
     /**
