@@ -2,7 +2,7 @@
 /* CSS Document */
 *{ margin:0; padding:0; border:0; list-style:none;}
 body{max-width:640px; min-width:320px; margin:0 auto; font-family:"微软雅黑"; background:#f2f2f2;}
-a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
+a{text-decoration:none; display:inline-block;}
 
 .layermbtn span {color:#0795dd;}
 
@@ -28,10 +28,8 @@ a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
 .hyzxcd img{float:left; margin-top:13px; margin-right:13px;}
 .hyzxcd p{width:97%; height:50px; line-height:50px; background:#fff; padding-left:3%; margin-bottom:1px; font-size:15px;}
 
-.footer{width:170px; height:30px; margin:30px auto 5px;}
-.footer li{float:left;color:#666666; font-size:12px;}
-.footer .margin{margin:0 35px 0 35px;}
-.footer li a{color:#666;}
+.footer {width: 100%;height: 30px;line-height: 30px;text-align: center;margin-top:30px;}
+.footer a {display: inline-block;color: #666666;font-size: 12px;margin: 0 15px;}
 
 /*我的订单*/
 .sjzt{border-bottom:dashed 1px #e1dfda; font-size:13px; margin-bottom:13px; padding-bottom:9px;}
@@ -77,7 +75,7 @@ a{color:#fff; text-decoration:none; width:100%; display:inline-block;}
 .ml .xm{margin-top:10px; margin-bottom:1px;}
 .ml input{height:45px; line-height:45px; font-size:15px;}
 .qr{width:94%; margin:38px 3% 0; height:40px; line-height:40px; text-align:center; background:#1ab5ee; color:#fff; font-size:15px; border-radius:40px;}
-.guding{ position:fixed; bottom:0; margin-left:100px;}
+.guding{ position:fixed; bottom:0; left: 0;}
 
 /*报名确定*/
 .ml p span{color:#222; padding-left:15px;}
