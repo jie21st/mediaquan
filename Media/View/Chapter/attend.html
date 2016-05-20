@@ -113,13 +113,14 @@
         <div class="ml">
             <foreach name="chapterList" item="vo">
                 <p <if condition="$vo.chapter_id eq $chapterId">class="bofang"</if>>
-                    <a href="javascript:void(0)" onclick="window.location.href='?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>'"><{$vo.chapter_title}>
+                    <a href="javascript:void(0)" onclick="window.location.replace('?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>')"><{$vo.chapter_title}>
                     </a>
                 </p>
             </foreach>
         </div>
 
         <include file="Public/footer" />
+
         <input type="hidden" name="class_id" value="<{$Think.get.class_id}>">
         <input type="hidden" name="chapter_id" value="<{$Think.get.chapter_id}>">
         <input type="hidden" name="user_id" value="<{$user_id}>">
@@ -129,7 +130,6 @@
         <!--<li class="margin"><a href="#">会员中心</a></li>-->
         <!--<li><a href="#">帮助</a></li>-->
         <!--</ul>-->
-        
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
