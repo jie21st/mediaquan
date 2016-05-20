@@ -132,12 +132,14 @@ a{display:block; text-decoration:none; color: #666}
 .zffs .dx{float:right; margin-top:10px;}
 
 /*报名成功*/
-.tixian{width:90%; padding:0 5%; margin:0 auto; font-size:16px; padding-top:85px; margin-bottom:75px;}
-.tixian p{ text-align:center; margin-bottom:12px;}
-.tixian .hei{color:#222;}
+.tixian{padding:0 20px; margin:0 auto; font-size:16px; padding-top:85px;}
+.tixian p{ text-align:center; margin-bottom:12px; color: #222;}
+.tixian .action {margin-top:75px;}
+.tixian .action .btn { line-height: 30px; margin-bottom: 15px;}
+/*.tixian .hei{color:#222;}
 .tixian .hui{color:#bbbaba;}
 .tixian .btn {line-height: 30px; margin-top: 60px}
-/*.btn{width:100%; margin-top:15px;}
+.btn{width:100%; margin-top:15px;}
 .btn a{height:40px; width:92%; margin:0 4%; background:#1ab5ee; border-radius:20px; display:inline-block; line-height:40px; text-align:center; color:#fff; text-decoration:none;}
 .btn2 a{background:#c2c2c2;}*/
 

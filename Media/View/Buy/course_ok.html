@@ -8,12 +8,15 @@
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
     <body>
-        <ul class="tixian">
-            <li><img src="RESOURCE_SITE_URL/mobile/images/dui.jpg" width="65" height="65" /></li>
-            <li class="hei">恭喜您，已购买成功</li>
-        </ul>
-        <div class="btn"><a href="javascript:;" data-link="/chapter/classList?class_id=<{$order_info.class_id}>">去听课</a></div>
-        <div class="btn btn2"><a href="javascript:;" data-link="/">返回课程列表</a></div>
+        <div class="tixian">
+            <p><img src="RESOURCE_SITE_URL/mobile/images/dui.jpg" width="65" height="65" /></p>
+            <p class="hei">恭喜您，已购买成功</p>
+            <div class="action">
+            <a class="btn btn-block btn-blue" href="javascript:;" data-link="/chapter/classList?class_id=<{$order_info.class_id}>">去听课</a>
+            <a class="btn btn-block btn-gray" href="javascript:;" data-link="/">返回课程列表</a>
+            </div>
+        <div>
+        
 
 <!--        <ul class="footer guding">
             <li><a href="#">首页</a></li>
