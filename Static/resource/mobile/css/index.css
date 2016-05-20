@@ -196,6 +196,10 @@ a{display:block; text-decoration:none; color: #666}
 .wukc{width:90%; height:30px; color:#535354; font-size:14px; margin:21px auto 0; text-align:center;}
 
 
+/*联系客服*/
+.box{width:94%; margin:3% 3% 0; background:#fff; padding:39px 0;}
+.box p{width:90%; margin:0 auto; text-align:center; font-size:16px; margin-bottom:18px; color:#555555;}
+.box .span{background:#1ab5ee; border-radius:30px; height:30px; width:94px; font-size:14px; color:#fff; line-height:30px; text-align:center;}
 
 
 
