@@ -10,13 +10,26 @@ class MyAction extends \Media\Action\CommonAction
      */
     public function indexOp()
     {
-        $userService = new \Common\Service\UserService;
-        $userInfo = $userService->getUserFullInfo(session('user_id'));
-        
         $userModel = new \Common\Model\UserModel;
+        $userService = new \Common\Service\UserService;
+        
+        $chapterUserModel = new \Common\Model\ChapterUserModel;
+        
+        // 获取用户信息
+        $userInfo = $userService->getUserFullInfo(session('user_id'));
+        // 统计粉丝数
         $userInfo['fans_num'] = $userModel->where(['parent_id' => session('user_id')])->count();
+        // 统计总金额
         $userInfo['total_predeposit'] = $userInfo['available_predeposit'] + $userInfo['freeze_predeposit'];
+        // 获取听课历史记录
+        $historyInfo = $chapterUserModel->getCoursesClientTime([], '', 'create_time desc');
+        if (!empty($historyInfo)) {
+            $chapterModel = new \Common\Model\ChapterModel;
+            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
+        }
+        
         $this->assign('user_info', $userInfo);
+        $this->assign('history_info', $historyInfo);
         $this->display();
     }
     

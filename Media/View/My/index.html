@@ -13,23 +13,23 @@
             <p class="hytx"><img src="<{$user_info.user_avatar|getMemberAvatar}>" width="96" height="96" /></p>
             <p class="hyxm"><{$user_info.user_nickname}></p>
             <ul>
-                <li class="hyfs"><a href="#">我的粉丝：<{$user_info.fans_num}></a></li>
-                <li class="hyje"><a href="#">总金额：<{$user_info.total_predeposit|glzh_price_format}></a></li>
+                <li class="hyfs"><a href="/my/fans.html">我的粉丝：<{$user_info.fans_num}></a></li>
+                <li class="hyje"><a href="/predeposit/">总金额：<{$user_info.total_predeposit|glzh_price_format}></a></li>
             </ul>
         </div>
-
+        <!--听课历史记录-->
+        <notempty name="history_info">
         <div class="jxsctk">
             <ul>
-                <li class="tp"><img src="images/sctkt.jpg" width="93" height="74" /></li>
+                <li class="tp"><img src="UPLOADS_SITE_URL/<{$history_info.chapter_info.cover_img_url}>" width="93" height="74" /></li>
                 <li>
-                    <p class="bt">硬邦邦的案列会说话</p>
-                    <p class="zj">第二章节</p>
-                    <p class="js">智军</p>
+                    <p class="bt"><{$history_info.chapter_info.chapter_title}></p>
+                    <p class="js"><{$history_info.chapter_info.teacher_name}></p>
                 </li>
-                <li class="anniu"><a href="#">继续听课</a></li>
+                <li class="anniu"><a href="/class/<{$history_info.class_id}>/<{$history_info.chapter_id}>.html">继续听课</a></li>
             </ul>
         </div>
-
+        </notempty>
         <div class="hyzxcd">
             <p><a href="/my/order.html">我的订单<img src="RESOURCE_SITE_URL/mobile/images/dd-bg.jpg" width="21" height="21" /></a></p>
             <p><a href="/my/course.html">我的课程<img src="RESOURCE_SITE_URL/mobile/images/kc-bg.jpg" width="21" height="21" /></a></p>
