@@ -17,8 +17,12 @@ class PosterAction extends CommonAction
         // 用户信息
         $uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
-        $posterInfo = $this->getUserPosterInfo($uid);
 
+        if ($userInfo['buy_num'] == 0) {
+            exit('非法操作');
+        }
+
+        $posterInfo = $this->getUserPosterInfo($uid);
 
         if(time() > $posterInfo['poster_end_time']) {
             //制作海报
