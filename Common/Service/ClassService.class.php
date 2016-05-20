@@ -160,12 +160,11 @@ class ClassService
         $classModel = new \Common\Model\ClassModel;
         $userModel = new \Common\Model\UserModel;
 
-        // 插入课程用户信息
+        // 插入课程报名表
         $data               = array();
         $data['class_id']   = $classOrder['class_id'];
         $data['user_id']    = $classOrder['buyer_id'];
         $data['order_id']   = $classOrder['order_id'];
-//        $data['reseller_id']= $classOrder['from_seller'];
         $data['apply_amount'] = $classOrder['order_amount'];
         $data['apply_time'] = time();
         $data['apply_state']= 1;
@@ -173,25 +172,25 @@ class ClassService
         if (! $result) {
             throw new \Exception('插入课程用户信息失败');
         }
-
-        // 微信消息模板通知
-//        $tempMsgService = new \Common\Service\TemplateMessageService;
-//        $tempMsgService->courseBuyNotify($classOrder['buyer_id'], [
-//            'name'      => $classOrder['class_title'],
-//            'price'     => glzh_price_format($classOrder['order_amount']),
-//            'url'       => C('COURSE_SITE_URL') . sprintf(self::WECHAT_NOTIFY_URL_FORMAT, $classOrder['class_id']),
-//            'remark'    => sprintf(self::WECHAT_NOTIFY_REMARK_FORMAT, $classOrder['class_title']),
-//        ]);
-//        $tempMsgService->notify('500001100001001', $classOrder['class_id'], 1, [
-//            'className' => $classOrder['class_title'],
-//            'classPrice' => glzh_price_format($classOrder['order_amount']),
-//            'teacherName' => $classInfo['class_teacher'],
-//            'memberName' => $userInfo['user_name'],
-//            'memberId' => $classOrder['buyer_id'],
-//            'groupName' => $groupInfo['group_name'],
-//            'buyTime' => date('Y-m-d H:i'),
-//            'url' => C('MOBILE_SITE_URL') . sprintf(self::CLASS_APPLY_USERS_URL_FORMAT, $classOrder['class_id']),
-//        ]);
+        
+        // 增加学习人数
+        $data = array();
+        $data['study_num'] = ['exp' => 'study_num+1'];
+        $update = $classModel->editClass($data, ['class_id' => $classOrder['class_id']]);
+        if (! $update) {
+            throw new \Exception('课程信息失败');
+        }
+        
+        // 购买通知
+        $buyerInfo = $userModel->getUserInfo(['user_id' => $classOrder['buyer_id']]);
+        $wechatService = new \Common\Service\WechatService;
+        $wechatService->sendCustomMessage([
+            'touser' => $buyerInfo['user_wechatopenid'],
+            'msgtype' => 'text',
+            'text' => [
+                'content' => '课程《'.$classOrder['class_title'].'》报名成功'
+            ]
+        ]);
     }
     
     /**
@@ -445,10 +444,13 @@ class ClassService
             $parentsCount = count($parents);
             $model = D('orderBill');
             $pdService = new PredepositService();
+            $wechatService = new \Common\Service\WechatService;
             
             for ($i = 0; $i < $parentsCount; $i++) {
                 $sellerId = $parents[$i];
-
+                // 销售员信息
+                $parentInfo = $userModel->getUserInfo(['user_id' => $sellerId]);
+                // 销售员分配比例
                 $sellerRate = $seller_level_rate[$parentsCount-1][$i]/100;
                 // 订单佣金金额
                 $orderCommisAmount = $orderInfo['order_amount'] * $orderInfo['commis_rate'] / 100;
@@ -474,8 +476,22 @@ class ClassService
                 $pdData['amount'] = $commisAmount;
                 $pdData['name'] = $buyerInfo['user_nickname'].' 购买了 '.$orderInfo['class_title'];
                 $pdData['order_sn'] = $orderInfo['order_sn'];
-
                 $pdService->changePd('sale_income', $pdData);
+                
+                // 收益通知
+                $wechatService->sendCustomMessage([
+                    'touser' => $parentInfo['user_wechatopenid'],
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => sprintf(
+                                        '您的粉丝 %s 购买了 %s 课程，获得收益%s元，<a href="%s">查看账单明细</a>',
+                                        $buyerInfo['user_nickname'],
+                                        $orderInfo['class_title'],
+                                        glzh_price_format($commisAmount),
+                                        C('MEDIA_SITE_URL').'/predeposit/'
+                                    )
+                    ]
+                ]);
             }
         }
     }
