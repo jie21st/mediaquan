@@ -144,7 +144,6 @@
             var audio = {
                 init: function () {
                     media.src = audioSrc;
-                    media.currentTime = $('input[name=time]').val();
 
                     // 开始按钮
                     $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
@@ -178,8 +177,6 @@
                 playpauseClick: function (e) {
                     var player = e.delegateTarget; // 图标
                     var playpause = e.currentTarget; // 标识
-                    var time = $('input[name=time]').val();
-                    console.log(time);
 
                     if ($(playpause).attr('title') == 'Pause') {
                         // 暂停
@@ -196,11 +193,18 @@
                         media.play();
                         SetTime();
                         aduioEnd();//开启监听
-                        setTimeData();
                     }
                 },
             }
             var SetTime = function () {
+
+                var time = $('input[name=time]').val();
+//                media.addEventListener("loadedmetadata", function() { media.currentTime = time });
+               media.addEventListener("loadeddata", function() {  media.currentTime = time; setTimeData();
+               //media.addEventListener("canplay", function() {  media.currentTime = time; setTimeData();
+ });
+//                media.addEventListener("progress", function() { media.currentTime = time  });
+//                media.addEventListener("canplay", function() { media.currentTime = time });
                 id = setInterval(function () {
                     var left = $(".audioplayer-bar-gun").css('left');
                     // console.log(media.duration);
