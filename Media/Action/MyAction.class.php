@@ -22,7 +22,7 @@ class MyAction extends \Media\Action\CommonAction
         // 统计总金额
         $userInfo['total_predeposit'] = $userInfo['available_predeposit'] + $userInfo['freeze_predeposit'];
         // 获取听课历史记录
-        $historyInfo = $chapterUserModel->getCoursesClientTime([], '', 'create_time desc');
+        $historyInfo = $chapterUserModel->getCoursesClientTime(['user_id' => session('user_id')], '', 'create_time desc');
         if (!empty($historyInfo)) {
             $chapterModel = new \Common\Model\ChapterModel;
             $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
