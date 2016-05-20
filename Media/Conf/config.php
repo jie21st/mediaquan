@@ -21,10 +21,7 @@ $config = array(
         // 订单
         'order/:id\d'       => 'class/buy',
         // 单页面
-        'benefit'           => 'page/benefit',
-        '/^z\/(.*)$/'       => 'page/:1',
-        // 训练营
-        'camp/:camp_id\d'   => 'camp/join',
+        'contact'           => 'index/contact',
     ),
     
     // 海报时效

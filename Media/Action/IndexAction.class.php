@@ -32,4 +32,12 @@ class IndexAction extends CommonAction
         $this->assign('class_list', $classList);
         $this->display();
     }
+    
+    /**
+     * 联系我们页面
+     */
+    public function contactOp()
+    {
+        $this->display();
+    }
 }
