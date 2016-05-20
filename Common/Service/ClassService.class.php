@@ -175,7 +175,7 @@ class ClassService
         
         // 增加学习人数
         $data = array();
-        $data['study_num'] = ['exp' => 'study_num+1'];
+        $data['study_num'] = ['exp', 'study_num+1'];
         $update = $classModel->editClass($data, ['class_id' => $classOrder['class_id']]);
         if (! $update) {
             throw new \Exception('课程信息失败');
