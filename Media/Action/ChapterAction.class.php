@@ -66,20 +66,19 @@ class ChapterAction extends CommonAction
             //章节列表
             $chapterList = $this->getChapterList($classId);
 
-            $condition = ['class_id' => $classId, 'chapter_id' => $chapterId];
+            $condition = ['class_id' => $classId, 'chapter_id' => $chapterId, 'user_id' => $userId];
             // 章节详情
             $chapterInfo = D('Chapter')->getCourseInfo($condition);
 
             // 上次播放时间
             $time = D('ChapterUser')->getCoursesClientTime($condition);
 
-
             $this->assign('ext', 'jpg');
             $this->assign('chapterList', $chapterList);
             $this->assign('chapterId', $chapterId);
             $this->assign('user_id', $userId);
             $this->assign('info', $chapterInfo);
-            $this->assign('time', ($time) ? $time['time'] : 0);
+            $this->assign('time', (! empty($time) and $time['time'] > 0) ? $time['time'] : 0);
             $this->display();
 
         } else {
