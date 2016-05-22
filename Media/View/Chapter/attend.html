@@ -1,328 +1,326 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-        <title>听课页面</title>
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/swiper.min.css">
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/style.css"/>
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/css/audioplayer.css"/>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-        <style>
-            html { overflow: hidden; }
-        </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>听课页面</title>
+    <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+    <link rel="stylesheet" href="RESOURCE_SITE_URL/css/swiper.min.css">
+    <link rel="stylesheet" href="RESOURCE_SITE_URL/css/style.css"/>
+    <link rel="stylesheet" href="RESOURCE_SITE_URL/css/audioplayer.css"/>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
+    <style>
+        html, body {
+            /*position: relative;*/
+            /*height: 100%;*/
+        }
+        body {
+            /*background: #eee;*/
+            /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
+            /*font-size: 14px;*/
+            /*color:#000;*/
+            /*margin: 0;*/
+            /*padding: 0;*/
+        }
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+        }
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
 
-        <style>
-            html, body {
-                /*position: relative;*/
-                /*height: 100%;*/
-            }
-            body {
-                /*background: #eee;*/
-                /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
-                /*font-size: 14px;*/
-                /*color:#000;*/
-                /*margin: 0;*/
-                /*padding: 0;*/
-            }
-            .swiper-container {
-                width: 100%;
-                height: 100%;
-            }
-            .swiper-slide {
-                text-align: center;
-                font-size: 18px;
-                background: #fff;
+            /* Center slide text vertically */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
 
-                /* Center slide text vertically */
-                display: -webkit-box;
-                display: -ms-flexbox;
-                display: -webkit-flex;
-                display: flex;
-                -webkit-box-pack: center;
-                -ms-flex-pack: center;
-                -webkit-justify-content: center;
-                justify-content: center;
-                -webkit-box-align: center;
-                -ms-flex-align: center;
-                -webkit-align-items: center;
-                align-items: center;
-            }
+        /*播放器*/
+        #warp {
+            height: 50px;
+        }
+        .audioplayer {
+            height:100%;
 
-            /*播放器*/
-            #warp {
-                height: 50px;
-            }
-            .audioplayer {
-                height:100%;
+        }
+        .audioplayer-bar {
+            background: #fff;
+        }
 
-            }
-            .audioplayer-bar {
-                background: #fff;
-            }
+        .bar, .audioplayer-bar{
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+        }
 
-            .bar, .audioplayer-bar{
-                -webkit-border-radius: 10px;
-                -moz-border-radius: 10px;
+        .leftGrip {
+            width: 20px;
+            height: 20px;
+            top: -3px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            background: #fff;
+        }
+    </style>
+    <script>
+        function orientationChange() {
+            var orientation;
+            switch (window.orientation) {
+                case 0:
+                    orientation = 0;
+                    break;
+                case -90:
+                    orientation = -90;
+                    break;
+                case 90:
+                    orientation = 90;
+                    break;
+                case 180:
+                    orientation = 180;
+                    break;
             }
+            return orientation;
+        }
+        addEventListener('load', function(){
+            orientationChange();
+            window.onorientationchange = orientationChange;
+        });
+    </script>
+</head>
+<body>
+    <div class="swiper-container-header" style="width:100%;height: 233px;">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
 
-            .leftGrip {
-                width: 20px;
-                height: 20px;
-                top: -3px;
-                -webkit-border-radius: 10px;
-                -moz-border-radius: 10px;
-                background: #fff;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="swiper-container-header" style="width:100%;height: 233px;">
-            <div class="swiper-container">
-                <div class="swiper-wrapper">
-
-                    <for start="1" end="$info.ppt_length" comparison="elt">
-                        <div class="swiper-slide" style="background: #f2f2f2;">
-                            <if condition="$i lt 10 ">
-                                <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}>0<{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
-                                <else />
-                                <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}><{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
-                            </if>
-                            <div class="swiper-lazy-preloader"></div>
-                        </div>
-                    </for>
-                </div>
+                <for start="1" end="$info.ppt_length" comparison="elt">
+                    <div class="swiper-slide" style="background: #f2f2f2;">
+                        <if condition="$i lt 10 ">
+                            <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}>0<{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
+                            <else />
+                            <img data-src="UPLOADS_SITE_URL/<{$info.ppt_dir}><{$i}>.<{$ext}>" class="swiper-lazy imgLoading">
+                        </if>
+                        <div class="swiper-lazy-preloader"></div>
+                    </div>
+                </for>
             </div>
         </div>
+    </div>
 
-        <!-- 播放音频的div -->
-        <div class="" id="warp" style="background: #000">
-            <div class="audioplayer">
-                <div class="audioplayer-playpause" title="Play"><a href="#">Play</a></div>
+    <!-- 播放音频的div -->
+    <div class="" id="warp" style="background: #000">
+        <div class="audioplayer">
+            <div class="audioplayer-playpause" title="Play"><a href="#">Play</a></div>
 
-                <div class="audioplayer-time audioplayer-time-current">00:00</div>
-                <div class="audioplayer-bar" style="z-index: 3" data-range_min="0" data-range_max="100" data-cur_min="0" data-cur_max="0">
-                    <div class="bar" sytle="width:0px"></div>
-                    <div class="leftGrip" id='slider' style="width: 20px;height: 20px;top: -3px;left:-10px"></div>
-                </div>
-                <div class="audioplayer-time audioplayer-time-duration">00:00</div>
+            <div class="audioplayer-time audioplayer-time-current">00:00</div>
+            <div class="audioplayer-bar" style="z-index: 3" data-range_min="0" data-range_max="100" data-cur_min="0" data-cur_max="0">
+                <div class="bar" sytle="width:0px"></div>
+                <div class="leftGrip" id='slider' style="width: 20px;height: 20px;top: -3px;left:-10px"></div>
             </div>
+            <div class="audioplayer-time audioplayer-time-duration">00:00</div>
         </div>
+    </div>
 
-        <div class="ml">
-            <foreach name="chapterList" item="vo">
-                <p <if condition="$vo.chapter_id eq $chapterId">class="bofang"</if>>
-                    <a href="javascript:void(0)" onclick="window.location.replace('?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>')"><{$vo.chapter_title}>
-                    </a>
-                </p>
-            </foreach>
-        </div>
+    <div class="ml">
+        <foreach name="chapterList" item="vo">
+            <p <if condition="$vo.chapter_id eq $chapterId">class="bofang"</if>>
+            <a href="javascript:void(0)" onclick="window.location.replace('?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>')"><{$vo.chapter_title}>
+            </a>
+            </p>
+        </foreach>
+    </div>
 
-        <include file="Public/footer" />
+    <include file="Public/footer" />
 
-        <input type="hidden" name="class_id" value="<{$Think.get.class_id}>">
-        <input type="hidden" name="chapter_id" value="<{$Think.get.chapter_id}>">
-        <input type="hidden" name="user_id" value="<{$user_id}>">
-        <input type="hidden" name="time" value="<{$time}>">
-        <!--<ul class="footer guding">-->
-        <!--<li><a href="#">首页</a></li>-->
-        <!--<li class="margin"><a href="#">会员中心</a></li>-->
-        <!--<li><a href="#">帮助</a></li>-->
-        <!--</ul>-->
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
+    <script>
+        var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
+        var media = new Audio;
+        var id, endedId;
+        var updateUrl = '<{$Think.config.APP_SITE_URL}>/chapter/update';
 
-        <script>
-            var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
-            var media = new Audio;
-            var id, endedId;
-            var updateUrl = '<{$Think.config.APP_SITE_URL}>/chapter/update';
+        var audio = {
+            init: function () {
+                media.src = audioSrc;
 
-            var audio = {
-                init: function () {
-                    media.src = audioSrc;
+                // 开始按钮
+                $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
 
-                    // 开始按钮
-                    $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
-                    $('.audioplayer-bar').nstSlider({
-                        "left_grip_selector": ".leftGrip",
-                        "value_bar_selector": ".bar",
-                        "value_changed_callback": function(cause, leftValue, rightValue) {
-                            if (!isNaN(media.duration) && leftValue >= 0) {
-
-                                media.currentTime = Math.round((leftValue / 100) * media.duration);
-                                var currentTime = timeDispose(media.currentTime);
-                                $('.audioplayer-time-current').html(currentTime);
-                                if (!media.paused) {
-                                    media.play();
-//                                    setTimeData();
-                                }
+                $('.audioplayer-bar').nstSlider({
+                    "left_grip_selector": ".leftGrip",
+                    "value_bar_selector": ".bar",
+                    "value_changed_callback": function(cause, leftValue, rightValue) {
+                        if (!isNaN(media.duration) && leftValue >= 0) {
+                            media.currentTime = Math.round((leftValue / 100) * media.duration);
+                            var currentTime = timeDispose(media.currentTime);
+                            $('.audioplayer-time-current').html(currentTime);
+                            if (!media.paused) {
+                                media.play();
                             }
-                            leftValues = leftValue;
-                            $(this).find('.bar').css('background', '#0080FF');
                         }
-                    });
-
-                    // 开始播放
-                    if (!media.autoPlay) {
-                        $('.audioplayer-playpause')[0].click();
-                        postAjax();
-                    };
-
-                },
-                // 开始播放
-                playpauseClick: function (e) {
-                    var player = e.delegateTarget; // 图标
-                    var playpause = e.currentTarget; // 标识
-
-                    if ($(playpause).attr('title') == 'Pause') {
-                        // 暂停
-                        $(player).removeClass('audioplayer-playing');
-                        $(playpause).attr({'title': 'Play'}).find('a').html('Play');
-                        media.pause();
-                        UnSetTime();
-                        setTimeData();
-                    } else {
-                        // 开始
-                        $(player).addClass('audioplayer-playing');
-                        $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
-//
-                        media.play();
-                        SetTime();
-                        aduioEnd();//开启监听
+                        leftValues = leftValue;
+                        $(this).find('.bar').css('background', '#0080FF');
                     }
-                },
-            }
-            var SetTime = function () {
+                });
 
-                var time = $('input[name=time]').val();
+                // 开始播放
+                if (!media.autoPlay) {
+                    $('.audioplayer-playpause')[0].click();
+                    postAjax();
+                };
+
+            },
+            // 开始播放
+            playpauseClick: function (e) {
+                var player = e.delegateTarget; // 图标
+                var playpause = e.currentTarget; // 标识
+
+                if ($(playpause).attr('title') == 'Pause') {
+                    // 暂停
+                    $(player).removeClass('audioplayer-playing');
+                    $(playpause).attr({'title': 'Play'}).find('a').html('Play');
+                    media.pause();
+                    UnSetTime();
+                    setTimeData();
+                } else {
+                    // 开始
+                    $(player).addClass('audioplayer-playing');
+                    $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
+                    media.play();
+                    SetTime();
+                    aduioEnd();//开启监听
+                }
+            },
+        }
+        var SetTime = function () {
+
+            var time = $('input[name=time]').val();
 //                media.addEventListener("loadedmetadata", function() { media.currentTime = time });
-               media.addEventListener("loadeddata", function() {  media.currentTime = time; setTimeData();
-               //media.addEventListener("canplay", function() {  media.currentTime = time; setTimeData();
- });
+            media.addEventListener("loadeddata", function() {  media.currentTime = time; setTimeData();
+                //media.addEventListener("canplay", function() {  media.currentTime = time; setTimeData();
+            });
 //                media.addEventListener("progress", function() { media.currentTime = time  });
 //                media.addEventListener("canplay", function() { media.currentTime = time });
-                id = setInterval(function () {
-                    var left = $(".audioplayer-bar-gun").css('left');
-                    // console.log(media.duration);
-                    if (!isNaN(media.duration)) {
-                        // 设置时间
-                        duration = timeDispose(Math.round(media.duration));
+            id = setInterval(function () {
+                var left = $(".audioplayer-bar-gun").css('left');
 
-                        currentTime = timeDispose(Math.round(media.currentTime));
+                if (!isNaN(media.duration)) {
+                    // 设置时间
+                    duration = timeDispose(Math.round(media.duration));
 
-                        $('.audioplayer-time-current').html(currentTime);
-                        $('.audioplayer-time-duration').html(duration);
+                    currentTime = timeDispose(Math.round(media.currentTime));
 
-                        //滑动条
-                        var width = $(".audioplayer-bar").width();
-                        var playedY = parseInt((width / media.duration) * Math.round(media.currentTime, 2));
-
-                        $(".bar").css("width", playedY);
-                        // var gundY = $(".audioplayer-bar-played").width();
-                        $(".leftGrip").css("left", playedY - 10);
-                    }
-                }, 1000);
-            }
-            // 监听
-            var aduioEnd = function () {
-                endedId = setInterval(function () {
-                    // console.log(media.ended);
-                    if (media.ended === true) {
-                        $('.audioplayer-playpause')[0].click();
-                        clearInterval(endedId);
-                    }
-                }, 1000)
-            }
-
-            var UnSetTime = function () {
-                clearInterval(id);
-                clearInterval(endedId);
-            }
-
-            // 时间算法
-            var timeDispose = function (number) {
-                var minute = parseInt(number / 60);
-                var second = parseInt(number % 60);
-                minute = minute >= 10 ? minute : "0" + minute;
-                second = second >= 10 ? second : "0" + second;
-                return minute + ":" + second;
-            }
-
-            //播放进度条的转变事件
-            var DurationProcessRange = function (rangeVal) {
-                if (!isNaN(media.duration)){
-
-                    media.currentTime = rangeVal * media.duration / 100;
-                    var currentTime = timeDispose(media.currentTime);
                     $('.audioplayer-time-current').html(currentTime);
-                    if (!media.paused) {
-                        media.play();
-                    }
+                    $('.audioplayer-time-duration').html(duration);
+
+                    //滑动条
+                    var width = $(".audioplayer-bar").width();
+                    var playedY = parseInt((width / media.duration) * Math.round(media.currentTime, 2));
+
+                    $(".bar").css("width", playedY);
+                    $(".leftGrip").css("left", playedY - 10);
                 }
+            }, 1000);
+        }
+        // 监听
+        var aduioEnd = function () {
+            endedId = setInterval(function () {
+                if (media.ended === true) {
+                    $('.audioplayer-playpause')[0].click();
+                    clearInterval(endedId);
+                }
+            }, 1000)
+        }
 
+        var UnSetTime = function () {
+            clearInterval(id);
+            clearInterval(endedId);
+        }
+
+        // 时间算法
+        var timeDispose = function (number) {
+            var minute = parseInt(number / 60);
+            var second = parseInt(number % 60);
+            minute = minute >= 10 ? minute : "0" + minute;
+            second = second >= 10 ? second : "0" + second;
+            return minute + ":" + second;
+        }
+
+        //播放进度条的转变事件
+        var DurationProcessRange = function (rangeVal) {
+            if (!isNaN(media.duration)){
+
+                media.currentTime = rangeVal * media.duration / 100;
+                var currentTime = timeDispose(media.currentTime);
+                $('.audioplayer-time-current').html(currentTime);
+                if (!media.paused) {
+                    media.play();
+                }
             }
 
-            var setTimeData = function(){
-                var class_id = $('input[name=class_id]').val();
-                var chapter_id = $('input[name=chapter_id]').val();
-                var user_id = $('input[name=user_id]').val();
-                var time = media.currentTime;
-                // console.log(media.currentTime);
-                $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
-            }
+        }
 
-            var postAjax = function()
-            {
-                setInterval(function () {
-                    setTimeData();
-                }, 5000)
-            }
+        var setTimeData = function(){
+            var class_id = $('input[name=class_id]').val();
+            var chapter_id = $('input[name=chapter_id]').val();
+            var user_id = $('input[name=user_id]').val();
+            var time = media.currentTime;
+            // console.log(media.currentTime);
+            $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
+        }
 
-            audio.init();
-        </script>
+        var postAjax = function()
+        {
+            setInterval(function () {
+                setTimeData();
+            }, 5000)
+        }
+        audio.init();
+    </script>
 
-
-        <!-- Initialize Swiper -->
-        <script>
-            $(function(){
-                var leftValues = 0;
-                var swiper = new Swiper('.swiper-container', {
+    <script>
+        $(function() {
+            var leftValues = 0;
+            var swiper = new Swiper('.swiper-container', {
 //                    effect : 'coverflow',
-                    lazyLoading: true,
-                    lazyLoadingInPrevNext : true,
-                    lazyLoadingInPrevNextAmount : 1,
-                    onInit: function(swiper){
-                        orientationChange();
-                    }
-                });
+                lazyLoading: true,
+                lazyLoadingInPrevNext: true,
+                lazyLoadingInPrevNextAmount: 1,
+                onInit: function (swiper) {
+                    setWindow();
+                }
+            });
 
-                $(window).on('orientationchange', function(){
-                    orientationChange();
-                });
-                $(window).resize(function(){
-                    orientationChange();
-                })
-
+            $(window).resize(function(){
+                setWindow();
             })
 
-            function orientationChange(){
+            function setWindow(){
+                var orientation = orientationChange();
                 var warpHeight = $('#warp').height();
-                var width = $(window).width(),
-                        height = $(window).height();
+                var height = $(window).height();
 
-                if(width > height) {
-                    $('.swiper-container-header').css({'height':height - warpHeight});
-                    $('img').css({'width':'auto', 'height':100 + '%'});
-                } else if(width < height) {
+                if (orientation == -90 || orientation = 90) {
                     $('img').css({'width':100 + '%', 'height':'auto'});
                     $('.swiper-container-header').css({'height':233});
+                } else if (orientation == 0 || orientation = 180) {
+                    $('.swiper-container-header').css({'height':height - warpHeight});
+                    $('img').css({'width':'auto', 'height':100 + '%'});
                 }
-
             }
-        </script>
-    </body>
+        })
+    </script>
+</body>
 </html>
