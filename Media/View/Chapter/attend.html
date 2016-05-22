@@ -76,30 +76,6 @@
             background: #fff;
         }
     </style>
-    <script>
-        function orientationChange() {
-            var orientation;
-            switch (window.orientation) {
-                case 0:
-                    orientation = 0;
-                    break;
-                case -90:
-                    orientation = -90;
-                    break;
-                case 90:
-                    orientation = 90;
-                    break;
-                case 180:
-                    orientation = 180;
-                    break;
-            }
-            return orientation;
-        }
-        addEventListener('load', function(){
-            orientationChange();
-            window.onorientationchange = orientationChange;
-        });
-    </script>
 </head>
 <body>
     <div class="swiper-container-header" style="width:100%;height: 233px;">
@@ -144,183 +120,229 @@
     </div>
 
     <include file="Public/footer" />
+    <input type="hidden" name="class_id" value="<{$Think.get.class_id}>">
+    <input type="hidden" name="chapter_id" value="<{$Think.get.chapter_id}>">
+    <input type="hidden" name="user_id" value="<{$user_id}>">
+    <input type="hidden" name="time" value="<{$time}>">
 
     <script>
         var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
         var media = new Audio;
         var id, endedId;
         var updateUrl = '<{$Think.config.APP_SITE_URL}>/chapter/update';
+    </script>
+    <script>
+        $(function () {
 
-        var audio = {
-            init: function () {
-                media.src = audioSrc;
 
-                // 开始按钮
-                $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
+            var audio = {
+                init: function () {
+                    media.src = audioSrc;
 
-                $('.audioplayer-bar').nstSlider({
-                    "left_grip_selector": ".leftGrip",
-                    "value_bar_selector": ".bar",
-                    "value_changed_callback": function(cause, leftValue, rightValue) {
-                        if (!isNaN(media.duration) && leftValue >= 0) {
-                            media.currentTime = Math.round((leftValue / 100) * media.duration);
-                            var currentTime = timeDispose(media.currentTime);
-                            $('.audioplayer-time-current').html(currentTime);
-                            if (!media.paused) {
-                                media.play();
+                    // 开始按钮
+                    $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
+                    $('.audioplayer-bar').nstSlider({
+                        "left_grip_selector": ".leftGrip",
+                        "value_bar_selector": ".bar",
+                        "value_changed_callback": function(cause, leftValue, rightValue) {
+                            if (!isNaN(media.duration) && leftValue >= 0) {
+
+                                media.currentTime = Math.round((leftValue / 100) * media.duration);
+                                var currentTime = timeDispose(media.currentTime);
+                                $('.audioplayer-time-current').html(currentTime);
+                                if (!media.paused) {
+                                    media.play();
+    //                                    setTimeData();
+                                }
                             }
+                            leftValues = leftValue;
+                            $(this).find('.bar').css('background', '#0080FF');
                         }
-                        leftValues = leftValue;
-                        $(this).find('.bar').css('background', '#0080FF');
-                    }
-                });
+                    });
 
+                    // 开始播放
+                    if (!media.autoPlay) {
+                        $('.audioplayer-playpause')[0].click();
+                        postAjax();
+                    };
+
+                },
                 // 开始播放
-                if (!media.autoPlay) {
-                    $('.audioplayer-playpause')[0].click();
-                    postAjax();
-                };
+                playpauseClick: function (e) {
+                    var player = e.delegateTarget; // 图标
+                    var playpause = e.currentTarget; // 标识
 
-            },
-            // 开始播放
-            playpauseClick: function (e) {
-                var player = e.delegateTarget; // 图标
-                var playpause = e.currentTarget; // 标识
+                    if ($(playpause).attr('title') == 'Pause') {
+                        // 暂停
+                        $(player).removeClass('audioplayer-playing');
+                        $(playpause).attr({'title': 'Play'}).find('a').html('Play');
+                        media.pause();
+                        UnSetTime();
+                        setTimeData();
+                    } else {
+                        // 开始
+                        $(player).addClass('audioplayer-playing');
+                        $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
+    //
+                        media.play();
+                        SetTime();
+                        aduioEnd();//开启监听
+                    }
+                },
+            }
+            var SetTime = function () {
 
-                if ($(playpause).attr('title') == 'Pause') {
-                    // 暂停
-                    $(player).removeClass('audioplayer-playing');
-                    $(playpause).attr({'title': 'Play'}).find('a').html('Play');
-                    media.pause();
-                    UnSetTime();
-                    setTimeData();
-                } else {
-                    // 开始
-                    $(player).addClass('audioplayer-playing');
-                    $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
-                    media.play();
-                    SetTime();
-                    aduioEnd();//开启监听
-                }
-            },
-        }
-        var SetTime = function () {
+                var time = $('input[name=time]').val();
+    //                media.addEventListener("loadedmetadata", function() { media.currentTime = time });
+                media.addEventListener("loadeddata", function() {  media.currentTime = time; setTimeData();
+                    //media.addEventListener("canplay", function() {  media.currentTime = time; setTimeData();
+                });
+    //                media.addEventListener("progress", function() { media.currentTime = time  });
+    //                media.addEventListener("canplay", function() { media.currentTime = time });
+                id = setInterval(function () {
+                    var left = $(".audioplayer-bar-gun").css('left');
+                    // console.log(media.duration);
+                    if (!isNaN(media.duration)) {
+                        // 设置时间
+                        duration = timeDispose(Math.round(media.duration));
 
-            var time = $('input[name=time]').val();
-//                media.addEventListener("loadedmetadata", function() { media.currentTime = time });
-            media.addEventListener("loadeddata", function() {  media.currentTime = time; setTimeData();
-                //media.addEventListener("canplay", function() {  media.currentTime = time; setTimeData();
-            });
-//                media.addEventListener("progress", function() { media.currentTime = time  });
-//                media.addEventListener("canplay", function() { media.currentTime = time });
-            id = setInterval(function () {
-                var left = $(".audioplayer-bar-gun").css('left');
+                        currentTime = timeDispose(Math.round(media.currentTime));
 
-                if (!isNaN(media.duration)) {
-                    // 设置时间
-                    duration = timeDispose(Math.round(media.duration));
+                        $('.audioplayer-time-current').html(currentTime);
+                        $('.audioplayer-time-duration').html(duration);
 
-                    currentTime = timeDispose(Math.round(media.currentTime));
+                        //滑动条
+                        var width = $(".audioplayer-bar").width();
+                        var playedY = parseInt((width / media.duration) * Math.round(media.currentTime, 2));
 
-                    $('.audioplayer-time-current').html(currentTime);
-                    $('.audioplayer-time-duration').html(duration);
-
-                    //滑动条
-                    var width = $(".audioplayer-bar").width();
-                    var playedY = parseInt((width / media.duration) * Math.round(media.currentTime, 2));
-
-                    $(".bar").css("width", playedY);
-                    $(".leftGrip").css("left", playedY - 10);
-                }
-            }, 1000);
-        }
-        // 监听
-        var aduioEnd = function () {
-            endedId = setInterval(function () {
-                if (media.ended === true) {
-                    $('.audioplayer-playpause')[0].click();
-                    clearInterval(endedId);
-                }
-            }, 1000)
-        }
-
-        var UnSetTime = function () {
-            clearInterval(id);
-            clearInterval(endedId);
-        }
-
-        // 时间算法
-        var timeDispose = function (number) {
-            var minute = parseInt(number / 60);
-            var second = parseInt(number % 60);
-            minute = minute >= 10 ? minute : "0" + minute;
-            second = second >= 10 ? second : "0" + second;
-            return minute + ":" + second;
-        }
-
-        //播放进度条的转变事件
-        var DurationProcessRange = function (rangeVal) {
-            if (!isNaN(media.duration)){
-
-                media.currentTime = rangeVal * media.duration / 100;
-                var currentTime = timeDispose(media.currentTime);
-                $('.audioplayer-time-current').html(currentTime);
-                if (!media.paused) {
-                    media.play();
-                }
+                        $(".bar").css("width", playedY);
+                        // var gundY = $(".audioplayer-bar-played").width();
+                        $(".leftGrip").css("left", playedY - 10);
+                    }
+                }, 1000);
+            }
+            // 监听
+            var aduioEnd = function () {
+                endedId = setInterval(function () {
+                    // console.log(media.ended);
+                    if (media.ended === true) {
+                        $('.audioplayer-playpause')[0].click();
+                        clearInterval(endedId);
+                    }
+                }, 1000)
             }
 
-        }
+            var UnSetTime = function () {
+                clearInterval(id);
+                clearInterval(endedId);
+            }
 
-        var setTimeData = function(){
-            var class_id = $('input[name=class_id]').val();
-            var chapter_id = $('input[name=chapter_id]').val();
-            var user_id = $('input[name=user_id]').val();
-            var time = media.currentTime;
-            // console.log(media.currentTime);
-            $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
-        }
+            // 时间算法
+            var timeDispose = function (number) {
+                var minute = parseInt(number / 60);
+                var second = parseInt(number % 60);
+                minute = minute >= 10 ? minute : "0" + minute;
+                second = second >= 10 ? second : "0" + second;
+                return minute + ":" + second;
+            }
 
-        var postAjax = function()
-        {
-            setInterval(function () {
-                setTimeData();
-            }, 5000)
-        }
-        audio.init();
+            //播放进度条的转变事件
+            var DurationProcessRange = function (rangeVal) {
+                if (!isNaN(media.duration)){
+
+                    media.currentTime = rangeVal * media.duration / 100;
+                    var currentTime = timeDispose(media.currentTime);
+                    $('.audioplayer-time-current').html(currentTime);
+                    if (!media.paused) {
+                        media.play();
+                    }
+                }
+
+            }
+
+            var setTimeData = function(){
+                var class_id = $('input[name=class_id]').val();
+                var chapter_id = $('input[name=chapter_id]').val();
+                var user_id = $('input[name=user_id]').val();
+                var time = media.currentTime;
+                // console.log(media.currentTime);
+                $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
+            }
+
+            var postAjax = function()
+            {
+                setInterval(function () {
+                    setTimeData();
+                }, 5000)
+            }
+
+            audio.init();
+        })
     </script>
-
     <script>
-        $(function() {
+        $(function(){
             var leftValues = 0;
             var swiper = new Swiper('.swiper-container', {
 //                    effect : 'coverflow',
                 lazyLoading: true,
-                lazyLoadingInPrevNext: true,
-                lazyLoadingInPrevNextAmount: 1,
-                onInit: function (swiper) {
-                    setWindow();
+                lazyLoadingInPrevNext : true,
+                lazyLoadingInPrevNextAmount : 1,
+                onInit: function(swiper){
+                    orientationChange();
                 }
             });
 
+            $(window).on('orientationchange', function(){
+                orientationChange();
+            });
             $(window).resize(function(){
-                setWindow();
+                orientationChange();
             })
 
-            function setWindow(){
-                var orientation = orientationChange();
-                var warpHeight = $('#warp').height();
-                var height = $(window).height();
+        })
 
-                if (orientation == -90 || orientation = 90) {
-                    $('img').css({'width':100 + '%', 'height':'auto'});
-                    $('.swiper-container-header').css({'height':233});
-                } else if (orientation == 0 || orientation = 180) {
+        function orientationChange(){
+            var warpHeight = $('#warp').height();
+            var width = $(window).width(),
+                    height = $(window).height();
+
+            if(checkPlatform() == 1) {
+                $('img').css({'width':'auto', 'height':233});
+                $('.swiper-container-header').css({'height':233});
+            } else if(checkPlatform() == 2) {
+                if(width > height) {
                     $('.swiper-container-header').css({'height':height - warpHeight});
                     $('img').css({'width':'auto', 'height':100 + '%'});
+                } else if(width < height) {
+                    $('img').css({'width':100 + '%', 'height':'auto'});
+                    $('.swiper-container-header').css({'height':233});
                 }
             }
-        })
+        }
+
+
+
+        function checkPlatform(){
+            //平台、设备和操作系统
+            var system = {
+                win: false,
+                mac: false,
+                xll: false,
+                ipad:false
+            };
+            //检测平台
+            var p = navigator.platform;
+            system.win = p.indexOf("Win") == 0;
+            system.mac = p.indexOf("Mac") == 0;
+            system.x11 = (p == "X11") || (p.indexOf("Linux") == 0);
+            system.ipad = (navigator.userAgent.match(/iPad/i) != null)?true:false;
+            //跳转语句，如果是手机访问就自动跳转到wap.baidu.com页面
+            if (system.win || system.mac || system.xll||system.ipad) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
     </script>
 </body>
 </html>
