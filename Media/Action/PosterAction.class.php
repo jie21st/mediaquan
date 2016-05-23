@@ -19,7 +19,10 @@ class PosterAction extends CommonAction
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
 
         if ($userInfo['buy_num'] == 0) {
-            exit('非法操作');
+            //$text = '<a href="'.C('MEDIA_SITE_URL').'">购买课程</a>';
+            //$this->_sendText($userInfo, $text);
+            //你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。立即点击“成为东家”
+            exit('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.C('MEDIA_SITE_URL').'">立即点击“成为东家”</a>');
         }
 
         $posterInfo = $this->getUserPosterInfo($uid);
@@ -169,6 +172,18 @@ class PosterAction extends CommonAction
             'image'     =>  array('media_id' => $mediaInfo['media_id'])
         );
         $wechat->sendCustomMessage($image);
+    }
+
+    private function _sendText($userInfo, $text)
+    {
+        $wechat = new Wechat;
+        $text = array(
+            'touser'    =>  $userInfo['user_wechatopenid'],
+            'msgtype'   =>  'text',
+            'text'     =>  array('content' => $text)
+        );
+
+        $wechat->sendCustomMessage($text);
     }
 
 }

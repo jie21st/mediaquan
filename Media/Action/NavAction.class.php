@@ -37,12 +37,12 @@ class NavAction extends CommonAction
                 array(
                     "type" => "view",
                     "name" => "全部商品",
-                    "url"  => "http://test.mediaquan.com/"
+                    "url"  => C('MEDIA_SITE_URL') 
                 ),
                 array(
                     "type" => "view",
                     "name" => "会员中心",
-                    "url"  => "http://test.mediaquan.com/"
+                    "url"  => C('MEDIA_SITE_URL') . "/my"
                 ),
                 array(
                     "name" => "服务中心",
@@ -50,12 +50,12 @@ class NavAction extends CommonAction
                         array(
                             "type" => "view",
                             "name" => "新手指南",
-                            "url"  => "http://test.mediaquan.com/"
+                            "url"  => C('MEDIA_SITE_URL') 
                         ),
                         array(
                             "type" => "view",
                             "name" => "售后服务",
-                            "url"  => "http://test.mediaquan.com/"
+                            "url"  => C('MEDIA_SITE_URL') . "/contact"
                         ),
                         array(
                             "type" => "click",
