@@ -53,12 +53,13 @@
 //                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
 //                desc: '<{$class_info.fx_desc}>'
 //            };
-            $.wechat.share({
-                title: '<{$class_info.fx_title}>',
-                link: '',
-                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                desc: '<{$class_info.fx_desc}>',
-            });
+//            $.wechat.share({
+//                title: '<{$class_info.fx_title}>',
+//                link: '',
+//                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+//                desc: '<{$class_info.fx_desc}>',
+//            });
+            $.wechat.hideOptionMenu();
             /*
             $.ajax({
                 url: '<{$Think.config.WECHAT_SITE_URL}>/wechat/getJsSign',
