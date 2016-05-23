@@ -112,7 +112,7 @@ class PredepositAction extends CommonAction
                     'touser' => session('openid'),
                     'msgtype' => 'text',
                     'text' => [
-                        'content' => '提现成功，提现金额'.glzh_price_format($pdcAmount)
+                        'content' => '提现成功，提现金额'.glzh_price_format($pdcAmount).'元'
                     ]
                 ]);
                 
