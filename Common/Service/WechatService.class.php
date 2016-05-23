@@ -70,7 +70,6 @@ class WechatService
     {
         $messageModel = D('wechatMessage');
         $messageId = $messageModel->add([
-            'message_type' => 'kfmsg',
             'message_data' => json_encode($data),
             'message_time' => time(),
         ]);
