@@ -62,9 +62,14 @@ class WechatAction extends CommonAction
                         \Think\Log::write('关注事件自带parent_id='.$parentId);
                     } else {
                         $defaultParents = C('USER_DEFAULT_PARENT');
-                        shuffle($defaultParents);
-                        $parentId = end($defaultParents);
-                        \Think\Log::write('关注事件默认parent_id='.$parentId);
+                        if (is_array($defaultParents) && !empty($defaultParents)) {
+                            shuffle($defaultParents);
+                            $parentId = end($defaultParents);
+                            \Think\Log::write('关注事件默认parent_id='.$parentId);
+                        } else {
+                            $parentId = 0;
+                            \Think\Log::write('关注事件无parent_id');
+                        }
                     }
                     $this->userspread($userInfo, $parentId);
                     $this->wechat->text("感谢关注")->reply();
@@ -144,6 +149,9 @@ class WechatAction extends CommonAction
      * @return type
      */
     private function userspread($userInfo, $parentId){
+        if ($parentId == 0) {
+            return;
+        }
         try {
             $userModel = new \Common\Model\UserModel;
 
