@@ -15,7 +15,7 @@ class PosterService
         $this->uid = $userInfo['user_id'];
         $this->wechatTime = $wechatTime;
         $this->times = $times;
-
+        $this->userName = ($userInfo['user_truename'])? $userInfo['user_truename'] : $userInfo['user_nickname'];
         $this->_setUserImageSrc($userInfo['user_avatar']);
         if(false === $this->_getWechatRQCode()) return false;
         $this->_setConfig();
@@ -71,17 +71,17 @@ class PosterService
             'src' => array(
                 array(
                     'srcPath'   =>  $this->wechatRQCode,     // 图片路径
-                    'srcX'      =>  '167',      // X轴位置
-                    'srcY'      =>  '460',      // Y轴位置
-                    'srcW'      =>  '416',      // 图片宽度
-                    'srcH'      =>  '420',      // 图片高度
+                    'srcX'      =>  '168',      // X轴位置
+                    'srcY'      =>  '570',      // Y轴位置
+                    'srcW'      =>  '412',      // 图片宽度
+                    'srcH'      =>  '412',      // 图片高度
                 ),
                 array(
                     'srcPath'   =>  $this->userImageSrc,   // 图片路径
-                    'srcX'      =>  '275',      // X轴位置
-                    'srcY'      =>  '167',      // Y轴位置
-                    'srcW'      =>  '200',      // 图片宽度
-                    'srcH'      =>  '200',      // 图片高度
+                    'srcX'      =>  '300',      // X轴位置
+                    'srcY'      =>  '267',      // Y轴位置
+                    'srcW'      =>  '150',      // 图片宽度
+                    'srcH'      =>  '150',      // 图片高度
                 ),
             ),
             'font' => array(
@@ -90,10 +90,20 @@ class PosterService
                      'fontPath'  => $fontPath,// 字体路径
                      'fontSize'  => '16', 				// 字体大小
                      'fontColor' => '91,91,91', 			// 字体颜色
-                     'fontX'     => '167', 				// X轴位置 支持center(自动居中)
-                     'fontY'     => '920',					// Y轴位置
+                     'fontX'     => '147', 				// X轴位置 支持center(自动居中)
+                     'fontY'     => '1040',					// Y轴位置
                      'adjust'    => '0' 					// 位置调整
                  ),
+                 array(
+                     'text'      => $this->userName, 	// 字体路径
+                     'fontPath'  => $fontPath,// 字体路径
+                     'fontSize'  => '20', 				// 字体大小
+                     'fontColor' => '91,91,91', 			// 字体颜色
+                     'fontX'     => 'center', 				// X轴位置 支持center(自动居中)
+                     'fontY'     => '466',					// Y轴位置
+                     'adjust'    => '0' 					// 位置调整
+                 ),
+
             ),
         );
 
