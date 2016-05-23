@@ -21,10 +21,10 @@
                             self.signData = res.data;
                             wx.config({
                                 debug: false,
-                                appId: params.appId,
-                                timestamp: params.timestamp,
-                                nonceStr: params.nonceStr,
-                                signature: params.signature,
+                                appId: res.data.appId,
+                                timestamp: res.data.timestamp,
+                                nonceStr: res.data.nonceStr,
+                                signature: res.data.signature,
                                 jsApiList: [
                                     'hideOptionMenu',
                                     'showOptionMenu',
