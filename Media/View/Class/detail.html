@@ -42,19 +42,6 @@
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.wechat.js"></script>
         <script type="text/javascript">
-            $.wechat.enable().fail(function() {
-                $('body').addClass('modal-active');
-            }).done(function() {
-                console.log('erroraaaa')
-            });
-            $.wechat.setShareOption({
-                title: '<{$class_info.fx_title}>',
-                img_url: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                desc: '<{$class_info.fx_desc}>',
-                callback: function(response) {
-                    alert(response);
-                }
-            });
             $().ready(function () {
                 $('.btn-join').click(function () {
                     window.location.href = $(this).data('link') + window.location.search;
@@ -65,6 +52,12 @@
 //                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
 //                desc: '<{$class_info.fx_desc}>'
 //            };
+            $.wechat.share({
+                title: '<{$class_info.fx_title}>',
+                link: '',
+                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+                desc: '<{$class_info.fx_desc}>',
+            });
             /*
             $.ajax({
                 url: '<{$Think.config.WECHAT_SITE_URL}>/wechat/getJsSign',
