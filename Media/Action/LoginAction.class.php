@@ -43,6 +43,13 @@ class LoginAction extends CommonAction
             $userInfo['user_nickname']         = remove_emoji($authUserInfo['nickname']);
             $userInfo['user_sex']              = $authUserInfo['sex'];
             $userInfo['user_wechatinfo']       = serialize($authUserInfo);
+            
+            // 取的默认推荐人
+            $parents = C('USER_DEFAULT_PARENT');
+            if (is_array($parents) && !empty($parents)) {
+                shuffle($parents);
+                $userInfo['parent_id'] = end($parents);
+            }
             // 地区信息
 //            if ($authUserInfo['province'] != '' && $authUserInfo['city'] != '') {
 //                $region = array(
