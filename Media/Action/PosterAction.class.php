@@ -18,20 +18,30 @@ class PosterAction extends CommonAction
         $uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
 
-        if ($userInfo['buy_num'] == 0) {
-            //$text = '<a href="'.C('MEDIA_SITE_URL').'">购买课程</a>';
-            //$this->_sendText($userInfo, $text);
-            //你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。立即点击“成为东家”
-            exit('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.C('MEDIA_SITE_URL').'">立即点击“成为东家”</a>');
+        if (empty($userInfo)) {
+            return $this->returnJson(0, '获取用户信息失败', '');
         }
+
+//        if ($userInfo['buy_num'] == 0) {
+//            //$text = '<a href="'.C('MEDIA_SITE_URL').'">购买课程</a>';
+//            //$this->_sendText($userInfo, $text);
+//            //你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。立即点击“成为东家”
+//            exit('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.C('MEDIA_SITE_URL').'">立即点击“成为东家”</a>');
+//        }
 
         $posterInfo = $this->getUserPosterInfo($uid);
 
         if(time() > $posterInfo['poster_end_time']) {
             //制作海报
             $imageSrc   = $this->_getImageInfo($userInfo);
+            if(false === $imageSrc) {
+                return $this->returnJson(0, '制作海报失败', '');
+            }
             //微信上传
             $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
+            if(false === $mediaInfo) {
+                return $this->returnJson(0, '微信上传失败', '');
+            }
         } else if(time() > $posterInfo['wechat_upload_end_time']) {
             $imageSrc['pathInfo']   = $posterInfo['poster_src'];
             $imageSrc['poster_id']  = $posterInfo['id'];
@@ -39,6 +49,9 @@ class PosterAction extends CommonAction
             $imageSrc['poster_end_time']  = $posterInfo['poster_end_time'];
             //微信上传
             $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
+            if(false === $mediaInfo) {
+                return $this->returnJson(0, '微信上传失败', '');
+            }
         } else {
             $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
             $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
@@ -47,9 +60,15 @@ class PosterAction extends CommonAction
         }
 
         //发送消息
-        $this->_sendWechat($userInfo, $mediaInfo);
-        $this->assign('imageSrc', $imageSrc['pathName']);
-        $this->display();
+        $sendBool = $this->_sendWechat($userInfo, $mediaInfo);
+
+        if ( false === $sendBool) {
+            return $this->returnJson(0, '发送消息失败', '');
+        }
+
+        return $this->returnJson(1, 'success', '');
+        //$this->assign('imageSrc', $imageSrc['pathName']);
+        //$this->display();
     }
 
     /**
@@ -86,7 +105,7 @@ class PosterAction extends CommonAction
 
 
         if(false === $imageSrc) {
-            exit('海报制作失败!请重新生成或者联系客服人员');
+            return false;
         }
 
         $data = array(
@@ -101,7 +120,7 @@ class PosterAction extends CommonAction
         $state = D('Poster', 'Model')->addData($data);
 
         if(!$state) {
-            exit('海报制作失败!请重新生成或者联系客服人员');
+            return false;
         }
 
         $imageSrc['poster_id'] = $state;
@@ -127,14 +146,15 @@ class PosterAction extends CommonAction
 
         // 上传失败
         if(false === $imagesInfo) {
-            $error = $wechat->error();
-
-            $data = array(
-                'wechat_error_code'     => $error['errCode'],
-                'wechat_error_message'  => $error['errMsg'],
-            );
-            D('Poster', 'Model')->posterUpdate($condition, $data);
-            exit('海报制作失败!请重新生成或者联系客服人员');
+            return false;
+//            $error = $wechat->error();
+//
+//            $data = array(
+//                'wechat_error_code'     => $error['errCode'],
+//                'wechat_error_message'  => $error['errMsg'],
+//            );
+//            D('Poster', 'Model')->posterUpdate($condition, $data);
+//            exit('海报制作失败!请重新生成或者联系客服人员');
         }
 
         //上传成功
@@ -149,7 +169,8 @@ class PosterAction extends CommonAction
         $bool = D('Poster', 'Model')->posterUpdate($condition, $data);
 
         if(!$bool) {
-            exit('海报制作失败!请重新生成或者联系客服人员');
+            return false;
+//            exit('海报制作失败!请重新生成或者联系客服人员');
         }
 
         return array(
@@ -171,19 +192,19 @@ class PosterAction extends CommonAction
             'msgtype'   =>  'image',
             'image'     =>  array('media_id' => $mediaInfo['media_id'])
         );
-        $wechat->sendCustomMessage($image);
+        return $wechat->sendCustomMessage($image);
     }
 
-    private function _sendText($userInfo, $text)
-    {
-        $wechat = new Wechat;
-        $text = array(
-            'touser'    =>  $userInfo['user_wechatopenid'],
-            'msgtype'   =>  'text',
-            'text'     =>  array('content' => $text)
-        );
-
-        $wechat->sendCustomMessage($text);
-    }
+//    private function _sendText($userInfo, $text)
+//    {
+//        $wechat = new Wechat;
+//        $text = array(
+//            'touser'    =>  $userInfo['user_wechatopenid'],
+//            'msgtype'   =>  'text',
+//            'text'     =>  array('content' => $text)
+//        );
+//
+//        $wechat->sendCustomMessage($text);
+//    }
 
 }
