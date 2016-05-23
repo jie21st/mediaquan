@@ -173,12 +173,20 @@ class ClassService
             throw new \Exception('插入课程用户信息失败');
         }
         
-        // 增加学习人数
+        // 增加课程学习人数
         $data = array();
         $data['study_num'] = ['exp', 'study_num+1'];
         $update = $classModel->editClass($data, ['class_id' => $classOrder['class_id']]);
         if (! $update) {
-            throw new \Exception('课程信息失败');
+            throw new \Exception('更新课程学习人数失败');
+        }
+        
+        // 增加用户购买次数
+        $data = array();
+        $data['buy_num'] = ['exp', 'buy_num+1'];
+        $result = $userModel->editUser($data, ['user_id' => $classOrder['buyer_id']]);
+        if (! $result) {
+            throw new \Exception('更新用户购买次数失败');
         }
         
         // 购买通知
