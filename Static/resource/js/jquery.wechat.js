@@ -7,7 +7,7 @@
         init: function(callback)
         {
             var self = this;
-            if (isRequest === false) {
+            if (this.isRequest === false) {
                 $.ajax({
                     url: '/wechat/getJsSign',
                     type: 'GET',
