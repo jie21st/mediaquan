@@ -20,15 +20,16 @@
 
     </body>
 
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
     <script type="text/javascript">
         var link = "";
         var shareData = {
             title:  '售后服务',
-            image:  'RESOURCE_SITE_URL/mobile/images/fl-all-logo.jpg',
+            image:  'RESOURCE_SITE_URL/image/kf.jpg',
 //            link:   '<{$Think.config.MEDIA_SITE_URL}>/',
-            desc:   '售后服务'
+            desc:   '我们将竭尽全力为您提供最满意的服务！'
         };
 
         $.ajax({
@@ -51,6 +52,7 @@
                     xurl: shareData.link
                 });
             }
+
         });
     </script>
 </html>
