@@ -40,33 +40,32 @@
             
         </div>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.wechat.js"></script>
         <script type="text/javascript">
-            function onBridgeReady() {
-                WeixinJSBridge.call('showOptionMenu');
-            }
-            if (typeof WeixinJSBridge == "undefined") {
-                if (document.addEventListener) {
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                } else if (document.attachEvent) {
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            $.wechat.enable().fail(function() {
+                $('body').addClass('modal-active');
+            }).done(function() {
+                console.log('erroraaaa')
+            });
+            $.wechat.setShareOption({
+                title: '<{$class_info.fx_title}>',
+                img_url: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+                desc: '<{$class_info.fx_desc}>',
+                callback: function(response) {
+                    alert(response);
                 }
-            } else {
-                onBridgeReady();
-            }
-
+            });
             $().ready(function () {
                 $('.btn-join').click(function () {
                     window.location.href = $(this).data('link') + window.location.search;
                 })
             });
-            var shareData = {
-                title: '<{$class_info.fx_title}>',
-                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                desc: '<{$class_info.fx_desc}>'
-            };
+//            var shareData = {
+//                title: '<{$class_info.fx_title}>',
+//                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+//                desc: '<{$class_info.fx_desc}>'
+//            };
+            /*
             $.ajax({
                 url: '<{$Think.config.WECHAT_SITE_URL}>/wechat/getJsSign',
                 type: 'GET',
@@ -87,7 +86,7 @@
                         xurl: res.data.url
                     });
                 }
-            });
+            });*/
         </script>
     </body>
 </html>
