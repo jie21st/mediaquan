@@ -3,17 +3,23 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-        <title>报名成功</title>
+        <title>提示</title>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
     <body>
-        <div class="tixian">
-            <p><img src="RESOURCE_SITE_URL/mobile/images/dui.jpg" width="65" height="65" /></p>
-            <p>恭喜您，已购买成功</p>
-            <div class="action">
+        <div class="ui-msg">
+            <div class="icon_area"><img src="RESOURCE_SITE_URL/mobile/images/dui.jpg" width="65" height="65" /></div>
+            <div class="text_area">
+                <h2 class="msg_title">恭喜您，已购买成功</h2>
+            </div>
+            <div class="btn_area">
+                <p class="mb10">
                 <a class="btn btn-block btn-blue" href="javascript:;" data-link="/chapter/classList?class_id=<{$order_info.class_id}>">去听课</a>
-                <a class="btn btn-block btn-gray" href="javascript:;" data-link="/">返回课程列表</a>
+                </p>
+                <p class="mb10">
+                    <a class="btn btn-block btn-gray" href="javascript:;" data-link="/">返回课程列表</a>
+                </p>
             </div>
         </div>
         <script>

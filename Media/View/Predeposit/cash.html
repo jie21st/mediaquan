@@ -5,12 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
-        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/layer.css" />
         <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-        <style>
-            .action {padding:0 20px; margin-top: 35px;}
-            .action .btn {line-height: 30px;}
-        </style>
     </head>
     <body>
         <div class="zd-top zd-top2">
@@ -20,16 +15,15 @@
                 <p class="qianshu qianshu2"><{$user_info.available_predeposit|glzh_price_format}><span>&nbsp;&nbsp;&nbsp;元</span></p>
             </div>
         </div>
-
-        <p class="zdbt">账单明细</p>
+        <p class="zdbt">现金提现</p>
         <form id="field">
-        <div class="ml">
-            <p class="xm">提现账户:<span><input type="text" name="pdc_user_name" value="" placeholder="微信实名认证姓名" /></span></p>
-            <p class="sjh">提现金额:<span><input type="number" name="pdc_amount" placeholder="本次最多提现<{$amount_limit|number_format=2}>元" data-max-amount="<{$amount_limit}>" /></span></p>
-            <p class="ts">提现金额将自动存入微信零钱中</p>
-        </div>
+            <div class="form">
+                <div class="form-item"><label>提现账户:</label><input type="text" name="pdc_user_name" value="" placeholder="微信实名认证姓名" /></div>
+                <div class="form-item"><label>提现金额:</label><input type="number" name="pdc_amount" placeholder="本次最多提现<{$amount_limit|number_format=2}>元" data-max-amount="<{$amount_limit}>" /></div>
+                <div class="form-tips">提现金额将自动存入微信零钱中</div>
+            </div>
         </form>
-        <div class="action">
+        <div class="btn_area">
             <a href="javascript:;" class="btn btn-block btn-blue btn-next">确认</a>
         </div>
         <include file="Public/footer" />
@@ -48,7 +42,7 @@
                 onBridgeReady();
             }
         </script>
-        <script src="RESOURCE_SITE_URL/mobile/js/layer.js"></script>
+        <script src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
         <script>
             $(document).ready(function () {
                 $('input[name=pdc_amount]').val('');
@@ -82,7 +76,6 @@
                                 window.location.replace('/predeposit/cash_ok.html');
                             } else {
                                 layer.open({
-                                    style: 'width:220px;',
                                     content: '提现失败，请稍后重试！',
                                     btn: ['确认']
                                 });
@@ -99,7 +92,6 @@
 
                 if ($.trim(o.pdc_user_name) === '') {
                     layer.open({
-                        style: 'width:220px;',
                         content: '请输入真实姓名',
                         btn: ['确认']
                     });
@@ -108,7 +100,6 @@
 
                 if ($.trim(o.pdc_amount) === '') {
                     layer.open({
-                        style: 'width:220px;',
                         content: '请输入提现金额',
                         btn: ['确认']
                     });
@@ -119,7 +110,6 @@
                 var pdc_amount = parseFloat(o.pdc_amount);
                 if (pdc_amount < 1) {
                     layer.open({
-                        style: 'width:220px;',
                         content: '提现金额不能少于1元',
                         btn: ['确认']
                     });
@@ -143,7 +133,6 @@
                 $.each(paramsArrs, function (i, n) {
                     var nn = n['name'],
                             nv = n['value'];
-                    //alert(nn+'=>'+nv);
                     params[nn] = nv;
                 });
 
