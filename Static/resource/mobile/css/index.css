@@ -48,6 +48,9 @@ a{display:block; text-decoration:none; color: #666}
 /*我的订单*/
 .sjzt{border-bottom:dashed 1px #e1dfda; font-size:13px; margin-bottom:13px; padding-bottom:9px;}
 .sjzt span{float:right; color:#ff415f;}
+.sjzt span.order-status-0 {color:#bebec2}
+.sjzt span.order-status-10 {color:#ff415f}
+.sjzt span.order-status-20 {color:#222}
 .sjzt .wc{float:right; color:#222;}
 .jxsctk .jiage{color:#ff0000; font-size:15px; position:absolute; right:5px; top:53px;}
 .jxsctk .jiage2{top:34px;}

@@ -11,7 +11,7 @@
         <notempty name="order_list">
         <volist name="order_list" id="order">
             <div class="jxsctk" data-id="<{$order.order_id}>" data-ordersn="<{$order.order_sn}>">
-                <p class="sjzt"><{$order.create_time|date="Y-m-d H:i:s", ###}><span><{$order.state_desc}></span></p>
+                <p class="sjzt"><{$order.create_time|date="Y-m-d H:i:s", ###}><span class="order-status-<{$order.order_state}>"><{$order.state_desc}></span></p>
                 <ul>
                     <li class="tp"><img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$order.class_image}>" width="76" height="60" /></li>
                     <li>
