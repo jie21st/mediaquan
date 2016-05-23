@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
-        <title>全部课程</title>
+        <title>售后服务</title>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
     </head>
     <body>
@@ -17,7 +17,42 @@
             <p>二维码：微信扫一扫，立即添加</p>
             <p><img src="RESOURCE_SITE_URL/mobile/images/keewm.jpg" width="140" height="140" /></p>
         </div>
+
     </body>
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
+    <script type="text/javascript">
+        var link = "";
+        var shareData = {
+            title:  '售后服务',
+            image:  'RESOURCE_SITE_URL/mobile/images/fl-all-logo.jpg',
+//            link:   '<{$Think.config.MEDIA_SITE_URL}>/',
+            desc:   '售后服务'
+        };
+
+        $.ajax({
+            url: '<{$Think.config.MEDIA_SITE_URL}>/wechat/getJsSign',
+            type: 'GET',
+            data: {
+                url: encodeURIComponent(window.location.href)
+            },
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            success: function(res){
+                WXFX_GLZ.init({
+                    appid: res.data.appId,
+                    nonceStr: res.data.nonceStr,
+                    signature: res.data.signature,
+                    timestamp: res.data.timestamp,
+                    infoTitle: shareData.title,
+                    infoImgUrl: shareData.image,
+                    infoDesc: shareData.desc,
+                    xurl: shareData.link
+                });
+            }
+        });
+    </script>
 </html>
 
 
