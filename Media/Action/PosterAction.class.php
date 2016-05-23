@@ -12,10 +12,10 @@ class PosterAction extends CommonAction
     /**
      * 获取海报
      */
-    public function getPosterOp()
+    public function getPosterOp($uid)
     {
         // 用户信息
-        $uid = session('user_id');
+        //$uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
 
         if (empty($userInfo)) {
@@ -32,6 +32,7 @@ class PosterAction extends CommonAction
         $posterInfo = $this->getUserPosterInfo($uid);
 
         if(time() > $posterInfo['poster_end_time']) {
+            //echo '重新制作';
             //制作海报
             $imageSrc   = $this->_getImageInfo($userInfo);
             if(false === $imageSrc) {
@@ -43,6 +44,7 @@ class PosterAction extends CommonAction
                 return $this->returnJson(0, '微信上传失败', '');
             }
         } else if(time() > $posterInfo['wechat_upload_end_time']) {
+            //echo '微信上传';
             $imageSrc['pathInfo']   = $posterInfo['poster_src'];
             $imageSrc['poster_id']  = $posterInfo['id'];
             $imageSrc['pathName']   = $posterInfo['poster_images_name'];
@@ -53,6 +55,7 @@ class PosterAction extends CommonAction
                 return $this->returnJson(0, '微信上传失败', '');
             }
         } else {
+            //echo '无变化';
             $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
             $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
             $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
