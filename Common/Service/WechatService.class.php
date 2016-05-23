@@ -81,13 +81,12 @@ class WechatService
         $json = $this->wechat->sendCustomMessage($data);
         if ($json) {
             $messageModel->where(['message_id' => $messageId])->save([
-                'message_state' => 1,
-                'return_msg_id' => $json['msgid']
+                'message_state' => 1
             ]);
         } else {
             $messageModel->where(['message_id' => $messageId])->save([
                 'message_state' => 2,
-                'message_faildesc' => $json['error']
+                'message_faildesc' => $json['errcode'].': '.$json['errmsg']
             ]);
         }
         return true;
