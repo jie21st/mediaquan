@@ -2,13 +2,7 @@
     'use strict';
     
     $.wechat = {
-        init: function(){
-            if (!window.wx) {
-                $('body').append('<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>');
-            }
-        },
         share: function(options) {
-            this.init();
             $.ajax({
                 url: '/wechat/getJsSign',
                 type: 'GET',
