@@ -49,7 +49,6 @@
                 
                 
                 layer.open({
-                    style: 'width:220px;',
                     content: '你确定要取消该订单吗？',
                     btn: ['确认', '取消'],
                     shadeClose: false,
@@ -62,14 +61,12 @@
                             success: function (res) {
                                 if(res.code == 1) {
                                     layer.open({
-                                        style: 'width:220px',
                                         time: 1,
                                         content: '取消成功'
                                     });
                                     tr.find('.caoz').remove();
                                 } else {
                                     layer.open({
-                                        style: 'width:220px',
                                         time: 1,
                                         content: '取消失败',
                                     })
