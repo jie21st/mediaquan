@@ -49,11 +49,16 @@
                 })
             });
             // 设置分享
-            $.wechat.share({
-                title: '<{$class_info.fx_title}>',
-                link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
-                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                desc: '<{$class_info.fx_desc}>',
+            $.wechat.init(function(){
+                var shareData = {
+                    title: '<{$class_info.fx_title}>',
+                    link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
+                    imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+                    desc: '<{$class_info.fx_desc}>',
+                };
+                wx.showOptionMenu();
+                wx.onMenuShareAppMessage(shareData);
+                wx.onMenuShareTimeline(shareData);
             });
         </script>
     </body>
