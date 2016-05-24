@@ -32,6 +32,13 @@ class CommonAction extends Action
             
             exit('登录成功');
         }
+        
+        // 用户分享
+        $seller = I('get.seller', 0, 'intval');
+        if ($seller >= 0) {
+            session('from_seller', $seller);
+        }
+        
         // 判断是否登录
         if ($this->needAuth) {
             $this->checkLogin();
