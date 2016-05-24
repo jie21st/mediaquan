@@ -53,6 +53,14 @@
             this.init(function(){
                 wx.ready(function(){
                     wx.showOptionMenu();
+                    $.wechat.hideMenuItems([
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:openWithSafari',
+                        'menuItem:openWithQQBrowser'
+                    ]);
                     wx.onMenuShareAppMessage(options);
                     wx.onMenuShareTimeline(options);
                 })
