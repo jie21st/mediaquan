@@ -35,43 +35,49 @@
         </form>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
-        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/utils.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script>
-            $('.btn-pay').click(function () {
-                var t = $(this);
-                if (t.is('.disabled')) {
-                    return false;
-                }
+            $(function(){
+                $.wechat.init(function(){
+                    wx.hideOptionMenu();
+                });
+                
+                $('.btn-pay').click(function () {
+                    var t = $(this);
+                    if (t.is('.disabled')) {
+                        return false;
+                    }
 
-                var username = $(':input[name="username"]').val();
-                if ($.trim(username) == '') {
-                    layer.open({
-                        content: '请输入姓名',
-                        btn: ['确认']
-                    });
-                    return false;
-                }
-                var mobile = $(':input[name="mobile"]').val();
-                if ($.trim(mobile) == '') {
-                    layer.open({
-                        content: '请输入手机号',
-                        btn: ['确认']
-                    });
-                    return false;
-                }
-                if (!/^1\d{10}$/.test(mobile)) {
-                    layer.open({
-                        content: '请输入正确的手机号',
-                        btn: ['确认']
-                    });
-                    return false;
-                }
+                    var username = $(':input[name="username"]').val();
+                    if ($.trim(username) == '') {
+                        layer.open({
+                            content: '请输入姓名',
+                            btn: ['确认']
+                        });
+                        return false;
+                    }
+                    var mobile = $(':input[name="mobile"]').val();
+                    if ($.trim(mobile) == '') {
+                        layer.open({
+                            content: '请输入手机号',
+                            btn: ['确认']
+                        });
+                        return false;
+                    }
+                    if (!/^1\d{10}$/.test(mobile)) {
+                        layer.open({
+                            content: '请输入正确的手机号',
+                            btn: ['确认']
+                        });
+                        return false;
+                    }
 
-                t.addClass('disabled');
-                $('#applyForm').submit();
+                    t.addClass('disabled');
+                    $('#applyForm').submit();
+                });
+                
             });
         </script>
     </body>
