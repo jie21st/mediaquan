@@ -93,6 +93,7 @@ class WechatAction extends CommonAction
                         $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
                         $wechatService = new \Common\Service\WechatService;
                         $wechatService->sendCustomMessage($msg);
+                        (new \Media\Service\sendMsgService)->sendNews($userInfo);
                     }
                 } elseif ($event['event'] == 'CLICK') {
                     if ($event['key'] == 'WECHAT_QRCODE') {
