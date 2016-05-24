@@ -33,10 +33,15 @@ class sendMsgService
         $url = C('RESOURCE_SITE_URL');
         $name = ($userInfo['user_truename']) ? $userInfo['user_truename'] : $userInfo['user_nickname'];
         $parentInfo = D('User', 'Service')->getUserBaseInfo($userInfo['parent_id']);
-        $parentName = ($parentInfo['user_truename']) ? $parentInfo['user_truename'] : $parentInfo['user_nickname'];
-        if($parentName == '') {
+
+        if(! empty($parentInfo)) {
+            $parentName = ($parentInfo['user_truename']) ? $parentInfo['user_truename'] : $parentInfo['user_nickname'];
+            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $parentInfo['user_avatar'];
+        } else {
             $parentName = $name;
+            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $userInfo['user_avatar'];
         }
+
         $data = [
             'touser' => $userInfo['user_wechatopenid'],
             'msgtype' => 'news',
@@ -64,7 +69,7 @@ class sendMsgService
                         "title"=>"去逛逛".$parentName."家的微店",
                         "description"=>"去逛逛".$parentName."家的微店",
                         "url"=>"http://wangjie.guanlizhihui.com",
-                        "picurl"=> C('UPLOADS_SITE_URL') . "/avatar/" . $userInfo['user_avatar']
+                        "picurl"=>$userImg 
                     ],
                 ]
             ]
