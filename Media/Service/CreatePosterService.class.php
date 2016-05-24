@@ -6,22 +6,24 @@ namespace Media\Service;
 
 use Common\Service\WechatService as Wechat;
 
-class CreatePosterService extends \Think\Action
+class CreatePosterService 
 {
     /**
      * 获取海报
      */
     public function getPoster($uid)
     {
-        //ignore_user_abort(true); // 后台运行
-        //set_time_limit(0); // 取消脚本运行时间的超时上限
+        ignore_user_abort(true); // 后台运行
+        set_time_limit(0); // 取消脚本运行时间的超时上限
         
         // 用户信息
         //$uid = session('user_id');
         $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
 
+
         if (empty($userInfo)) {
-            return $this->returnJson(0, '获取用户信息失败', '');
+            $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+           // return $this->returnJson(0, '获取用户信息失败', '');
         }
 
 //        if ($userInfo['buy_num'] == 0) {
@@ -37,18 +39,23 @@ class CreatePosterService extends \Think\Action
         if(time() > $posterInfo['poster_end_time']) {
             //echo '重新制作';
             //制作海报
+            $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
             $imageSrc   = $this->_getImageInfo($userInfo);
             if(false === $imageSrc) {
-                return $this->returnJson(0, '制作海报失败', '');
+                $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                //return $this->returnJson(0, '制作海报失败', '');
             }
 
             //微信上传
             $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
             if(false === $mediaInfo) {
-                return $this->returnJson(0, '微信上传失败', ''); 
+                $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                //return $this->returnJson(0, '微信上传失败', ''); 
             } 
          } else if(time() > $posterInfo['wechat_upload_end_time']) {
             //echo '微信上传';
+            $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
+
             $imageSrc['pathInfo']   = $posterInfo['poster_src'];
             $imageSrc['poster_id']  = $posterInfo['id'];
             $imageSrc['pathName']   = $posterInfo['poster_images_name'];
@@ -56,9 +63,11 @@ class CreatePosterService extends \Think\Action
             //微信上传
             $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
             if(false === $mediaInfo) {
-                return $this->returnJson(0, '微信上传失败', '');
+                $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                //return $this->returnJson(0, '微信上传失败', '');
             }
         } else {
+            $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
             //echo '无变化';
             $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
             $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
@@ -70,7 +79,8 @@ class CreatePosterService extends \Think\Action
         $sendBool = $this->_sendWechat($userInfo, $mediaInfo);
 
         if ( false === $sendBool) {
-            return $this->returnJson(0, '发送消息失败', '');
+            $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+            //return $this->returnJson(0, '发送消息失败', '');
         }
 
         //$this->returnJson(1, 'success', '');
@@ -202,41 +212,16 @@ class CreatePosterService extends \Think\Action
         return $wechat->sendCustomMessage($image);
     }
 
-/**
-     * 自定义AJAX 返回格式
-     * 
-     * @param int $code 
-     * @param string $msg 
-     * @param array $data 
-     * @access protected
-     * @return JSON
-     */
-    protected function returnJson($code = 1, $msg = '', $data = '')
+    private function _sendText($userInfo, $text)
     {
-        header('Access-Control-Allow-Origin: *');
-        header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
-        header('Access-Control-Allow-Methods: GET, POST');
-        $arr = array();
-        $arr['code'] = $code;
-        if ($msg !== '') {
-            $arr['msg'] = $msg;
-        }
-        if ($data !== '') {
-            $arr['data'] = $data;
-        }
-        return $this->ajaxReturn($arr, 'json');
-    }
+        $wechat = new Wechat;
+        $text = array(
+            'touser'    =>  $userInfo['user_wechatopenid'],
+            'msgtype'   =>  'text',
+            'text'     =>  array('content' => $text)
+        );
 
-//    private function _sendText($userInfo, $text)
-//    {
-//        $wechat = new Wechat;
-//        $text = array(
-//            'touser'    =>  $userInfo['user_wechatopenid'],
-//            'msgtype'   =>  'text',
-//            'text'     =>  array('content' => $text)
-//        );
-//
-//        $wechat->sendCustomMessage($text);
-//    }
+        $wechat->sendCustomMessage($text);
+    }
 
 }
