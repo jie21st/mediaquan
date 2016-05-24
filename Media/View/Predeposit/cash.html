@@ -5,7 +5,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
-        <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
     <body>
         <div class="zd-top zd-top2">
@@ -27,22 +26,11 @@
             <a href="javascript:;" class="btn btn-block btn-blue btn-next">确认</a>
         </div>
         <include file="Public/footer" />
-        <script>
-            function onBridgeReady() {
-                WeixinJSBridge.call('hideOptionMenu');
-            }
-            if (typeof WeixinJSBridge == "undefined") {
-                if (document.addEventListener) {
-                    document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                } else if (document.attachEvent) {
-                    document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                    document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-                }
-            } else {
-                onBridgeReady();
-            }
-        </script>
-        <script src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
+        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script>
             $(document).ready(function () {
                 $('input[name=pdc_amount]').val('');

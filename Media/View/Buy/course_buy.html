@@ -37,11 +37,7 @@
             .list[mode~=chip] .list-item:first-child{-webkit-background-size: 0 0,12px 1px,100% 1px,100% 1px;}
             .list[mode~=chip] .list-item:last-child{-webkit-background-size: 12px 1px,0 0,100% 1px,100% 1px;}
             .list[mode~=chip] .list-item:first-child:last-child{-webkit-background-size: 0 0,0 0,100% 1px,100% 1px;}
-
-            .page-pay .action {padding: 0 20px; margin-top: 30px;}
-            .page-pay .action a {line-height: 30px;}
         </style>
-        <script src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
     </head>
     <body class="page-pay">
 
@@ -97,6 +93,10 @@
         <div class="btn_area">
             <a href="javascript:;" class="btn btn-block btn-blue js-pay">确认支付</a>
         </div>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/js/utils.js"></script>
         <script>
             var pay_success_url = '<{$Think.config.app_site_url}>/buy/course_ok?order_sn=<{$order_info.order_sn}>';
