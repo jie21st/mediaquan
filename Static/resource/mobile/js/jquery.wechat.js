@@ -52,6 +52,7 @@
         share: function(options) {
             this.init(function(){
                 wx.ready(function(){
+                    wx.showOptionMenu();
                     wx.onMenuShareAppMessage(options);
                     wx.onMenuShareTimeline(options);
                 })
