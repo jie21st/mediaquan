@@ -71,7 +71,10 @@
                                             time: 1,
                                             content: '取消成功'
                                         });
-                                        tr.find('.sjzt > span').text('交易关闭').addClass('order-status-0');
+                                        tr.find('.sjzt > span')
+                                                .text('交易关闭')
+                                                .removeClass('order-status-10')
+                                                .addClass('order-status-0');
                                         tr.find('.caoz').remove();
                                     } else {
                                         layer.open({
