@@ -128,7 +128,7 @@ class PayService
                     $sellerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['from_seller']]);
                     if (! empty($sellerInfo)) {
                         // 如果销售员有效
-                        if ($sellerInfo['parent_id' != $buyerInfo['user_id']]) {
+                        if ($sellerInfo['parent_id'] != $buyerInfo['user_id']) {
                             // 确定二者没有关系
                             $update = $userModel->editUser(['parent_id' => $sellerInfo['user_id']], ['user_id' => $buyerInfo['user_id']]);
                             if (! $update) {
