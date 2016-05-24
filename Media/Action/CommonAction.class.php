@@ -35,8 +35,8 @@ class CommonAction extends Action
         
         // 用户分享
         $seller = I('get.seller', 0, 'intval');
-        if ($seller >= 0) {
-            session('from_seller', '123'.$seller);
+        if ($seller > 0) {
+            session('from_seller', $seller);
         }
         
         // 判断是否登录
