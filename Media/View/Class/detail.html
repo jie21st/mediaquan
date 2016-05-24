@@ -48,7 +48,12 @@
                     window.location.href = $(this).data('link') + window.location.search;
                 })
             });
-            
+            $.wechat.hideMenuItems([
+                'menuItem:share:qq',
+                'menuItem:share:weiboApp',
+                'menuItem:share:QZone',
+                'menuItem:copyUrl'
+            ])
             $.wechat.share({
                 title: '<{$class_info.fx_title}>',
                 link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',

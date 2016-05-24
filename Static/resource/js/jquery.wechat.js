@@ -70,6 +70,15 @@
                     wx.showOptionMenu();
                 })
             })
+        },
+        hideMenuItems: function(items){
+            this.init(function(){
+                wx.ready(function(){
+                    wx.hideMenuItems({
+                        menuList: items
+                    });
+                })
+            })
         }
     }
    
