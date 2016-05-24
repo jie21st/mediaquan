@@ -31,7 +31,7 @@ class UserService
     public function getUserBaseInfo($userId)
     {
         $model = new \Common\Model\UserModel;
-        $field = 'user_id,user_wechatopenid,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar,buy_num';
+        $field = 'user_id,user_wechatopenid,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar,parent_id,buy_num';
         $data = $model->getUserInfo(['user_id' => $userId], $field);
         return $data;
     }
