@@ -65,7 +65,7 @@ class ClassService
             'expire_time'   => (time() + C('ORDER_EXPIRE')),
             'payment_code'  => '',
             'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
-            'from_seller'   => session('from_seller', 0, 'intval'),
+            'from_seller'   => session('from_seller') ? : 0,
             'commis_rate'   => $input['commis_rate'],
         ];
         
