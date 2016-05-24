@@ -40,4 +40,11 @@ class IndexAction extends CommonAction
     {
         $this->display();
     }
+
+    public function testOp()
+    {
+        $uid= session['user_id'];
+        $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
+        D('sendMsg', 'Service')->send($userInfo);
+    }
 }
