@@ -30,34 +30,36 @@ class sendMsgService
 {
     public function sendNews($userInfo)
     {
+        $url = C('RESOURCE_SITE_URL');
+        //$userInfo = D('User', 'Service')->getUserBaseInfo($uid);
         $data = [
             'touser' => $userInfo['user_wechatopenid'],
             'msgtype' => 'news',
             'news'  => [
                 'articles' => [
                     [
-                        "title"=>"关注测试",
-                        "description"=>"关注测试",
-                        "url"=>"http://mp.weixin.qq.com/wiki/home/index.html",
-                        "picurl"=>"http://mp.weixin.qq.com/wiki/static/assets/dc5de672083b2ec495408b00b96c9aab.png"
+                        "title"=>"测试",
+                        "description"=>"建设中, 请勿购买",
+                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "picurl"=> $url . "/image/k1.jpg"
                     ],
                     [
-                        "title"=>"关注测试",
-                        "description"=>"关注测试",
-                        "url"=>"http://mp.weixin.qq.com/wiki/home/index.html",
-                        "picurl"=>"http://mp.weixin.qq.com/wiki/static/assets/dc5de672083b2ec495408b00b96c9aab.png"
+                        "title"=>"测试",
+                        "description"=>"建设中, 请勿购买",
+                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "picurl"=> $url . "/image/k1.jpg"
                     ],
                     [
-                        "title"=>"关注测试",
-                        "description"=>"关注测试",
-                        "url"=>"http://mp.weixin.qq.com/wiki/home/index.html",
-                        "picurl"=>"http://mp.weixin.qq.com/wiki/static/assets/dc5de672083b2ec495408b00b96c9aab.png"
+                        "title"=>"测试",
+                        "description"=>"建设中, 请勿购买",
+                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "picurl"=> $url . "/image/k1.jpg"
                     ],
                     [
-                        "title"=>"关注测试",
-                        "description"=>"关注测试",
-                        "url"=>"http://mp.weixin.qq.com/wiki/home/index.html",
-                        "picurl"=>"http://mp.weixin.qq.com/wiki/static/assets/dc5de672083b2ec495408b00b96c9aab.png"
+                        "title"=>"测试",
+                        "description"=>"建设中, 请勿购买",
+                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "picurl"=> $url . "/image/k1.jpg"
                     ],
                 ]
             ]
