@@ -72,6 +72,8 @@ class WechatAction extends CommonAction
                         }
                     }
                     $this->userspread($userInfo, $parentId);
+                    
+                    (new \Media\Service\sendMsgService)->sendNews($userInfo);
                     $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
                     if (! empty($userInfo)) {
