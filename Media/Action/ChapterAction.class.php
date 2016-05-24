@@ -34,6 +34,7 @@ class ChapterAction extends CommonAction
         // 课程列表
         $chapterList = $this->getChapterList($classId);
 
+        $this->assign('title', $classInfo['class_title']);
         $this->assign('list', $chapterList);
         $this->display('Chapter:list');
     }
@@ -74,6 +75,7 @@ class ChapterAction extends CommonAction
             $time = D('ChapterUser')->getCoursesClientTime($condition);
 
             $this->assign('ext', 'jpg');
+            $this->assign('title', $classInfo['class_title']);
             $this->assign('chapterList', $chapterList);
             $this->assign('chapterId', $chapterId);
             $this->assign('user_id', $userId);
