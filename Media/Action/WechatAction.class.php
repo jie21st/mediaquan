@@ -98,8 +98,6 @@ class WechatAction extends CommonAction
                             $url = C('APP_SITE_URL');
                             $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.$url.'">立即点击“成为东家”</a>')->reply();
                         } else {
-
-                            $this->wechat->text('正在生成海报，请稍后... ')->reply();
                             echo '';
                             $posterService = new \Media\Service\CreatePosterService();
                             $posterService->getPoster($userInfo['user_id']);
