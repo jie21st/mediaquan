@@ -34,6 +34,17 @@
         </div>
         </volist>
         <include file="Public/footer" />
+        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
+        <script>
+            $.wechat.share({
+                title: '<{$class_info.fx_title}>',
+                link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
+                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+                desc: '<{$class_info.fx_desc}>',
+            });
+        </script>
     </body>
 </html>
 
