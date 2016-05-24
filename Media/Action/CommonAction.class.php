@@ -35,7 +35,7 @@ class CommonAction extends Action
         
         // 用户分享
         $seller = I('get.seller', 0, 'intval');
-        if ($seller >= 0) {
+        if ($seller > 0) {
             session('from_seller', $seller);
         }
         
