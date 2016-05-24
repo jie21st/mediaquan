@@ -1,5 +1,6 @@
 (function($){
     /*微信设置*/
+    $.wechat.hideOptionMenu();
     $.wechat.hideMenuItems([
         'menuItem:share:qq',
         'menuItem:share:weiboApp',
