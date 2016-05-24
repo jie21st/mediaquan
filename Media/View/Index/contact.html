@@ -20,39 +20,16 @@
 
     </body>
 
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/wxfenxiang.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
     <script type="text/javascript">
-        var link = "";
-        var shareData = {
+        $.wechat.share({
             title:  '售后服务',
-            image:  'RESOURCE_SITE_URL/image/kf.jpg',
+            imgUrl:  'RESOURCE_SITE_URL/image/kf.jpg',
 //            link:   '<{$Think.config.MEDIA_SITE_URL}>/',
             desc:   '我们将竭尽全力为您提供最满意的服务！'
-        };
-
-        $.ajax({
-            url: '<{$Think.config.MEDIA_SITE_URL}>/wechat/getJsSign',
-            type: 'GET',
-            data: {
-                url: encodeURIComponent(window.location.href)
-            },
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            success: function(res){
-                WXFX_GLZ.init({
-                    appid: res.data.appId,
-                    nonceStr: res.data.nonceStr,
-                    signature: res.data.signature,
-                    timestamp: res.data.timestamp,
-                    infoTitle: shareData.title,
-                    infoImgUrl: shareData.image,
-                    infoDesc: shareData.desc,
-                    xurl: shareData.link
-                });
-            }
-
         });
     </script>
 </html>
