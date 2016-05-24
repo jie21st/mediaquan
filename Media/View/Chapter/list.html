@@ -38,14 +38,16 @@
                 desc: '',
             };
             wx.showOptionMenu();
-            wx.hideMenuItems([
-                'menuItem:share:qq',
-                'menuItem:share:weiboApp',
-                'menuItem:share:QZone',
-                'menuItem:copyUrl',
-                'menuItem:openWithSafari',
-                'menuItem:openWithQQBrowser'
-            ]);
+            wx.hideMenuItems({
+                menuList: [
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:openWithSafari',
+                    'menuItem:openWithQQBrowser'
+                ]
+            });
             wx.onMenuShareAppMessage(shareData);
             wx.onMenuShareTimeline(shareData);
         });

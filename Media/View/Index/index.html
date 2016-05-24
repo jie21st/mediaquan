@@ -46,14 +46,16 @@
                         desc:   '我们将竭尽全力为您提供最满意的服务！'
                     };
                     wx.showOptionMenu();
-                    wx.hideMenuItems([
-                        'menuItem:share:qq',
-                        'menuItem:share:weiboApp',
-                        'menuItem:share:QZone',
-                        'menuItem:copyUrl',
-                        'menuItem:openWithSafari',
-                        'menuItem:openWithQQBrowser'
-                    ]);
+                    wx.hideMenuItems({
+                        menuList: [
+                            'menuItem:share:qq',
+                            'menuItem:share:weiboApp',
+                            'menuItem:share:QZone',
+                            'menuItem:copyUrl',
+                            'menuItem:openWithSafari',
+                            'menuItem:openWithQQBrowser'
+                        ]
+                    });
                     wx.onMenuShareAppMessage(shareData);
                     wx.onMenuShareTimeline(shareData);
                 });
