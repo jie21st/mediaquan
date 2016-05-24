@@ -48,40 +48,13 @@
                     window.location.href = $(this).data('link') + window.location.search;
                 })
             });
-//            var shareData = {
-//                title: '<{$class_info.fx_title}>',
-//                image: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-//                desc: '<{$class_info.fx_desc}>'
-//            };
-//            $.wechat.share({
-//                title: '<{$class_info.fx_title}>',
-//                link: '',
-//                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-//                desc: '<{$class_info.fx_desc}>',
-//            });
-            $.wechat.hideOptionMenu();
-            /*
-            $.ajax({
-                url: '<{$Think.config.WECHAT_SITE_URL}>/wechat/getJsSign',
-                type: 'GET',
-                data: {
-                    url: encodeURIComponent(window.location.href)
-                },
-                dataType: 'jsonp',
-                jsonp: 'callback',
-                success: function (res) {
-                    WXFX_GLZ.init({
-                        appid: res.data.appId,
-                        nonceStr: res.data.nonceStr,
-                        signature: res.data.signature,
-                        timestamp: res.data.timestamp,
-                        infoTitle: shareData.title,
-                        infoImgUrl: shareData.image,
-                        infoDesc: shareData.desc,
-                        xurl: res.data.url
-                    });
-                }
-            });*/
+            
+            $.wechat.share({
+                title: '<{$class_info.fx_title}>',
+                link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
+                imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+                desc: '<{$class_info.fx_desc}>',
+            });
         </script>
     </body>
 </html>

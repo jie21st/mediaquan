@@ -18,7 +18,6 @@
                     jsonp: 'callback',
                     success: function (res) {
                         if (res.code == 1) {
-                            self.signData = res.data;
                             wx.config({
                                 debug: false,
                                 appId: res.data.appId,
@@ -35,24 +34,23 @@
                                     'closeWindow',
                                     'chooseWXPay',
                                     'onMenuShareAppMessage',
-                                    'onMenuShareTimeline',
-                                    'onMenuShareQQ',
-                                    'onMenuShareWeibo',
-                                    'onMenuShareQZone'
+                                    'onMenuShareTimeline'
+//                                    'onMenuShareQQ',
+//                                    'onMenuShareWeibo',
+//                                    'onMenuShareQZone'
                                 ]
                             });
-                            callback(res.data);
+                            callback();
                         }
-                        
                         self.isRequest = true;
                     }
                 });
             } else {
-                callback(this.signData);
+                callback();
             }
         },
         share: function(options) {
-            this.init(function(params){
+            this.init(function(){
                 wx.ready(function(){
                     wx.onMenuShareAppMessage(options);
                     wx.onMenuShareTimeline(options);
@@ -63,6 +61,13 @@
             this.init(function(){
                 wx.ready(function(){
                     wx.hideOptionMenu();
+                })
+            })
+        },
+        showOptionMenu: function() {
+            this.init(function(){
+                wx.ready(function(){
+                    wx.showOptionMenu();
                 })
             })
         }
