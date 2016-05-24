@@ -41,45 +41,50 @@
         <include file="Public/footer" />
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
-        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script>
-            $('.js-btn-cancal').on('click', function(e){
-                var t = $(this);
-                var tr = t.closest('.jxsctk');
-                var orderid = tr.data('id');
-                
-                
-                layer.open({
-                    content: '你确定要取消该订单吗？',
-                    btn: ['确认', '取消'],
-                    shadeClose: false,
-                    yes: function(){
-                        $.ajax({
-                            type: 'POST',
-                            url: '/order/cancel',
-                            data: {order_id: orderid},
-                            dataType: 'json',
-                            success: function (res) {
-                                if(res.code == 1) {
-                                    layer.open({
-                                        time: 1,
-                                        content: '取消成功'
-                                    });
-                                    tr.find('.sjzt > span').text('交易关闭');
-                                    tr.find('.caoz').remove();
-                                } else {
-                                    layer.open({
-                                        time: 1,
-                                        content: '取消失败'
-                                    })
-                                }
-                            }
-                        });
-                    }
+            $(function(){
+                $.wechat.init(function(){
+                    wx.hideOptionMenu();
                 });
-            })
+
+                $('.js-btn-cancal').on('click', function(e){
+                    var t = $(this);
+                    var tr = t.closest('.jxsctk');
+                    var orderid = tr.data('id');
+
+
+                    layer.open({
+                        content: '你确定要取消该订单吗？',
+                        btn: ['确认', '取消'],
+                        shadeClose: false,
+                        yes: function(){
+                            $.ajax({
+                                type: 'POST',
+                                url: '/order/cancel',
+                                data: {order_id: orderid},
+                                dataType: 'json',
+                                success: function (res) {
+                                    if(res.code == 1) {
+                                        layer.open({
+                                            time: 1,
+                                            content: '取消成功'
+                                        });
+                                        tr.find('.sjzt > span').text('交易关闭');
+                                        tr.find('.caoz').remove();
+                                    } else {
+                                        layer.open({
+                                            time: 1,
+                                            content: '取消失败'
+                                        })
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            });
         </script>
     </body>
 </html>

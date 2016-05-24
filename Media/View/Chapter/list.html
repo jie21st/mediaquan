@@ -20,23 +20,35 @@
                     <p class="js"><{$vo.teacher_name}></p>
                 </li>
                 <li class="anniu">
-                    <a href="/Chapter/attend?class_id=<{$vo.class_id}>&chapter_id=<{$vo.chapter_id}>">去听课</a>
+                    <a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html">去听课</a>
                 </li>
             </ul>
         </div>
     </foreach>
-
     <include file="Public/footer" />
-
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
     <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
-
-    <!--<ul class="footer guding">-->
-        <!--<li><a href="#">首页</a></li>-->
-        <!--<li class="margin"><a href="#">会员中心</a></li>-->
-        <!--<li><a href="#">帮助</a></li>-->
-    <!--</ul>-->
+    <script>
+        $.wechat.init(function(){
+            var shareData = {
+                title: '',
+                link: '',
+                imgUrl: '',
+                desc: '',
+            };
+            wx.showOptionMenu();
+            wx.hideMenuItems([
+                'menuItem:share:qq',
+                'menuItem:share:weiboApp',
+                'menuItem:share:QZone',
+                'menuItem:copyUrl',
+                'menuItem:openWithSafari',
+                'menuItem:openWithQQBrowser'
+            ]);
+            wx.onMenuShareAppMessage(shareData);
+            wx.onMenuShareTimeline(shareData);
+        });
+    </script>
 </body>
 </html>

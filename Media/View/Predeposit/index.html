@@ -44,9 +44,15 @@
     </notempty>
     <include file="Public/footer" />
     <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
     <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
+    <script>
+        $(function(){
+            $.wechat.init(function(){
+                wx.hideOptionMenu();
+            });
+        })
+    </script>
 </body>
 </html>
 

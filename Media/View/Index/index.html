@@ -34,16 +34,28 @@
         </volist>
         <include file="Public/footer" />
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script>
             $(function(){
-                $.wechat.share({
-                    title: '<{$class_info.fx_title}>',
-                    link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
-                    imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                    desc: '<{$class_info.fx_desc}>',
+                $.wechat.init(function(){
+                    var shareData = {
+                        title:  '售后服务',
+                        imgUrl:  'RESOURCE_SITE_URL/image/kf.jpg',
+            //            link:   '<{$Think.config.MEDIA_SITE_URL}>/',
+                        desc:   '我们将竭尽全力为您提供最满意的服务！'
+                    };
+                    wx.showOptionMenu();
+                    wx.hideMenuItems([
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:openWithSafari',
+                        'menuItem:openWithQQBrowser'
+                    ]);
+                    wx.onMenuShareAppMessage(shareData);
+                    wx.onMenuShareTimeline(shareData);
                 });
             })
         </script>
