@@ -8,12 +8,6 @@
     <link rel="stylesheet" href="RESOURCE_SITE_URL/css/swiper.min.css">
     <link rel="stylesheet" href="RESOURCE_SITE_URL/css/style.css"/>
     <link rel="stylesheet" href="RESOURCE_SITE_URL/css/audioplayer.css"/>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
     <style>
         html, body {
             /*position: relative;*/
@@ -121,10 +115,20 @@
     </div>
 
     <include file="Public/footer" />
+
     <input type="hidden" name="class_id" value="<{$Think.get.class_id}>">
     <input type="hidden" name="chapter_id" value="<{$Think.get.chapter_id}>">
     <input type="hidden" name="user_id" value="<{$user_id}>">
     <input type="hidden" name="time" value="<{$time}>">
+
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
+    <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
 
     <script>
         var audioSrc = 'UPLOADS_SITE_URL/<{$info.audio_url}>';
