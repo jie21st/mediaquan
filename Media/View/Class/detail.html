@@ -41,19 +41,14 @@
         </div>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/jquery.wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script type="text/javascript">
             $().ready(function () {
                 $('.btn-join').click(function () {
                     window.location.href = $(this).data('link') + window.location.search;
                 })
             });
-            $.wechat.hideMenuItems([
-                'menuItem:share:qq',
-                'menuItem:share:weiboApp',
-                'menuItem:share:QZone',
-                'menuItem:copyUrl'
-            ])
             $.wechat.share({
                 title: '<{$class_info.fx_title}>',
                 link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html',
