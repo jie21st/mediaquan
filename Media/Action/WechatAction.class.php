@@ -43,32 +43,36 @@ class WechatAction extends CommonAction
                 \Think\Log::write('事件类型和key：'.json_encode($event));
                 if ($event['event'] == 'subscribe') {
                     if (empty($userInfo)) {
+                        // 注册用户
                         $userInfo = $this->registerOp($openId);
+                        
+                        // 用户未关注时，进行关注后的事件推送
+                        if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
+                            $parentId = substr($event['key'], 8);
+                            \Think\Log::write('关注事件自带parent_id='.$parentId);
+                        } else {
+                            $defaultParents = C('DEFAULT_USER_PARENT');
+                            if (is_array($defaultParents) && !empty($defaultParents)) {
+                                shuffle($defaultParents);
+                                $parentId = end($defaultParents);
+                                \Think\Log::write('关注事件默认parent_id='.$parentId);
+                            } else {
+                                $parentId = 0;
+                                \Think\Log::write('关注事件无parent_id');
+                            }
+                        }
+                        // 推广用户处理
+                        $this->userspread($userInfo, $parentId);
                     }
+                    
                     // 修改为已关注状态
                     $userModel->editUser([
                         'subscribe_state' => 1,
                     ],[
                         'user_id' => $userInfo['user_id'],
                     ]);
-
-                    // 用户未关注时，进行关注后的事件推送
-                    if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
-                        $parentId = substr($event['key'], 8);
-                        \Think\Log::write('关注事件自带parent_id='.$parentId);
-                    } else {
-                        $defaultParents = C('DEFAULT_USER_PARENT');
-                        if (is_array($defaultParents) && !empty($defaultParents)) {
-                            shuffle($defaultParents);
-                            $parentId = end($defaultParents);
-                            \Think\Log::write('关注事件默认parent_id='.$parentId);
-                        } else {
-                            $parentId = 0;
-                            \Think\Log::write('关注事件无parent_id');
-                        }
-                    }
-                    $this->userspread($userInfo, $parentId);
                     
+                    // 关注推送消息
                     (new \Media\Service\sendMsgService)->sendNews($userInfo);
                     $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
@@ -80,7 +84,7 @@ class WechatAction extends CommonAction
                             'user_id' => $userInfo['user_id'],
                         ]);
                     }
-                } elseif ($event['event'] == 'SCAN') { 
+                } elseif ($event['event'] == 'SCAN') {
                     // 用户已关注时的事件推送
                     // 给用户提示一下
                     $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
@@ -200,6 +204,14 @@ class WechatAction extends CommonAction
                 'user_id' => $userInfo['user_id']
             ]);
 
+            // 通知推荐人
+            $msg = array();
+            $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+            $msg['msgtype'] = 'text';
+            $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
+            $wechatService = new \Common\Service\WechatService;
+            $wechatService->sendCustomMessage($msg);
+            
             // 奖励推荐人
             $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
             if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
@@ -231,13 +243,6 @@ class WechatAction extends CommonAction
             $msgcontent = $userInfo['user_nickname'].'扫描了您分享的二维码';
             \Think\Log::write('推广用户失败: '.$e->getMessage());
         }
-        // 通知推荐人
-        $msg = array();
-        $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-        $msg['msgtype'] = 'text';
-        $msg['text'] = ['content' => $msgcontent];
-        $wechatService = new \Common\Service\WechatService;
-        $wechatService->sendCustomMessage($msg);
     }
 
     /**
