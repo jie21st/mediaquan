@@ -30,10 +30,6 @@ $config = array(
     
     // 项目配置
     'APP_SITE_URL'   => 'http://test.mediaquan.com', // 当前项目地址，手机版用java和php编写 在php中使用此地址为（java 为mobile_site_url, php为app_site_url）
-    
-    // 推广用户
-    'PREDEPOSIT_SPREAD_USER' => 0,
-    'USER_DEFAULT_PARENT'   => array(10013, 10014),  // 默认推荐人列表
 );
 
 // 加载调试配置文件

@@ -9,7 +9,7 @@ return array(
     'MODULE_DENY_LIST'  => array('Common', 'Runtime'),
 
     // 默认设定
-    'DEFAULT_MODULE'    => 'Mobile', // 默认模块
+    'DEFAULT_MODULE'    => 'Media', // 默认模块
     'DEFAULT_C_LAYER'   => 'Action', // 默认的控制器层名称
 
     // cookie
@@ -64,10 +64,19 @@ return array(
     'WECHAT_APPSECRET'  => '124f73ec548d7b372bf4a612e81753c4',
     'WECHAT_ENCODING'   => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
     
+    // 推广配置
+    'SPREAD_POSTER_USE'                 => true,                 // 推广海报是否启用
+    'SPREAD_POSTER_EXPIRE'              => 2592000,              // 推广海报有效期 单位秒）
+    'SPERAD_POSTER_GENERATE_NEEDBUY'    => true,                 // 推广生成海报是否需要购买
+    'SPERAD_SELLER_GAINS_AMOUNT'        => 0,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
+    
     // 其他配置
-    'DEFAULT_USER_AVATAR' => 'personImg.jpg',  // 默认头像
-    'ORDER_EXPIRE'      => 7200,    // 订单有效时间
-    'SELLER_LEVEL_RATE' => array(
+    'DEFAULT_USER_AVATAR'   => 'personImg.jpg',         // 默认头像
+    'DEFAULT_USER_PARENT'   => array(10013, 10014),     // 用户默认推荐人列表
+    'ORDER_EXPIRE'          => 7200,                    // 订单有效时间（单位秒）
+    
+    // 分销配置
+    'SELLER_LEVEL_RATE'     => array(
         array(100),
         array(80,20),
         array(70,20,10)

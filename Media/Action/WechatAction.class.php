@@ -1,11 +1,6 @@
 <?php
 namespace Media\Action;
 
-use \Think\Log;
-use \Org\Util\Wechat;
-use \Common\Model\UserModel;
-use \Common\Service\UserService;
-
 class WechatAction extends CommonAction
 {
     /**
@@ -25,7 +20,7 @@ class WechatAction extends CommonAction
     public function __construct()
     {
         parent::__construct();
-        $this->wechat = new Wechat;
+        $this->wechat = new \Org\Util\Wechat;
     }
     
     public function receiveOp()
@@ -61,7 +56,7 @@ class WechatAction extends CommonAction
                         $parentId = substr($event['key'], 8);
                         \Think\Log::write('关注事件自带parent_id='.$parentId);
                     } else {
-                        $defaultParents = C('USER_DEFAULT_PARENT');
+                        $defaultParents = C('DEFAULT_USER_PARENT');
                         if (is_array($defaultParents) && !empty($defaultParents)) {
                             shuffle($defaultParents);
                             $parentId = end($defaultParents);
@@ -76,6 +71,7 @@ class WechatAction extends CommonAction
                     (new \Media\Service\sendMsgService)->sendNews($userInfo);
                     $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
+                    // 如果存在用户设置为未订阅
                     if (! empty($userInfo)) {
                         $userModel->editUser([
                             'subscribe_state' => 0,
@@ -83,29 +79,38 @@ class WechatAction extends CommonAction
                             'user_id' => $userInfo['user_id'],
                         ]);
                     }
-                } elseif ($event['event'] == 'SCAN') { // 用户已关注时的事件推送
+                } elseif ($event['event'] == 'SCAN') { 
+                    // 用户已关注时的事件推送
                     // 给用户提示一下
                     $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
-                    if (!empty($recomUserInfo)) {
+                    if (! empty($recomUserInfo)) {
                         $msg = array();
                         $msg['touser'] = $recomUserInfo['user_wechatopenid'];
                         $msg['msgtype'] = 'text';
                         $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
                         $wechatService = new \Common\Service\WechatService;
                         $wechatService->sendCustomMessage($msg);
-                        (new \Media\Service\sendMsgService)->sendNews($userInfo);
                     }
+                    (new \Media\Service\sendMsgService)->sendNews($userInfo);
                 } elseif ($event['event'] == 'CLICK') {
                     if ($event['key'] == 'WECHAT_QRCODE') {
-                        if ($userInfo['buy_num'] == 0) {
-                            $url = C('APP_SITE_URL');
-                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.$url.'">立即点击“成为东家”</a>')->reply();
+                        if (C('SPREAD_POSTER_USE')) {
+                            if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
+                                if ($userInfo['buy_num'] == 0) {
+                                    $url = C('MEDIA_SITE_URL');
+                                    $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.$url.'">立即点击“成为东家”</a>')->reply();
+                                } else {
+                                    echo '';
+                                    $posterService = new \Media\Service\CreatePosterService();
+                                    $posterService->getPoster($userInfo['user_id']);
+                                }
+                            } else {
+                                echo '';
+                                $posterService = new \Media\Service\CreatePosterService();
+                                $posterService->getPoster($userInfo['user_id']);
+                            }
                         } else {
-                            echo '';
-                            $posterService = new \Media\Service\CreatePosterService();
-                            $posterService->getPoster($userInfo['user_id']);
-//                            $this->wechat->text('请点击链接获取二维码海报！<a href="'.$url.'">获取海报</a>')->reply();
-//                            $url = C('APP_SITE_URL').'/poster/getPoster';
+                            $this->wechat->text('暂时无法获取海报')->reply();
                         }
                     }
                 }
@@ -193,13 +198,29 @@ class WechatAction extends CommonAction
             ]);
 
             // 奖励推荐人
-            if (C('PREDEPOSIT_SPREAD_USER')) {
+            $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
+            if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
                 $pdService = new \Common\Service\PredepositService;
                 $pd_data = array();
                 $pd_data['user_id'] = $recomUserInfo['user_id'];
-                $pd_data['amount'] = C('PREDEPOSIT_SPREAD_USER');
-                $pd_data['name'] = '发展用户'.$userInfo['user_nickname'];
+                $pd_data['amount'] = $spreadUserAmount;
+                $pd_data['name'] = '推荐用户 '.$userInfo['user_nickname'];
                 $pdService->changePd('sale_income', $pd_data);
+
+                // 收益通知
+                $wechatService = new \Common\Service\WechatService;
+                $wechatService->sendCustomMessage([
+                    'touser' => $recomUserInfo['user_wechatopenid'],
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => sprintf(
+                                        '推荐用户 %s，获得收益%s元，<a href="%s">查看账单明细</a>',
+                                        $userInfo['user_nickname'],
+                                        glzh_price_format($spreadUserAmount),
+                                        C('MEDIA_SITE_URL').'/predeposit/'
+                                    )
+                    ]
+                ]);
             }
         
             $msgcontent = $userInfo['user_nickname'].'成为了您的粉丝';
