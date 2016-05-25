@@ -119,7 +119,7 @@ class PayService
             $classService->addClassUser($orderInfo);
             
             // 绑定购买用户为此销售员粉丝
-            if (intval($orderInfo['from_seller'])) {
+            if (intval($orderInfo['from_seller']) && ($orderInfo['buyer_id'] != $orderInfo['from_seller'])) {
                 // 如果订单来自销售员
                 $userModel = new \Common\Model\UserModel;
                 $buyerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['buyer_id']]);
