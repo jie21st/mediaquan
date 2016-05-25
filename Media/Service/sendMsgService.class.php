@@ -63,7 +63,7 @@ class sendMsgService
                         "title"=>"微信运营理论与实操课程",
                         "description"=>"微信运营与实操课程",
                         "url"=>"http://wangjie.guanlizhihui.com",
-                        "picurl"=> $url . "/image/k3.jpg"
+                        "picurl"=> $url . "/image/k5.jpg"
                     ],
                     [
                         "title"=>"去逛逛".$parentName."家的微店",
