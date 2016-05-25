@@ -197,3 +197,10 @@ a{display:block; text-decoration:none; color: #666}
 .ui-msg .text_area{margin-bottom: 12px; padding: 0 20px;}
 .ui-msg .text_area .msg_title{margin-bottom: 12px; color: #222; font-size: 16px; font-weight: 400;}
 .ui-msg .text_area .msg_desc{color: #bbbaba; font-size: 14px;}
+
+/*新手指南*/
+.xszn_title{width:94%; margin:0 auto; background:#ebebeb; padding:24px 3% 0;}
+.xszn_title p{color:#222; font-size:18px; margin-bottom:3px;}
+.xszn_title span{color:#909090; font-size:13px;}
+.xszn_title span .rq{font-size:12px;}
+.xszn_detail img {width: 100%; vertical-align: middle;}

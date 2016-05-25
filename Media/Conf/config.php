@@ -22,6 +22,7 @@ $config = array(
         'order/:id\d'       => 'class/buy',
         // 单页面
         'contact'           => 'index/contact',
+        'manual'            => 'index/manual',
     ),
     
     // 海报时效
