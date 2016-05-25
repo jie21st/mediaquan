@@ -50,7 +50,7 @@ class NavAction extends CommonAction
                         array(
                             "type" => "view",
                             "name" => "新手指南",
-                            "url"  => C('MEDIA_SITE_URL') 
+                            "url"  => C('MEDIA_SITE_URL') . '/manual.html'
                         ),
                         array(
                             "type" => "view",
