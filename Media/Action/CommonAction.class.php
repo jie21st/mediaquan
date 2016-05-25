@@ -34,10 +34,7 @@ class CommonAction extends Action
         }
         
         // 用户分享
-        $seller = I('get.seller', 0, 'intval');
-        if ($seller > 0) {
-            session('from_seller', $seller);
-        }
+        $this->checkSeller();
         
         // 判断是否登录
         if ($this->needAuth) {
@@ -56,6 +53,17 @@ class CommonAction extends Action
             $returnUrl = C('MEDIA_SITE_URL') . $_SERVER['REQUEST_URI'];
             redirect('/login/?returnUrl='.urlencode($returnUrl));
         }
+    }
+    
+    protected function checkSeller(){
+        $seller = I('get.seller', 0, 'intval');
+        if ($seller <= 0) {
+            return;
+        }
+        if (session('?user_id') && session('user_id') == $seller) {
+            return;
+        }
+        session('from_seller', $seller);
     }
 
     /**
