@@ -239,10 +239,7 @@ class WechatAction extends CommonAction
                     ]
                 ]);
             }
-        
-            $msgcontent = $userInfo['user_nickname'].'成为了您的粉丝';
         } catch (\Exception $e) {
-            $msgcontent = $userInfo['user_nickname'].'扫描了您分享的二维码';
             \Think\Log::write('推广用户失败: '.$e->getMessage());
         }
     }
