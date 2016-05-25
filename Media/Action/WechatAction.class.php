@@ -1,6 +1,8 @@
 <?php
 namespace Media\Action;
 
+use \Org\Util\Wechat;
+
 class WechatAction extends CommonAction
 {
     /**
@@ -20,7 +22,7 @@ class WechatAction extends CommonAction
     public function __construct()
     {
         parent::__construct();
-        $this->wechat = new \Org\Util\Wechat;
+        $this->wechat = new Wechat;
     }
     
     public function receiveOp()
