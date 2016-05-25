@@ -43,7 +43,9 @@
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script type="text/javascript">
             // 图片延迟加载
-            $('.xszn_detail img').lazyload();
+            $('.xszn_detail img').lazyload({
+                threshold: 200
+            });
             
             $.wechat.init(function () {
                 var shareData = {
