@@ -167,14 +167,16 @@ class WechatAction extends CommonAction
      */
     private function userspread($userInfo, $parentId){
         if ($parentId == 0) {
-            return;
+            return false;
         }
+        
+        if ($userInfo['user_id'] == $parentId) {
+            \Think\Log::write('parent_id为当前用户自己');
+            return false;
+        }
+            
         try {
             $userModel = new \Common\Model\UserModel;
-
-            if ($userInfo['user_id'] == $parentId) {
-                throw new \Exception('推荐人扫描自己的二维码');
-            }
 
             $recomUserInfo = $userModel->getUserInfo(['user_id' => $parentId]);
             if (empty($recomUserInfo)) {
