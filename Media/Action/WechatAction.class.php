@@ -45,25 +45,25 @@ class WechatAction extends CommonAction
                     if (empty($userInfo)) {
                         // 注册用户
                         $userInfo = $this->registerOp($openId);
-                        
-                        // 用户未关注时，进行关注后的事件推送
-                        if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
-                            $parentId = substr($event['key'], 8);
-                            \Think\Log::write('关注事件自带parent_id='.$parentId);
-                        } else {
-                            $defaultParents = C('DEFAULT_USER_PARENT');
-                            if (is_array($defaultParents) && !empty($defaultParents)) {
-                                shuffle($defaultParents);
-                                $parentId = end($defaultParents);
-                                \Think\Log::write('关注事件默认parent_id='.$parentId);
-                            } else {
-                                $parentId = 0;
-                                \Think\Log::write('关注事件无parent_id');
-                            }
-                        }
-                        // 推广用户处理
-                        $this->userspread($userInfo, $parentId);
                     }
+                    
+                    // 用户未关注时，进行关注后的事件推送
+                    if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
+                        $parentId = substr($event['key'], 8);
+                        \Think\Log::write('关注事件自带parent_id='.$parentId);
+                    } else {
+                        $defaultParents = C('DEFAULT_USER_PARENT');
+                        if (is_array($defaultParents) && !empty($defaultParents)) {
+                            shuffle($defaultParents);
+                            $parentId = end($defaultParents);
+                            \Think\Log::write('关注事件默认parent_id='.$parentId);
+                        } else {
+                            $parentId = 0;
+                            \Think\Log::write('关注事件无parent_id');
+                        }
+                    }
+                    // 推广用户处理
+                    $this->userspread($userInfo, $parentId);
                     
                     // 修改为已关注状态
                     $userModel->editUser([
@@ -170,7 +170,13 @@ class WechatAction extends CommonAction
      * @return type
      */
     private function userspread($userInfo, $parentId){
+        if (intval($userInfo['parent_id'])) {
+            \Think\Log::write('该用户已存在推荐人');
+            return false;
+        }
+            
         if ($parentId == 0) {
+            \Think\Log::write('parent_id为0');
             return false;
         }
         
@@ -185,10 +191,6 @@ class WechatAction extends CommonAction
             $recomUserInfo = $userModel->getUserInfo(['user_id' => $parentId]);
             if (empty($recomUserInfo)) {
                 throw new \Exception('推荐人用户信息不存在');
-            }
-
-            if (intval($userInfo['parent_id'])) {
-                throw new \Exception('该用户已存在推荐人');
             }
 
             if ($userInfo['user_id'] == $recomUserInfo['parent_id']) {
