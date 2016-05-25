@@ -40,10 +40,10 @@
             $(function(){
                 $.wechat.init(function(){
                     var shareData = {
-                        title:  '售后服务',
-                        imgUrl:  'RESOURCE_SITE_URL/image/kf.jpg',
-            //            link:   '<{$Think.config.MEDIA_SITE_URL}>/',
-                        desc:   '我们将竭尽全力为您提供最满意的服务！'
+                        title: '拇指微课全部课程',
+                        imgUrl: 'RESOURCE_SITE_URL/image/k3.jpg',
+                        link: '<{$Think.config.MEDIA_SITE_URL}>/?seller=<{$Think.session.user_id}>',
+                        desc: '亲，优秀的互联网人都在这里学习！'
                     };
                     wx.showOptionMenu();
                     wx.hideMenuItems({
