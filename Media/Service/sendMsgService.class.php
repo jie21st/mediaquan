@@ -56,7 +56,7 @@ class sendMsgService
                     [
                         "title"=>"拇指微课自动操作流程",
                         "description"=>"拇指微课自动操作流程",
-                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "url"=>"http://wangjie.guanlizhihui.com/manual.html",
                         "picurl"=> $url . "/image/xs.jpg"
                     ],
                     [
