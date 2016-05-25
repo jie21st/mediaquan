@@ -252,7 +252,7 @@ class ClassService
                     'msgtype' => 'text',
                     'text' => [
                         'content' => sprintf(
-                                        '%s 购买了 %s 课程，获得收益%s元，<a href="%s">查看账单明细</a>',
+                                        '%s 购买了《%s》，获得收益%s元，<a href="%s">查看账单明细</a>',
                                         $buyerInfo['user_nickname'],
                                         $orderInfo['class_title'],
                                         glzh_price_format($commisAmount),
