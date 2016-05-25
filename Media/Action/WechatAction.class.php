@@ -27,7 +27,6 @@ class WechatAction extends CommonAction
     {
         $this->wechat->valid();
         $type = $this->wechat->getRev()->getRevType();
-        \Think\Log::write('事件名称：'.$type);
         switch($type) {
             case Wechat::MSGTYPE_TEXT:
                 $this->wechat->text("hello")->reply();
