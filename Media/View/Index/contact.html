@@ -25,7 +25,7 @@
                 var shareData = {
                     title:  '售后服务',
                     imgUrl:  'RESOURCE_SITE_URL/image/kf.jpg',
-                    link:   '<{$Think.config.MEDIA_SITE_URL}>/contact?seller=<{$user_id}>',
+                    link:   '<{$Think.config.MEDIA_SITE_URL}>/contact?seller=<{$Think.session.user_id}>',
                     desc:   '我们将竭尽全力为您提供最满意的服务！'
                 };
                 wx.showOptionMenu();
