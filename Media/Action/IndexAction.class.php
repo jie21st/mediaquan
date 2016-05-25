@@ -38,6 +38,7 @@ class IndexAction extends CommonAction
      */
     public function contactOp()
     {
+        $this->assign('user_id', session('user_id'));
         $this->display();
     }
 }
