@@ -16,11 +16,10 @@ class CreatePosterService
         ignore_user_abort(true); // 后台运行
         set_time_limit(0); // 取消脚本运行时间的超时上限
         
+        $userService = new \Common\Service\UserService;
+        
         // 用户信息
-        //$uid = session('user_id');
-        $userInfo = D('User', 'Service')->getUserBaseInfo($uid);
-
-
+        $userInfo = $userService->getUserBaseInfo($uid);
         if (empty($userInfo)) {
             $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
            // return $this->returnJson(0, '获取用户信息失败', '');
@@ -34,45 +33,74 @@ class CreatePosterService
 //        }
 
         $posterInfo = $this->getUserPosterInfo($uid);
-
-
-        if(time() > $posterInfo['poster_end_time']) {
-            //echo '重新制作';
-            //制作海报
+        
+        if (empty($posterInfo)) {
+            // 不存在海报
+            
             $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
+            
+            // 制作海报
             $imageSrc   = $this->_getImageInfo($userInfo);
             if(false === $imageSrc) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
-                //return $this->returnJson(0, '制作海报失败', '');
             }
-
-            //微信上传
+            
+            // 微信上传
             $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
             if(false === $mediaInfo) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
-                //return $this->returnJson(0, '微信上传失败', ''); 
-            } 
-         } else if(time() > $posterInfo['wechat_upload_end_time']) {
-            //echo '微信上传';
-            $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
-
-            $imageSrc['pathInfo']   = $posterInfo['poster_src'];
-            $imageSrc['poster_id']  = $posterInfo['id'];
-            $imageSrc['pathName']   = $posterInfo['poster_images_name'];
-            $imageSrc['poster_end_time']  = $posterInfo['poster_end_time'];
-            //微信上传
-            $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
-            if(false === $mediaInfo) {
-                $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
-                //return $this->returnJson(0, '微信上传失败', '');
+            }
+            
+            // 通知推荐人
+            if (intval($userInfo['parent_id'])) {
+                $parentInfo = $userService->getUserBaseInfo($userInfo['parent_id']);
+                $this->_sendText($parentInfo, sprintf(
+                            '您的粉丝%s生成了二维码，请给予他协助，<a href="%s">新手教程</a>',
+                            $userInfo['user_nickname'],
+                            C('MEDIA_SITE_URL').'/manual.html'
+                        ));
             }
         } else {
-            $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
-            //echo '无变化';
-            $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
-            $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
-            $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
-            $imageSrc['pathName']       = $posterInfo['poster_images_name'];
+            // 已存在海报
+            
+            if(time() > $posterInfo['poster_end_time']) {
+                //echo '重新制作';
+                //制作海报
+                $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
+                $imageSrc   = $this->_getImageInfo($userInfo);
+                if(false === $imageSrc) {
+                    $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                    //return $this->returnJson(0, '制作海报失败', '');
+                }
+
+                //微信上传
+                $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
+                if(false === $mediaInfo) {
+                    $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                    //return $this->returnJson(0, '微信上传失败', ''); 
+                } 
+            } else if(time() > $posterInfo['wechat_upload_end_time']) {
+                //echo '微信上传';
+                $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
+
+                $imageSrc['pathInfo']   = $posterInfo['poster_src'];
+                $imageSrc['poster_id']  = $posterInfo['id'];
+                $imageSrc['pathName']   = $posterInfo['poster_images_name'];
+                $imageSrc['poster_end_time']  = $posterInfo['poster_end_time'];
+                //微信上传
+                $mediaInfo = $this->_uploadMedia($imageSrc, 'image');
+                if(false === $mediaInfo) {
+                    $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+                    //return $this->returnJson(0, '微信上传失败', '');
+                }
+            } else {
+                $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
+                //echo '无变化';
+                $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
+                $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
+                $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
+                $imageSrc['pathName']       = $posterInfo['poster_images_name'];
+            }
         }
 
         //发送消息
