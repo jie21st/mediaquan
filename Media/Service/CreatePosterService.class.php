@@ -53,7 +53,7 @@ class CreatePosterService
             
             // 记录用户推广时间
             $update = $userService->updateUserInfo(['user_spread_time' => time()], $userInfo['user_id']);
-            if ($update) {
+            if (! $update) {
                 // 只记录日志，不做失败处理
                 \Think\Log::write('首次生成海报更新用户推广时间失败');
             }
