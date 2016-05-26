@@ -200,21 +200,12 @@ class WechatAction extends CommonAction
             // 绑定关系
             $update = array();
             $update['parent_id'] = $recomUserInfo['user_id'];
-            $userModel->editUser([
-                'parent_id' => $recomUserInfo['user_id']
-            ], [
-                'user_id' => $userInfo['user_id']
-            ]);
+            $result = $userModel->editUser($update, ['user_id' => $userInfo['user_id']]);
+            if (! $result) {
+                throw new \Exception('绑定写入失败');
+            }
 
-            // 通知推荐人
-            $msg = array();
-            $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-            $msg['msgtype'] = 'text';
-            $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
-            $wechatService = new \Common\Service\WechatService;
-            $wechatService->sendCustomMessage($msg);
-            
-            // 奖励推荐人
+            // 通知
             $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
             if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
                 $pdService = new \Common\Service\PredepositService;
@@ -231,13 +222,21 @@ class WechatAction extends CommonAction
                     'msgtype' => 'text',
                     'text' => [
                         'content' => sprintf(
-                                        '推荐用户 %s，获得收益%s元，<a href="%s">查看账单明细</a>',
+                                        '%s成为了您的粉丝，您获得收益%s元；推荐好友购买课程还可获得1-99元的收益，<a href="%s">点击查看</a>',
                                         $userInfo['user_nickname'],
                                         glzh_price_format($spreadUserAmount),
                                         C('MEDIA_SITE_URL').'/predeposit/'
                                     )
                     ]
                 ]);
+            } else {
+                // 通知推荐人
+                $msg = array();
+                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+                $msg['msgtype'] = 'text';
+                $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
+                $wechatService = new \Common\Service\WechatService;
+                $wechatService->sendCustomMessage($msg);
             }
         } catch (\Exception $e) {
             \Think\Log::write('推广用户失败: '.$e->getMessage());
