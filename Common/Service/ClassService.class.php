@@ -170,16 +170,35 @@ class ClassService
             throw new \Exception('更新用户购买次数失败');
         }
         
-        // 购买通知
+        // 通知购买人
         $buyerInfo = $userModel->getUserInfo(['user_id' => $classOrder['buyer_id']]);
         $wechatService = new \Common\Service\WechatService;
         $wechatService->sendCustomMessage([
             'touser' => $buyerInfo['user_wechatopenid'],
             'msgtype' => 'text',
             'text' => [
-                'content' => '课程《'.$classOrder['class_title'].'》报名成功'
+                'content' => '感谢您购买《'.$classOrder['class_title'].'》，推荐朋友购买课程可获得收益分成，'
+                . '<a href="'.C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html?share=1">点击推荐</a>'
             ]
         ]);
+        // 通知粉丝
+        $fansList = $userModel->where(['user_id' => $buyerInfo['parent_id']])->select();
+        if (! empty($fansList)) {
+            foreach ($fansList as $fansInfo) {
+                $wechatService->sendCustomMessage([
+                    'touser' => $fansInfo['user_wechatopenid'],
+                    'msgtype' => 'text',
+                    'text' => [
+                        'content' => sprintf(
+                                        '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+                                        $buyerInfo['user_nickname'],
+                                        $classOrder['class_title'],
+                                        C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html'
+                                    )
+                    ]
+                ]);
+            }
+        }
     }
     
     /**
@@ -252,11 +271,11 @@ class ClassService
                     'msgtype' => 'text',
                     'text' => [
                         'content' => sprintf(
-                                        '%s 购买了《%s》，获得收益%s元，<a href="%s">查看账单明细</a>',
+                                        '%s购买了《%s》，您获得收益%s元，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
                                         $buyerInfo['user_nickname'],
                                         $orderInfo['class_title'],
                                         glzh_price_format($commisAmount),
-                                        C('MEDIA_SITE_URL').'/predeposit/'
+                                        C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
                                     )
                     ]
                 ]);
