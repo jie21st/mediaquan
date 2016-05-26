@@ -9,18 +9,7 @@
     <link rel="stylesheet" href="RESOURCE_SITE_URL/css/style.css"/>
     <link rel="stylesheet" href="RESOURCE_SITE_URL/css/audioplayer.css"/>
     <style>
-        html, body {
-            /*position: relative;*/
-            /*height: 100%;*/
-        }
-        body {
-            /*background: #eee;*/
-            /*font-family: Helvetica Neue, Helvetica, Arial, sans-serif;*/
-            /*font-size: 14px;*/
-            /*color:#000;*/
-            /*margin: 0;*/
-            /*padding: 0;*/
-        }
+
         .swiper-container {
             width: 100%;
             height: 100%;
@@ -121,7 +110,7 @@
     <input type="hidden" name="time" value="<{$time}>">
 
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.min.js"></script>
-    <script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>
+    <!--<script type="text/javascript" src="RESOURCE_SITE_URL/js/zepto.min.js"></script>-->
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/swiper.min.js"></script>
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/jquery.nstSlider.min.js"></script>
     <script type="text/javascript" src="RESOURCE_SITE_URL/js/jgestures.min.js"></script>
@@ -142,8 +131,6 @@
                 init: function () {
                     media.src = audioSrc;
 
-                    // 开始按钮
-                    $('.audioplayer').delegate('.audioplayer-playpause', 'click tap', this.playpauseClick);
                     $('.audioplayer-bar').nstSlider({
                         "left_grip_selector": ".leftGrip",
                         "value_bar_selector": ".bar",
@@ -163,13 +150,16 @@
                         }
                     });
 
+                    // 开始按钮
+                    $('.audioplayer').bind('click tapone', this.playpauseClick);
+
                     // 开始播放
                     if (!media.autoPlay) {
-                        $('.audioplayer-playpause')[0].click();
+                        $('.audioplayer').click();
                         postAjax();
                     };
-
                 },
+
                 // 开始播放
                 playpauseClick: function (e) {
                     var player = e.delegateTarget; // 图标
@@ -347,5 +337,29 @@
             }
         }
     </script>
+
+<script>
+    $.wechat.init(function(){
+        var shareData = {
+            title: '<{$info.chapter_title}>',
+            link: '<{$Think.config.MEDIA_SITE_URL}>/chapter/attend?class_id=<{$info.class_id}>&chapter=<{$info.chapter}>&seller=<{$user_id}>',
+            imgUrl: 'UPLOADS_SITE_URL/<{$info.cover_img_url}>',
+            desc: '<{$info.description}>',
+        };
+        wx.showOptionMenu();
+        wx.hideMenuItems({
+            menuList: [
+                'menuItem:share:qq',
+                'menuItem:share:weiboApp',
+                'menuItem:share:QZone',
+                'menuItem:copyUrl',
+                'menuItem:openWithSafari',
+                'menuItem:openWithQQBrowser'
+            ]
+        });
+        wx.onMenuShareAppMessage(shareData);
+        wx.onMenuShareTimeline(shareData);
+    });
+</script>
 </body>
 </html>
