@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
-    <title><{$title}>课程章节</title>
+    <title><{$classInfo.class_title}>课程章节</title>
     <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
 
 </head>
@@ -32,10 +32,10 @@
     <script>
         $.wechat.init(function(){
             var shareData = {
-                title: '',
-                link: '',
-                imgUrl: '',
-                desc: '',
+                title: '<{$classInfo.fx_title}>',
+                link: '<{$Think.config.MEDIA_SITE_URL}>/chapter/classList?class_id=<{$Think.get.class_id}>&seller=<{$user_id}>',
+                imgUrl: 'UPLOADS_SITE_URL/class/<{$classInfo.fx_img}>',
+                desc: '<{$classInfo.fx_desc}>',
             };
             wx.showOptionMenu();
             wx.hideMenuItems({
