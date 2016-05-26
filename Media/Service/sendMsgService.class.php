@@ -50,25 +50,25 @@ class sendMsgService
                     [
                         "title"=>"欢迎".$name."光临拇指微课",
                         "description"=>"欢迎".$name."光临拇指微课",
-                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "url"=> C('MEDIA_SITE_URL') . '/class/1.html',
                         "picurl"=> $url . "/image/k2.jpg"
                     ],
                     [
-                        "title"=>"拇指微课自动操作流程",
-                        "description"=>"拇指微课自动操作流程",
-                        "url"=>"http://wangjie.guanlizhihui.com/manual.html",
+                        "title"=>"新手指南",
+                        "description"=>"新手指南",
+                        "url"=> C('MEDIA_SITE_URL') . "/manual.html",
                         "picurl"=> $url . "/image/xs.jpg"
                     ],
                     [
                         "title"=>"微信运营理论与实操课程",
                         "description"=>"微信运营与实操课程",
-                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "url"=> C('MEDIA_SITE_URL') . "/class/5.html",
                         "picurl"=> $url . "/image/k5.jpg"
                     ],
                     [
-                        "title"=>"去逛逛".$parentName."家的微店",
-                        "description"=>"去逛逛".$parentName."家的微店",
-                        "url"=>"http://wangjie.guanlizhihui.com",
+                        "title"=>"去逛逛\"".$parentName."\"家的微店",
+                        "description"=>"去逛逛\"".$parentName."\"家的微店",
+                        "url"=> C('MEDIA_SITE_URL'),
                         "picurl"=>$userImg 
                     ],
                 ]
