@@ -28,7 +28,7 @@ class ChapterAction extends CommonAction
         $applyed = $classService->checkClassUser($classId, $userId);
 
         if (! $applyed) {
-            redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
+            redirect(C('APP_SITE_URL') . "/class/{$classId}.html");
         }
 
         // 课程列表
@@ -61,7 +61,7 @@ class ChapterAction extends CommonAction
             $applyed = $classService->checkClassUser($classId, $userId);
 
             if (!$applyed) {
-                redirect(C('APP_SITE_URL') . "/class/ticket?class_id={$classId}");
+                redirect(C('APP_SITE_URL') . "/class/{$classId}.html");
             }
 
             //章节列表
