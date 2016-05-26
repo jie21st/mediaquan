@@ -42,7 +42,7 @@ class NavAction extends CommonAction
                 array(
                     "type" => "view",
                     "name" => "会员中心",
-                    "url"  => C('MEDIA_SITE_URL') . "/my"
+                    "url"  => C('MEDIA_SITE_URL') . "/my/"
                 ),
                 array(
                     "name" => "服务中心",
@@ -54,8 +54,13 @@ class NavAction extends CommonAction
                         ),
                         array(
                             "type" => "view",
+                            "name" => "模式说明",
+                            "url"  => C('MEDIA_SITE_URL') . '/manual.html'
+                        ),
+                        array(
+                            "type" => "view",
                             "name" => "售后服务",
-                            "url"  => C('MEDIA_SITE_URL') . "/contact"
+                            "url"  => C('MEDIA_SITE_URL') . "/contact.html"
                         ),
                         array(
                             "type" => "click",
