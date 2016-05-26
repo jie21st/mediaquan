@@ -182,7 +182,7 @@ class ClassService
             ]
         ]);
         // 通知粉丝
-        $fansList = $userModel->where(['user_id' => $buyerInfo['parent_id']])->select();
+        $fansList = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
         if (! empty($fansList)) {
             foreach ($fansList as $fansInfo) {
                 $wechatService->sendCustomMessage([
