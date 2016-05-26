@@ -23,6 +23,7 @@ $config = array(
         // 单页面
         'contact'           => 'index/contact',
         'manual'            => 'index/manual',
+        'sales_model'       => 'index/sales_model',
     ),
     
     // 海报时效

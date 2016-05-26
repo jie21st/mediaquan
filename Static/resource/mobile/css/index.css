@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
 *{ margin:0; padding:0; border:0; list-style:none;}
-body{max-width:640px; min-width:320px; margin:0 auto; font-family:"微软雅黑"; background:#f2f2f2;}
+body{font-family:"微软雅黑"; background:#f2f2f2;}
 a{display:block; text-decoration:none; color: #666}
 
 .mt10 {margin-top: 10px;}
@@ -204,3 +204,12 @@ a{display:block; text-decoration:none; color: #666}
 .xszn_title span{color:#909090; font-size:13px;}
 .xszn_title span .rq{font-size:12px;}
 .xszn_detail img {width: 100%; vertical-align: middle;}
+
+/*文章页*/
+.article{padding: 20px 15px; font-size: 15px; background: #fff;}
+.article *{max-width: 100%; box-sizing: border-box; word-wrap: break-word;}
+.article h1{font-size: 17px; font-weight: 400; margin-bottom: .75em;}
+.article section{margin-bottom: 1.5em;}
+.article h2{font-size: 16px; font-weight: 400; margin-bottom: .3em;}
+.article h3{font-weight: 400; font-size: 15px;}
+.article p{margin: 10px 0;}

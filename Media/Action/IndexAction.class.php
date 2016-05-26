@@ -48,4 +48,9 @@ class IndexAction extends CommonAction
     {
         $this->display();
     }
+    
+    public function sales_modelOp()
+    {
+        $this->display();
+    }
 }
