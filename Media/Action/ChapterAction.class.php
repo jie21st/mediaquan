@@ -21,8 +21,6 @@ class ChapterAction extends CommonAction
             showMessage('课程不存在');
         }
 
-
-
         $classService = new \Common\Service\ClassService;
         // 验证用户是否已报名
         $applyed = $classService->checkClassUser($classId, $userId);
@@ -34,7 +32,8 @@ class ChapterAction extends CommonAction
         // 课程列表
         $chapterList = $this->getChapterList($classId);
 
-        $this->assign('title', $classInfo['class_title']);
+        $this->assign('classInfo', $classInfo);
+        $this->assign('user_id', $userId);
         $this->assign('list', $chapterList);
         $this->display('Chapter:list');
     }
