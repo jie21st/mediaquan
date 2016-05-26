@@ -206,7 +206,7 @@ a{display:block; text-decoration:none; color: #666}
 .xszn_detail img {width: 100%; vertical-align: middle;}
 
 /*文章页*/
-.article{padding: 20px 15px; font-size: 15px; background: #fff;}
+.article{padding: 20px 15px; font-size: 15px; background: #fff; line-height: 1.6;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}
 .article *{max-width: 100%; box-sizing: border-box; word-wrap: break-word;}
 .article h1{font-size: 17px; font-weight: 400; margin-bottom: .75em;}
 .article section{margin-bottom: 1.5em;}
