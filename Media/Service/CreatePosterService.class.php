@@ -35,7 +35,7 @@ class CreatePosterService
         $posterInfo = $this->getUserPosterInfo($uid);
         
         if (empty($posterInfo)) {
-            // 不存在海报
+            // 首次生成推广海报
             
             $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
             
@@ -49,6 +49,13 @@ class CreatePosterService
             $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
             if(false === $mediaInfo) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
+            }
+            
+            // 记录用户推广时间
+            $update = $userService->updateUserInfo(['user_spread_time' => time()], $userInfo['user_id']);
+            if ($update) {
+                // 只记录日志，不做失败处理
+                \Think\Log::write('首次生成海报更新用户推广时间失败');
             }
             
             // 通知推荐人
