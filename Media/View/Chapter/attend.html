@@ -342,7 +342,7 @@
     $.wechat.init(function(){
         var shareData = {
             title: '<{$info.chapter_title}>',
-            link: '<{$Think.config.MEDIA_SITE_URL}>/chapter/attend?class_id=<{$info.class_id}>&chapter=<{$info.chapter}>&seller=<{$user_id}>',
+            link: '<{$Think.config.MEDIA_SITE_URL}>/chapter/attend?class_id=<{$info.class_id}>&chapter_id=<{$info.chapter_id}>&seller=<{$user_id}>',
             imgUrl: 'UPLOADS_SITE_URL/<{$info.cover_img_url}>',
             desc: '<{$info.description}>',
         };
