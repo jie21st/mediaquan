@@ -66,6 +66,24 @@ class CronAction extends \Think\Action
         return $cronIds;
     }
     
+    /**
+     * 海报未扫码检测
+     * 
+     * @param type $cron
+     */
+    private function cron_2($cron = array())
+    {
+        $condition = array(['id' => ['in', array_keys($cron)]]);
+        $result = D('Poster', 'Service')->checkScanNotify($condition);
+        if ($result) {
+            // 返回执行成功的cronid
+            $cronIds = array_reduce($cron, create_function('$v,$w', '$v[] = $w["id"];return $v;'));
+        } else {
+            return false;
+        }
+        return $cronIds;
+    }
+    
     public function shutdown()
     {
         exit("\n" . date('Y-m-d H:i:s') . "\tsuccess");

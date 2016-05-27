@@ -67,6 +67,13 @@ class CreatePosterService
                             C('MEDIA_SITE_URL').'/manual.html'
                         ));
             }
+            
+            // 添加海报扫码情况检测任务
+            if (C('SPERAD_POSTER_CHECK_SCAN_TIME') > 0) {
+                $cronModel = new \Common\Model\CronModel;
+                $exectime = time() + C('SPERAD_POSTER_CHECK_SCAN_TIME');
+                $cronModel->addCron(['type' => 2, 'exec_id' => $imageSrc['poster_id'], 'exec_time' => $exectime]);
+            }
         } else {
             // 已存在海报
             
@@ -258,5 +265,27 @@ class CreatePosterService
 
         $wechat->sendCustomMessage($text);
     }
-
+    
+    /**
+     * 任务检查扫码情况
+     * 
+     * @param array $condition
+     * @return boolean
+     */
+    public function checkScanNotify($condition = array())
+    {
+        $condition['poster_scan_num'] = 0;
+        $posterModel = new \Common\Model\PosterModel;
+        $posterList = $posterModel->where($condition)->select();
+        if (empty($posterList)) {
+            return true;
+        }
+        $userModel = new \Common\Model\UserModel;
+        $content = 'Hi，您的海报还没有粉丝扫码哦，这里有份使用指南，您看看：<a href="'.C('MEDIA_SITE_URL').'/manual.html">点击阅读</a>';
+        foreach ($posterList as $poster) {
+            $userInfo = $userModel->getUserInfo(['user_id' => $poster['user_id']], 'user_id, user_wechatopenid');
+            $this->_sendText($userInfo, $content);
+        }
+        return true;
+    }
 }
