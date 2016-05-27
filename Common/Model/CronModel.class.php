@@ -14,7 +14,7 @@ class CronModel extends CommonModel
         if ($ifdel) {
             $this->delCron(['type' => $data['type'], 'exec_id' => $data['exec_id']]);
         }
-        return $this->addCron($data);
+        return $this->add($data);
     }
     
     /**
@@ -44,16 +44,6 @@ class CronModel extends CommonModel
      */
     public function addCronAll($insert) {
         return $this->addAll($insert);
-    }
-    
-    /**
-     * 保存任务队列
-     * 
-     * @param array $insert
-     * @return boolean
-     */
-    public function addCron($insert) {
-        return $this->add($insert);
     }
     
     /**
