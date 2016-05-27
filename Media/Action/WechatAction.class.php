@@ -117,6 +117,9 @@ class WechatAction extends CommonAction
                         } else {
                             $this->wechat->text('暂时无法获取海报')->reply();
                         }
+                    } elseif ($event['key'] == 'WECHAT_XSZN') {
+                        $str = (new SendMsgService)->sendXszn();
+                        $this->wechat->text($str)->reply();
                     }
                 }
                 break;
@@ -163,7 +166,7 @@ class WechatAction extends CommonAction
         if (C('USER_SUBSCRIBE_CASE_TIME') > 0) {
             $cronModel = new \Common\Model\CronModel;
             $exectime = time() + C('USER_SUBSCRIBE_CASE_TIME');
-            $cronModel->addcron(['exec_time' => $exectime, 'exec_id' => $userId, 'type' => 1]);
+            $cronModel->addCron(['exec_time' => $exectime, 'exec_id' => $userId, 'type' => 1]);
         }
         return $insertInfo;
     }
