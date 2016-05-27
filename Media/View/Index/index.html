@@ -7,32 +7,35 @@
         <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
     </head>
     <body>
-        <volist name="class_list" id="class">
-        <div class="jxsctk">
-            <ul>
-                <li class="tp">
-                    <a href="/class/<{$class.class_id}>.html">
-                    <img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class.class_image}>" width="119" height="95" />
-                    </a>
-                </li>
-                <li>
-                    <a href="/class/<{$class.class_id}>.html">
-                    <p class="bt"><{$class.class_title}></p>
-                    <p class="zjs">章节数：共<{$class.chapter_num}>章节</p>
-                    <p class="jss">讲　师：<{$class.class_teacher}></p>
-                    <p class="je">￥<{$class.class_price|glzh_price_format}></p>
-                    </a>
-                </li>
-                <if condition="$class['is_buy']">
-                    <li class="qtk"><a class="btn btn-block btn-orange" href="/chapter/classList?class_id=<{$class.class_id}>">去听课</a></li>
-                <else />
-                <li class="qtk lanse"><a class="btn btn-block btn-blue" href="/class/<{$class.class_id}>.html">立即抢购</a></li>
-                </if>
-                <li class="zzc"><span><img src="RESOURCE_SITE_URL/mobile/images/zzxbg.png" width="9" height="9"></span><{$class.study_num}>人在学</li>
-            </ul>
+        <div class="page-index">
+            <volist name="class_list" id="class">
+            <div class="jxsctk">
+                <ul>
+                    <li class="tp">
+                        <a href="/class/<{$class.class_id}>.html">
+                        <img src="UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class.class_image}>" width="119" height="95" />
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/class/<{$class.class_id}>.html">
+                        <p class="bt"><{$class.class_title}></p>
+                        <p class="zjs">章节数：共<{$class.chapter_num}>章节</p>
+                        <p class="jss">讲　师：<{$class.class_teacher}></p>
+                        <p class="je">￥<{$class.class_price|glzh_price_format}></p>
+                        </a>
+                    </li>
+                    <if condition="$class['is_buy']">
+                        <li class="qtk"><a class="btn btn-block btn-orange" href="/chapter/classList?class_id=<{$class.class_id}>">去听课</a></li>
+                    <else />
+                    <li class="qtk lanse"><a class="btn btn-block btn-blue" href="/class/<{$class.class_id}>.html">立即抢购</a></li>
+                    </if>
+                    <li class="zzc"><span><img src="RESOURCE_SITE_URL/mobile/images/zzxbg.png" width="9" height="9"></span><{$class.study_num}>人在学</li>
+                </ul>
+            </div>
+            </volist>
+            <include file="Public/footer" />
+            <include file="Public/nav" />
         </div>
-        </volist>
-        <include file="Public/footer" />
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>

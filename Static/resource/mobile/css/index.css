@@ -213,3 +213,8 @@ a{display:block; text-decoration:none; color: #666}
 .article h2{font-size: 16px; font-weight: 400; margin-bottom: .3em;}
 .article h3{font-weight: 400; font-size: 15px;}
 .article p{margin: 10px 0;}
+
+.page-index {padding-bottom: 56px;}
+.nav {position: fixed; bottom: 0; left: 0; display: box; display: -webkit-box; width: 100%; border-top: 1px solid #bebebe; background: #fafafa;}
+.nav a {height: 45px; line-height: 45px; -webkit-box-flex: 1; box-flex: 1; border-right: 1px solid #bebebe; text-align: center; color: #363636; font-size: 13px;}
+.nav a:last-child {border-right: 0;}
