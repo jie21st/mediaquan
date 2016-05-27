@@ -101,16 +101,12 @@ class SendMsgService
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
         
-        $str = ''; $i = 2;
-                    $str .= <<<EOF
-1、<a href="{$domain}/sales_model.html">模式说明</a>
-
-EOF;
+        $str = "请点击一下链接了解详情\r\n";
+        $str .= "1、<a href=\"{$domain}/sales_model.html\">模式说明</a>";
+        
+        $i = 2;
         foreach ($articleList as $article) {
-            $str .= <<<EOF
-{$i}、<a href="{$domain}/article/{$article['article_id']}.html">{$article['article_title']}</a>
-
-EOF;
+            $str .= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n";
             $i++;
         }
         
