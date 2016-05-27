@@ -8,7 +8,7 @@ class IndexAction extends CommonAction
     /**
      * 构造方法
      */
-    public function __construct() {
+    public function __construct() { 
         parent::__construct();
     }
     
