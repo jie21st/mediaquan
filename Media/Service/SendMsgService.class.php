@@ -95,9 +95,9 @@ class SendMsgService
     }
 } **/
 
-    public function sendXszn($userInfo)
+    public function sendXszn()
     {
-        $content = >>>STR
+        return <<<EOF
 请点击以下链接，了解详情
 1.<a href="">模式说明</a>
 2.<a href="">如何获取推广二维码海报？</a>
@@ -106,18 +106,6 @@ class SendMsgService
 5.<a href="">如何直接推广课程？</a>
 6.<a href="">如何查询账单明细？如何提现？如何查询零钱明细？</a>
 7.<a href="">如何开通微信支付？</a>
-STR;
-        $data = [
-            
-            'touser' => $userInfo['user_wechatopenid'],
-            "msgtype" => "text",
-            "text" => [
-                'content' => $content
-            ]
-
-        ];
-
-        $wechat = new Wechat;
-        $wechat->sendCustomMessage($data);
+EOF;
     }
 }
