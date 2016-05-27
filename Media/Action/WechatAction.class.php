@@ -73,7 +73,7 @@ class WechatAction extends CommonAction
                     ]);
                     
                     // 关注推送消息
-                    (new \Media\Service\sendMsgService)->sendNews($userInfo);
+                    (new \Media\Service\SendMsgService)->sendNews($userInfo);
                     $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
                 } elseif ($event['event'] == 'unsubscribe') {
                     // 如果存在用户设置为未订阅
@@ -96,7 +96,7 @@ class WechatAction extends CommonAction
                         $wechatService = new \Common\Service\WechatService;
                         $wechatService->sendCustomMessage($msg);
                     }
-                    (new \Media\Service\sendMsgService)->sendNews($userInfo);
+                    (new \Media\Service\SendMsgService)->sendNews($userInfo);
                 } elseif ($event['event'] == 'CLICK') {
                     if ($event['key'] == 'WECHAT_QRCODE') {
                         if (C('SPREAD_POSTER_USE')) {
@@ -118,7 +118,7 @@ class WechatAction extends CommonAction
                             $this->wechat->text('暂时无法获取海报')->reply();
                         }
                     } elseif ($event['key'] == 'WECHAT_XSZN') {
-                        $str = (new SendMsgService)->sendXszn();
+                        $str = (new \Media\Service\SendMsgService)->sendXszn();
                         $this->wechat->text($str)->reply();
                     }
                 }
