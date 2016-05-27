@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title><{$article.article_title}></title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+        <style>
+            .ui_cells {
+    margin-top: 1.17647059em;
+    background-color: #FFFFFF;
+    line-height: 1.41176471;
+    font-size: 17px;
+    overflow: hidden;
+    position: relative;
+}
+.ui_cells:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid #D9D9D9;
+    color: #D9D9D9;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+}
+.ui_cells:after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid #D9D9D9;
+    color: #D9D9D9;
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+}
+.ui_cell {
+    padding: 10px 15px;
+    position: relative;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.ui_cell:before {
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid #D9D9D9;
+    color: #D9D9D9;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+    left: 15px;
+}
+.ui_cell:first-child:before {
+    display: none;
+}
+.ui_cell:active { background-color: #ECECEC;}
+.ui_cell_primary {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+}
+.ui_cell_ft {
+    text-align: right;
+    color: #888;
+}
+.ui_cells_access .ui_cell:not(.no_access) {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+.ui_cells_access .ui_cell_ft:after {
+    content: " ";
+    display: inline-block;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    height: 6px;
+    width: 6px;
+    border-width: 2px 2px 0 0;
+    border-color: #C8C8CD;
+    border-style: solid;
+    position: relative;
+    top: -2px;
+    top: -1px;
+    margin-left: .3em;
+}
+
+.article_list .ui_cells {margin-top: 0; font-size: 14px;}
+.article_list .ui_cell:before{left:0;}
+        </style>
+    </head>
+    <body>
+        <div class="article_list">
+        <div class="ui_cells ui_cells_access article_list">
+            <volist name="list" id="vo">
+                <a class="ui_cell" href="/article/<{$vo.article_id}>.html">
+                <div class="ui_cell_bd ui_cell_primary"><p><{$vo.article_title}></p></div>
+                <div class="ui_cell_ft"></div>
+            </a>
+            </volist>
+        </div>
+        </div>
+    </body>
+</html>

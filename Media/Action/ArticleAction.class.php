@@ -3,6 +3,15 @@ namespace Media\Action;
 
 class ArticleAction extends CommonAction
 {
+    public function indexOp()
+    {
+        $articleModel = new \Common\Model\ArticleModel();
+        $list = $articleModel->getArticleList(['article_show' => 1], 'article_id,article_title');
+        
+        $this->assign('list', $list);
+        $this->display();
+    }
+    
     public function detailOp()
     {
         $arcticleId = I('get.id', 0, 'intval');
