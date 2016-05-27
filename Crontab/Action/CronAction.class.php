@@ -74,7 +74,7 @@ class CronAction extends \Think\Action
     private function cron_2($cron = array())
     {
         $condition = array(['id' => ['in', array_keys($cron)]]);
-        $result = D('CreatePoster', 'Service')->checkScanNotify($condition);
+        $result = (new \Media\Service\CreatePosterService())->checkScanNotify($condition);
         if ($result) {
             // 返回执行成功的cronid
             $cronIds = array_reduce($cron, create_function('$v,$w', '$v[] = $w["id"];return $v;'));
