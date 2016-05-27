@@ -71,9 +71,10 @@ return array(
     'SPERAD_SELLER_GAINS_AMOUNT'        => 0,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
     
     // 其他配置
-    'DEFAULT_USER_AVATAR'   => 'personImg.jpg',         // 默认头像
-    'DEFAULT_USER_PARENT'   => array(10013, 10014),     // 用户默认推荐人列表
-    'ORDER_EXPIRE'          => 7200,                    // 订单有效时间（单位秒）
+    'DEFAULT_USER_AVATAR'       => 'personImg.jpg',         // 默认头像
+    'DEFAULT_USER_PARENT'       => array(10013, 10014),     // 用户默认推荐人列表
+    'ORDER_EXPIRE'              => 7200,                    // 订单有效时间（单位秒）
+    'USER_SUBSCRIBE_CASE_TIME'  => 600,                     // 用户关注多少时间后检查未购买或未生成海报发送通知 为0则不触发
     
     // 分销配置
     'SELLER_LEVEL_RATE'     => array(
