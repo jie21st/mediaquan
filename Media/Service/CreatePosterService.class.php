@@ -281,7 +281,7 @@ class CreatePosterService
             return true;
         }
         $userModel = new \Common\Model\UserModel;
-        $content = 'Hi，您的海报还没有粉丝扫码哦，这里有份使用指南，您看看：<a href="'.C('MEDIA_SITE_URL').'/manual.html">点击阅读</a>';
+        $content = 'Hi，您的海报还没有粉丝扫码哦，这里有份使用指南，您看看：<a href="'.C('MEDIA_SITE_URL').'/article/">点击阅读</a>';
         foreach ($posterList as $poster) {
             $userInfo = $userModel->getUserInfo(['user_id' => $poster['user_id']], 'user_id, user_wechatopenid');
             $this->_sendText($userInfo, $content);
