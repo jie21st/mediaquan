@@ -97,23 +97,23 @@ class SendMsgService
 
     public function sendXszn()
     {
+        $arcModel = new \Common\Model\ArticleModel;
+        $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
-        return <<<EOF
-请点击以下链接，了解详情
+        
+        $str = ''; $i = 2;
+                    $str .= <<<EOF
+1、<a href="{$domain}/sales_model.html">模式说明</a>
 
-1、<a href="$domain/help/1.html">模式说明</a>
-        
-2、<a href="$domain/help/2.html">如何获取推广二维码海报？</a>
-        
-3、<a href="$domain/help/3.html">如何将海报分享给朋友？</a>
-        
-4、<a href="$domain/help/4.html">如何购买课程和听课？</a>
-        
-5、<a href="$domain/help/5.html">如何直接推广课程？</a>
-        
-6、<a href="$domain/help/6.html">如何查询账单明细？如何提现？如何查询零钱明细？</a>
-        
-7、<a href="$domain/help/7.html">如何开通微信支付？</a>
 EOF;
+        foreach ($articleList as $article) {
+            $str .= <<<EOF
+{$i}、<a href="{$domain}/article/{$article['article_id']}.html">{$article['article_title']}</a>
+
+EOF;
+            $i++;
+        }
+        
+        return $str;
     }
 }
