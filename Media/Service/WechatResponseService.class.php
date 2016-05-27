@@ -320,7 +320,7 @@ class WechatResponseService
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
         
-        $str = "请点击一下链接了解详情\r\n\r\n";
+        $str = "请点击以下链接了解详情\r\n\r\n";
         $str .= "1、<a href=\"{$domain}/sales_model.html\">模式说明</a>\r\n\r\n";
         
         $i = 2;
@@ -328,6 +328,8 @@ class WechatResponseService
             $str .= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n\r\n";
             $i++;
         }
+        
+        $str .= "<a href=\"{$domain}/article/\">了解更多</a>";
         
         return $str;
     }
