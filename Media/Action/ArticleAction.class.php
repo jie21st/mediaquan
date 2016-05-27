@@ -10,7 +10,7 @@ class ArticleAction extends CommonAction
             showMessage('参数错误');
         }
         $articleModel = new \Common\Model\ArticleModel();
-        $articleInfo = $articleModel->getOneArticle($id);
+        $articleInfo = $articleModel->getOneArticle($arcticleId);
         if (empty($articleInfo)) {
             showMessage('该文章不存在');
         }
