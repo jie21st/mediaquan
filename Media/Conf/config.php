@@ -20,6 +20,8 @@ $config = array(
         'class/:id\d'       => 'class/detail',
         // 订单
         'order/:id\d'       => 'class/buy',
+        // 文章
+        'article/:id\d'        => 'article/detail',
         // 单页面
         'contact'           => 'index/contact',
         'manual'            => 'index/manual',
