@@ -159,6 +159,12 @@ class WechatAction extends CommonAction
         }
         $insertInfo['user_id'] = $userId;
         
+        // 用户加入关注关怀提醒队列
+        if (C('USER_SUBSCRIBE_CASE_TIME') > 0) {
+            $cronModel = new \Common\Model\CronModel;
+            $exectime = time() + C('USER_SUBSCRIBE_CASE_TIME');
+            $cronModel->addcron(['exec_time' => $exectime, 'exec_id' => $userId, 'type' => 1]);
+        }
         return $insertInfo;
     }
     

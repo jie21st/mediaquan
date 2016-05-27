@@ -1,2 +1,5 @@
 # 订单取消 - 每5分钟
 */5  *  *  *  * /usr/local/php/bin/php /mnt/www/mediaquan/Crontab/index.php order/order_expire >> /mnt/www/mediaquan/Crontab/Logs/order_cancle.log
+
+# 通用任务计划 - 每分钟
+*/1  *  *  *  * /usr/local/php/bin/php /mnt/www/mediaquan/Crontab/index.php cron/run >> /mnt/www/mediaquan/Crontab/Logs/cron.log
