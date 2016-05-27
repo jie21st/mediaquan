@@ -87,4 +87,30 @@ class UserService
         $model = D('User');
         return $model->getUserByUid($userId);
     }
+    
+    /**
+     * 未购买关怀通知
+     * 
+     * @param type $condition
+     */
+    public function notBuyCareNotice($condition = array()) {
+        $userModel = new \Common\Model\UserModel;
+        $userList = $userModel->where($condition)->select();
+        if (empty($userList)) {
+            return true;
+        }
+        $wechatService = new \Common\Service\WechatService();
+        foreach ($userList as $user) {
+            if (intval($user['buy_num']) || intval($user['user_spread_time'])) {
+                continue;
+            }
+            $wechatService->sendCustomMessage([
+                'touser' => $user['user_wechatopenid'],
+                'msgtype' => 'text',
+                'text' => ['content' => 'Hi，拇指微课不仅有好的课程，还有一些有趣的玩法，<a href="#">点击查看使用指南</a>']
+            ]);
+        }
+        
+        return true;
+    }
 }
