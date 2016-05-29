@@ -17,9 +17,10 @@ class CreatePosterService
         set_time_limit(0); // 取消脚本运行时间的超时上限
         
         $userService = new \Common\Service\UserService;
-        
+
         // 用户信息
         $userInfo = $userService->getUserBaseInfo($uid);
+
         if (empty($userInfo)) {
             $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
            // return $this->returnJson(0, '获取用户信息失败', '');
@@ -33,10 +34,9 @@ class CreatePosterService
 //        }
 
         $posterInfo = $this->getUserPosterInfo($uid);
-        
+
         if (empty($posterInfo)) {
             // 首次生成推广海报
-            
             $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
             
             // 制作海报
@@ -81,7 +81,8 @@ class CreatePosterService
                 //echo '重新制作';
                 //制作海报
                 $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
-                $imageSrc   = $this->_getImageInfo($userInfo);
+                $imageSrc   = $this->_getImageInfo($userInfo, $posterInfo);
+                
                 if(false === $imageSrc) {
                     $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
                     //return $this->returnJson(0, '制作海报失败', '');
@@ -113,7 +114,7 @@ class CreatePosterService
                 $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
                 $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
                 $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
-                $imageSrc['pathName']       = $posterInfo['poster_images_name'];
+                //$imageSrc['pathName']       = $posterInfo['poster_images_name'];
             }
         }
 
@@ -149,7 +150,7 @@ class CreatePosterService
      *
      * @return mixed url
      */
-    private function _getImageInfo($userInfo)
+    private function _getImageInfo($userInfo, $posterInfo = false)
     {
         $poster = D('Poster', 'Service');
 
@@ -160,23 +161,33 @@ class CreatePosterService
         $d = date('d');
         $todayEndTime = mktime(23, 59, 59, $m, $d, $y) - $todayStartTime;
         $wechatTime = 29 * 86400 + $todayEndTime;
+        
         $imageSrc = $poster->getPoster($userInfo, $wechatTime, $todayStartTime);
-
 
         if(false === $imageSrc) {
             return false;
         }
 
         $data = array(
-            'user_id' => $userInfo['user_id'],
             'poster_images_name' => $imageSrc['pathName'],
             'poster_src' => $imageSrc['pathInfo'],
             'poster_create_time' => $todayStartTime,
             'poster_end_time' => ($todayStartTime + $wechatTime),
             'poster_status' => ($imageSrc['pathName'] != '') ? 1 : 0,
         );
-
-        $state = D('Poster', 'Model')->addData($data);
+        
+        if (false !== $posterInfo ) {
+            $condition = ['user_id' => $posterInfo['user_id'], 'id' => $posterInfo['id']];
+            $bool = D('Poster', 'Model')->posterUpdate($condition, $data);
+            if (false == $bool) {
+                return false;
+            } else {
+                $state = $posterInfo['id'];
+            }
+        } else {
+            $data['user_id'] = $userInfo['user_id'];
+            $state = D('Poster', 'Model')->addData($data);
+        }
 
         if(!$state) {
             return false;
