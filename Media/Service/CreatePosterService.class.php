@@ -285,7 +285,7 @@ class CreatePosterService
      */
     public function checkScanNotify($condition = array())
     {
-        $condition['poster_scan_num'] = 0;
+        $condition['poster_from_num'] = 0;
         $posterModel = new \Common\Model\PosterModel;
         $posterList = $posterModel->where($condition)->select();
         if (empty($posterList)) {
