@@ -56,20 +56,17 @@ class WechatResponseService
                     // 用户未关注时，进行关注后的事件推送
                     if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
                         $parentId = substr($event['key'], 8);
-                        \Think\Log::write('关注事件自带parent_id='.$parentId);
+                        // 推广用户处理
+                        $this->userspread($userInfo, $parentId, 'scan');
                     } else {
                         $defaultParents = C('DEFAULT_USER_PARENT');
                         if (is_array($defaultParents) && !empty($defaultParents)) {
                             shuffle($defaultParents);
                             $parentId = end($defaultParents);
-                            \Think\Log::write('关注事件默认parent_id='.$parentId);
-                        } else {
-                            $parentId = 0;
-                            \Think\Log::write('关注事件无parent_id');
+                            // 推广用户处理
+                            $this->userspread($userInfo, $parentId, 'assign');
                         }
                     }
-                    // 推广用户处理
-                    $this->userspread($userInfo, $parentId);
                     
                     // 修改为已关注状态
                     $userModel->editUser([
@@ -187,7 +184,7 @@ class WechatResponseService
      * @param type $parentId
      * @return type
      */
-    private function userspread($userInfo, $parentId){
+    private function userspread($userInfo, $parentId = 0, $fromType = 'scan'){
         if (intval($userInfo['parent_id'])) {
             \Think\Log::write('该用户已存在推荐人');
             return false;
@@ -224,9 +221,10 @@ class WechatResponseService
             }
             
             // 二维码加粉次数
-            $posterModel = new \Common\Model\PosterModel;
-            $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_from_num' => ['exp', 'poster_from_num+1']]);
-
+            if ($fromType == 'scan') {
+                $posterModel = new \Common\Model\PosterModel;
+                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_from_num' => ['exp', 'poster_from_num+1']]);
+            }
             // 通知
             $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
             if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
