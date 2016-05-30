@@ -85,7 +85,7 @@ class WechatService
         } else {
             $messageModel->where(['message_id' => $messageId])->save([
                 'message_state' => 2,
-                'message_faildesc' => $json['errcode'].': '.$json['errmsg']
+                'message_faildesc' => $this->wechat->errCode.': '.$this->wechat->errMsg
             ]);
         }
         return true;
