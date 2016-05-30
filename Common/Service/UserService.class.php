@@ -107,7 +107,7 @@ class UserService
             $wechatService->sendCustomMessage([
                 'touser' => $user['user_wechatopenid'],
                 'msgtype' => 'text',
-                'text' => ['content' => 'Hi，拇指微课不仅有好的课程，还有一些有趣的玩法，<a href="'.C('MEDIA_SITE_URL').'/manual.html">点击查看使用指南</a>']
+                'text' => ['content' => 'Hi，拇指微课不仅有好的课程，还有一些有趣的玩法，<a href="'.C('MEDIA_SITE_URL').'/article/">点击查看使用指南</a>']
             ]);
         }
         
