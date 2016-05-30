@@ -97,6 +97,9 @@ class WechatResponseService
                         $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
                         $wechatService = new \Common\Service\WechatService;
                         $wechatService->sendCustomMessage($msg);
+                        
+                        $posterModel = new \Common\Model\PosterModel();
+                        $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
                     }
                     $this->sendNews($userInfo);
                 } elseif ($event['event'] == 'CLICK') {
