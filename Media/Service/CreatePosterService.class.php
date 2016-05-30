@@ -64,7 +64,7 @@ class CreatePosterService
                 $this->_sendText($parentInfo, sprintf(
                             '您的粉丝%s生成了二维码，请给予他协助，<a href="%s">新手教程</a>',
                             $userInfo['user_nickname'],
-                            C('MEDIA_SITE_URL').'/manual.html'
+                            C('MEDIA_SITE_URL').'/article/'
                         ));
             }
             
