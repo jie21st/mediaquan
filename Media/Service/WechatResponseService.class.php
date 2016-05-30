@@ -16,6 +16,9 @@ class WechatResponseService
      */
     protected $wechat;
     
+    private $userInfo = array();
+
+
     /**
      * 构造方法
      */
@@ -41,6 +44,7 @@ class WechatResponseService
                 $openId = $this->wechat->getRev()->getRevFrom();
                 $userModel = new \Common\Model\UserModel;
                 $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
+                $this->userInfo = $userInfo;
                     
                 \Think\Log::write('事件类型和key：'.json_encode($event));
                 if ($event['event'] == 'subscribe') {
@@ -218,6 +222,10 @@ class WechatResponseService
             if (! $result) {
                 throw new \Exception('绑定写入失败');
             }
+            
+            // 二维码加粉次数
+            $posterModel = new \Common\Model\PosterModel;
+            $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_from_num' => ['exp', 'poster_from_num+1']]);
 
             // 通知
             $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
