@@ -34,8 +34,8 @@ class LoginAction extends CommonAction
             // 注册用户
             $authUserInfo = $wechat->getOauthUserinfo($result['access_token'], $result['openid']);
             // 判断是否关注
-//            $wechatUserInfo = $wechat->getUserInfo($result['openid']);
-            //$isSubscribe = ($wechatUserInfo && $wechatUserInfo['subscribe'] != 0) ? 1 : 0;
+            $wechatUserInfo = $wechat->getUserInfo($result['openid']);
+            $isSubscribe = ($wechatUserInfo && $wechatUserInfo['subscribe'] != 0) ? 1 : 0;
             $authUserInfo['nickname'] = remove_emoji($authUserInfo['nickname']);
             // 写入数据
             $userInfo = array();
@@ -43,6 +43,7 @@ class LoginAction extends CommonAction
             $userInfo['user_nickname']         = $authUserInfo['nickname'];
             $userInfo['user_sex']              = $authUserInfo['sex'];
             $userInfo['user_wechatinfo']       = serialize($authUserInfo);
+            $userInfo['subscribe_state']       = $isSubscribe;
             
             // 取的默认推荐人
 //            $parents = C('USER_DEFAULT_PARENT');
