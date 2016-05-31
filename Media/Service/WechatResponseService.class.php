@@ -56,7 +56,7 @@ class WechatResponseService
         $type = $this->wechat->getRev()->getRevType();
         switch($type) {
             case Wechat::MSGTYPE_TEXT:
-                $this->wechat->text("hello")->reply();
+                //$this->wechat->text("hello")->reply();
                 exit;
                 break;
             case Wechat::MSGTYPE_EVENT:
