@@ -18,7 +18,13 @@ class WechatResponseService
     protected $wechat;
     
     /**
-     *
+     * 用户openid
+     * @var type 
+     */
+    protected $openid;
+    
+    /**
+     * 用户模型类
      * @var type 
      */
     protected $userModel;
@@ -41,6 +47,12 @@ class WechatResponseService
     public function responseHandle()
     {
         $this->wechat->valid();
+        
+        $openid = $this->wechat->getRev()->getRevFrom();
+        $userInfo = $this->userModel->getUserInfo(['user_wechatopenid' => $openid]);
+        $this->openid = $openid;
+        $this->userInfo = $userInfo;
+        
         $type = $this->wechat->getRev()->getRevType();
         switch($type) {
             case Wechat::MSGTYPE_TEXT:
@@ -63,106 +75,64 @@ class WechatResponseService
     private function event()
     {
         $event = $this->wechat->getRev()->getRevEvent();
-        $openId = $this->wechat->getRev()->getRevFrom();
+        \Think\Log::write('事件推送：' . json_encode($event));
         
-        $userModel = new \Common\Model\UserModel;
-        $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
-        $this->userInfo = $userInfo;
-
-        \Think\Log::write('事件类型和key：' . json_encode($event));
         if ($event['event'] == 'subscribe') {
-            if (empty($userInfo)) {
-                // 注册用户
-                $userInfo = $this->registerOp($openId);
-                $this->userInfo = $userInfo;
-            }
-
-            // 用户未关注时，进行关注后的事件推送
-            if (!empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
-                $parentId = substr($event['key'], 8);
-                // 推广用户处理
-                $this->userspread($userInfo, $parentId, 'scan');
-            } else {
-                $defaultParents = C('DEFAULT_USER_PARENT');
-                if (is_array($defaultParents) && !empty($defaultParents)) {
-                    shuffle($defaultParents);
-                    $parentId = end($defaultParents);
-                    // 推广用户处理
-                    $this->userspread($userInfo, $parentId, 'assign');
-                }
-            }
-
-            // 修改为已关注状态
-            $userModel->editUser([
-                'subscribe_state' => 1,
-                    ], [
-                'user_id' => $userInfo['user_id'],
-            ]);
-
-            // 关注推送消息
-            $this->sendNews($userInfo);
-            $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
+            $this->_subscribeEvent($event['key']);
         } elseif ($event['event'] == 'unsubscribe') {
-            // 如果存在用户设置为未订阅
-//            if (!empty($userInfo)) {
-//                $this->userModel->editUser([
-//                    'subscribe_state' => 0,
-//                ], [
-//                    'user_id' => $this->userInfo['user_id'],
-//                ]);
-//            }
-            $this->unsubscribeEvent();
+            $this->_unsubscribeEvent();
         } elseif ($event['event'] == 'SCAN') {
-            $this->scanEvent($event['key']);
-            // 用户已关注时的事件推送
-            // 给用户提示一下
-//            $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
-//            if (!empty($recomUserInfo)) {
-//                $msg = array();
-//                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-//                $msg['msgtype'] = 'text';
-//                $msg['text'] = ['content' => $userInfo['user_nickname'] . '扫描了您分享的二维码'];
-//                $wechatService = new \Common\Service\WechatService;
-//                $wechatService->sendCustomMessage($msg);
-//
-//                $posterModel = new \Common\Model\PosterModel();
-//                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
-//            }
-//            $this->sendNews($userInfo);
+            $this->_scanEvent($event['key']);
         } elseif ($event['event'] == 'CLICK') {
-            $this->clickEvent($event['key']);
+            $this->_clickEvent($event['key']);
         }
-        /*elseif ($event['event'] == 'CLICK') {
-            if ($event['key'] == 'WECHAT_QRCODE') {
-                if (C('SPREAD_POSTER_USE')) {
-                    if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
-                        if ($userInfo['buy_num'] == 0) {
-                            $url = C('MEDIA_SITE_URL');
-                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
-                        } else {
-                            echo '';
-                            $posterService = new \Media\Service\CreatePosterService();
-                            $posterService->getPoster($userInfo['user_id']);
-                        }
-                    } else {
-                        echo '';
-                        $posterService = new \Media\Service\CreatePosterService();
-                        $posterService->getPoster($userInfo['user_id']);
-                    }
-                } else {
-                    $this->wechat->text('暂时无法获取海报')->reply();
-                }
-            } elseif ($event['key'] == 'WECHAT_XSZN') {
-                $str = $this->sendXszn();
-                $this->wechat->text($str)->reply();
+    }
+    
+    /**
+     * 关注事件
+     */
+    private function _subscribeEvent($key = '')
+    {
+        if (empty($this->userInfo)) {
+            // 注册用户
+            $userInfo = $this->registerOp();
+            if (empty($userInfo)) {
+                \Think\Log::write('关注注册用户失败');
+                exit();
             }
-        }*/
+            $this->userInfo = $userInfo;
+        }
+        
+        // 推广用户处理
+        if (!empty($key) && preg_match('/^qrscene_\d/', $key)) {
+            $parentId = substr($key, 8);
+            $this->userspread($parentId, 'scan');
+        } else {
+            $defaultParents = C('DEFAULT_USER_PARENT');
+            if (is_array($defaultParents) && !empty($defaultParents)) {
+                shuffle($defaultParents);
+                $parentId = end($defaultParents);
+                $this->userspread($parentId, 'assign');
+            }
+        }
+
+        // 修改为已关注状态
+        $result = $this->userModel->editUser([
+            'subscribe_state' => 1,
+                ], [
+            'user_id' => $this->userInfo['user_id'],
+        ]);
+
+        // 关注推送消息
+        $this->sendNews();
+        
+        $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
     }
     
     /**
      * 取消关注事件
      */
-    private function unsubscribeEvent()
+    private function _unsubscribeEvent()
     {
         if (! empty($this->userInfo)) {
             $result = $this->userModel->editUser([
@@ -176,7 +146,7 @@ class WechatResponseService
     /**
      * 用户已关注时的事件推送
      */
-    private function scanEvent($key)
+    private function _scanEvent($key)
     {
         // 通知推荐人有粉丝扫码
         $recomUserInfo = $this->userModel->getUserInfo(['user_id' => $key]);
@@ -200,7 +170,7 @@ class WechatResponseService
      * 
      * @param type $key
      */
-    private function clickEvent($key)
+    private function _clickEvent($key)
     {
         switch ($key) {
             case 'WECHAT_QRCODE':
@@ -233,18 +203,17 @@ class WechatResponseService
     /**
      * 注册
      * 
-     * @param type $openId
      */
-    private function registerOp($openId)
+    private function registerOp()
     {
         $userModel = new \Common\Model\UserModel;
-        $wxUserInfo = $this->wechat->getUserInfo($openId);
+        $wxUserInfo = $this->wechat->getUserInfo($this->openid);
         $wxUserInfo['nickname'] = remove_emoji($wxUserInfo['nickname']);
         $insertInfo = [
             'user_nickname' => $wxUserInfo['nickname'],
             'user_sex' => $wxUserInfo['sex'],
             'user_wechatinfo' => serialize($wxUserInfo),
-            'user_wechatopenid' => $openId,
+            'user_wechatopenid' => $this->openid,
             'subscribe_state' => 1,
             'parent_id' => 0,
         ];
@@ -274,12 +243,11 @@ class WechatResponseService
     /**
      * 用户推广
      * 
-     * @param type $userInfo
      * @param type $parentId
      * @return type
      */
-    private function userspread($userInfo, $parentId = 0, $fromType = 'scan'){
-        if (intval($userInfo['parent_id'])) {
+    private function userspread($parentId = 0, $fromType = 'scan'){
+        if (intval($this->userInfo['parent_id'])) {
             \Think\Log::write('该用户已存在推荐人');
             return false;
         }
@@ -289,8 +257,13 @@ class WechatResponseService
             return false;
         }
         
-        if ($userInfo['user_id'] == $parentId) {
+        if ($this->userInfo['user_id'] == $parentId) {
             \Think\Log::write('parent_id为当前用户自己');
+            return false;
+        }
+        
+        if (in_array($parentId, C('DEFAULT_USER_PARENT'))) {
+            \Think\Log::write('parent_id存在于用户默认parent中');
             return false;
         }
             
@@ -302,14 +275,14 @@ class WechatResponseService
                 throw new \Exception('推荐人用户信息不存在');
             }
 
-            if ($userInfo['user_id'] == $recomUserInfo['parent_id']) {
+            if ($this->userInfo['user_id'] == $recomUserInfo['parent_id']) {
                 throw new \Exception('该用户是当前推荐人的推荐人');
             }
 
             // 绑定关系
             $update = array();
             $update['parent_id'] = $recomUserInfo['user_id'];
-            $result = $userModel->editUser($update, ['user_id' => $userInfo['user_id']]);
+            $result = $userModel->editUser($update, ['user_id' => $this->userInfo['user_id']]);
             if (! $result) {
                 throw new \Exception('绑定写入失败');
             }
@@ -317,7 +290,10 @@ class WechatResponseService
             // 二维码加粉次数
             if ($fromType == 'scan') {
                 $posterModel = new \Common\Model\PosterModel;
-                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_from_num' => ['exp', 'poster_from_num+1']]);
+                $data = array();
+                $data['poster_from_num'] = ['exp', 'poster_from_num+1'];
+                $data['poster_scan_num'] = ['exp', 'poster_scan_num+1'];
+                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], $data);
             }
             // 通知
             $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
@@ -326,7 +302,7 @@ class WechatResponseService
                 $pd_data = array();
                 $pd_data['user_id'] = $recomUserInfo['user_id'];
                 $pd_data['amount'] = $spreadUserAmount;
-                $pd_data['name'] = '推荐用户 '.$userInfo['user_nickname'];
+                $pd_data['name'] = '推荐用户 '.$this->userInfo['user_nickname'];
                 $pdService->changePd('sale_income', $pd_data);
 
                 // 收益通知
@@ -337,7 +313,7 @@ class WechatResponseService
                     'text' => [
                         'content' => sprintf(
                                         '%s成为了您的粉丝，您获得收益%s元；推荐好友购买课程还可获得1-99元的收益，<a href="%s">点击查看</a>',
-                                        $userInfo['user_nickname'],
+                                        $this->userInfo['user_nickname'],
                                         glzh_price_format($spreadUserAmount),
                                         C('MEDIA_SITE_URL').'/predeposit/'
                                     )
@@ -348,7 +324,7 @@ class WechatResponseService
                 $msg = array();
                 $msg['touser'] = $recomUserInfo['user_wechatopenid'];
                 $msg['msgtype'] = 'text';
-                $msg['text'] = ['content' => $userInfo['user_nickname'].'成为了您的粉丝'];
+                $msg['text'] = ['content' => $this->userInfo['user_nickname'].'成为了您的粉丝'];
                 $wechatService = new \Common\Service\WechatService;
                 $wechatService->sendCustomMessage($msg);
             }
@@ -423,16 +399,17 @@ class WechatResponseService
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
         
-        $str = "请点击以下链接了解详情\r\n\r\n";
-        $str .= "1、<a href=\"{$domain}/sales_model.html\">模式说明</a>\r\n\r\n";
+        $str = "拇指微课测试期加大奖励力度，邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n";
+        $str.= "戳链接了解详情。\r\n\r\n";
+        $str.= "1、<a href=\"{$domain}/sales_model.html\">模式说明</a>\r\n\r\n";
         
         $i = 2;
         foreach ($articleList as $article) {
-            $str .= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n\r\n";
+            $str.= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n\r\n";
             $i++;
         }
         
-        $str .= "<a href=\"{$domain}/article/\">了解更多</a>";
+        $str.= "<a href=\"{$domain}/article/\">了解更多</a>";
         
         return $str;
     }
