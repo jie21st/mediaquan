@@ -15,7 +15,7 @@ class WechatResponseService
      * @var type 
      */
     protected $wechat;
-    
+
     private $userInfo = array();
 
 
@@ -24,9 +24,9 @@ class WechatResponseService
      */
     public function __construct()
     {
-        $this->wechat = new Wechat;
+        $this->wechat = new Wechat();
     }
-    
+
     /**
      * 微信推送事件处理
      */
@@ -40,94 +40,7 @@ class WechatResponseService
                 exit;
                 break;
             case Wechat::MSGTYPE_EVENT:
-                $event = $this->wechat->getRev()->getRevEvent();
-                $openId = $this->wechat->getRev()->getRevFrom();
-                $userModel = new \Common\Model\UserModel;
-                $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
-                $this->userInfo = $userInfo;
-                    
-                \Think\Log::write('事件类型和key：'.json_encode($event));
-                if ($event['event'] == 'subscribe') {
-                    if (empty($userInfo)) {
-                        // 注册用户
-                        $userInfo = $this->registerOp($openId);
-                    }
-                    
-                    // 用户未关注时，进行关注后的事件推送
-                    if (! empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
-                        $parentId = substr($event['key'], 8);
-                        // 推广用户处理
-                        $this->userspread($userInfo, $parentId, 'scan');
-                    } else {
-                        $defaultParents = C('DEFAULT_USER_PARENT');
-                        if (is_array($defaultParents) && !empty($defaultParents)) {
-                            shuffle($defaultParents);
-                            $parentId = end($defaultParents);
-                            // 推广用户处理
-                            $this->userspread($userInfo, $parentId, 'assign');
-                        }
-                    }
-                    
-                    // 修改为已关注状态
-                    $userModel->editUser([
-                        'subscribe_state' => 1,
-                    ],[
-                        'user_id' => $userInfo['user_id'],
-                    ]);
-                    
-                    // 关注推送消息
-                    $this->sendNews($userInfo);
-                    $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
-                } elseif ($event['event'] == 'unsubscribe') {
-                    // 如果存在用户设置为未订阅
-                    if (! empty($userInfo)) {
-                        $userModel->editUser([
-                            'subscribe_state' => 0,
-                        ],[
-                            'user_id' => $userInfo['user_id'],
-                        ]);
-                    }
-                } elseif ($event['event'] == 'SCAN') {
-                    // 用户已关注时的事件推送
-                    // 给用户提示一下
-                    $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
-                    if (! empty($recomUserInfo)) {
-                        $msg = array();
-                        $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-                        $msg['msgtype'] = 'text';
-                        $msg['text'] = ['content' => $userInfo['user_nickname'].'扫描了您分享的二维码'];
-                        $wechatService = new \Common\Service\WechatService;
-                        $wechatService->sendCustomMessage($msg);
-                        
-                        $posterModel = new \Common\Model\PosterModel();
-                        $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
-                    }
-                    $this->sendNews($userInfo);
-                } elseif ($event['event'] == 'CLICK') {
-                    if ($event['key'] == 'WECHAT_QRCODE') {
-                        if (C('SPREAD_POSTER_USE')) {
-                            if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
-                                if ($userInfo['buy_num'] == 0) {
-                                    $url = C('MEDIA_SITE_URL');
-                                    $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="'.$url.'">立即点击“成为东家”</a>')->reply();
-                                } else {
-                                    echo '';
-                                    $posterService = new \Media\Service\CreatePosterService();
-                                    $posterService->getPoster($userInfo['user_id']);
-                                }
-                            } else {
-                                echo '';
-                                $posterService = new \Media\Service\CreatePosterService();
-                                $posterService->getPoster($userInfo['user_id']);
-                            }
-                        } else {
-                            $this->wechat->text('暂时无法获取海报')->reply();
-                        }
-                    } elseif ($event['key'] == 'WECHAT_XSZN') {
-                        $str = $this->sendXszn();
-                        $this->wechat->text($str)->reply();
-                    }
-                }
+                $this->event();
                 break;
             case Wechat::MSGTYPE_IMAGE:
                 break;
@@ -136,6 +49,133 @@ class WechatResponseService
         }
     }
     
+    /**
+     * 接收事件推送
+     */
+    private function event()
+    {
+        $event = $this->wechat->getRev()->getRevEvent();
+        $openId = $this->wechat->getRev()->getRevFrom();
+        
+        $userModel = new \Common\Model\UserModel;
+        $userInfo = $userModel->getUserInfo(['user_wechatopenid' => $openId]);
+        $this->userInfo = $userInfo;
+
+        \Think\Log::write('事件类型和key：' . json_encode($event));
+        if ($event['event'] == 'subscribe') {
+            if (empty($userInfo)) {
+                // 注册用户
+                $userInfo = $this->registerOp($openId);
+            }
+
+            // 用户未关注时，进行关注后的事件推送
+            if (!empty($event['key']) && preg_match('/^qrscene_\d/', $event['key'])) {
+                $parentId = substr($event['key'], 8);
+                // 推广用户处理
+                $this->userspread($userInfo, $parentId, 'scan');
+            } else {
+                $defaultParents = C('DEFAULT_USER_PARENT');
+                if (is_array($defaultParents) && !empty($defaultParents)) {
+                    shuffle($defaultParents);
+                    $parentId = end($defaultParents);
+                    // 推广用户处理
+                    $this->userspread($userInfo, $parentId, 'assign');
+                }
+            }
+
+            // 修改为已关注状态
+            $userModel->editUser([
+                'subscribe_state' => 1,
+                    ], [
+                'user_id' => $userInfo['user_id'],
+            ]);
+
+            // 关注推送消息
+            $this->sendNews($userInfo);
+            $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
+        } elseif ($event['event'] == 'unsubscribe') {
+            // 如果存在用户设置为未订阅
+            if (!empty($userInfo)) {
+                $userModel->editUser([
+                    'subscribe_state' => 0,
+                        ], [
+                    'user_id' => $userInfo['user_id'],
+                ]);
+            }
+        } elseif ($event['event'] == 'SCAN') {
+            // 用户已关注时的事件推送
+            // 给用户提示一下
+            $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
+            if (!empty($recomUserInfo)) {
+                $msg = array();
+                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+                $msg['msgtype'] = 'text';
+                $msg['text'] = ['content' => $userInfo['user_nickname'] . '扫描了您分享的二维码'];
+                $wechatService = new \Common\Service\WechatService;
+                $wechatService->sendCustomMessage($msg);
+
+                $posterModel = new \Common\Model\PosterModel();
+                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
+            }
+            $this->sendNews($userInfo);
+        }
+        /*elseif ($event['event'] == 'CLICK') {
+            if ($event['key'] == 'WECHAT_QRCODE') {
+                if (C('SPREAD_POSTER_USE')) {
+                    if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
+                        if ($userInfo['buy_num'] == 0) {
+                            $url = C('MEDIA_SITE_URL');
+                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
+                        } else {
+                            echo '';
+                            $posterService = new \Media\Service\CreatePosterService();
+                            $posterService->getPoster($userInfo['user_id']);
+                        }
+                    } else {
+                        echo '';
+                        $posterService = new \Media\Service\CreatePosterService();
+                        $posterService->getPoster($userInfo['user_id']);
+                    }
+                } else {
+                    $this->wechat->text('暂时无法获取海报')->reply();
+                }
+            } elseif ($event['key'] == 'WECHAT_XSZN') {
+                $str = $this->sendXszn();
+                $this->wechat->text($str)->reply();
+            }
+        }*/
+    }
+    
+    private function clickEvent($key)
+    {
+        switch ($key) {
+            case 'WECHAT_QRCODE':
+                if (C('SPREAD_POSTER_USE')) {
+                    if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
+                        if ($userInfo['buy_num'] == 0) {
+                            $url = C('MEDIA_SITE_URL');
+                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
+                        } else {
+                            echo '';
+                            $posterService = new \Media\Service\CreatePosterService();
+                            $posterService->getPoster($userInfo['user_id']);
+                        }
+                    } else {
+                        echo '';
+                        $posterService = new \Media\Service\CreatePosterService();
+                        $posterService->getPoster($userInfo['user_id']);
+                    }
+                } else {
+                    $this->wechat->text('暂时无法获取海报')->reply();
+                }
+                break;
+            case 'WECHAT_XSZN':
+                $str = $this->sendXszn();
+                $this->wechat->text($str)->reply();
+                break;
+        }
+    }
+
     /**
      * 注册
      * 
@@ -274,10 +314,12 @@ class WechatResponseService
 
         if(! empty($parentInfo)) {
             $parentName = ($parentInfo['user_truename']) ? $parentInfo['user_truename'] : $parentInfo['user_nickname'];
-            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $parentInfo['user_avatar'];
+//            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $parentInfo['user_avatar'];
+            $userImg = getMemberAvatar($parentInfo['user_avatar']);
         } else {
             $parentName = $name;
-            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $userInfo['user_avatar'];
+//            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $userInfo['user_avatar'];
+            $userImg = getMemberAvatar($userInfo['user_avatar']);
         }
 
         $data = [
