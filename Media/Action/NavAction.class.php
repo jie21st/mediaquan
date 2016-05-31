@@ -48,14 +48,14 @@ class NavAction extends CommonAction
                     "name" => "服务中心",
                     "sub_button" => array(
                         array(
-                            "type" => "view",
+                            "type" => "click",
                             "name" => "新手指南",
-                            "url"  => C('MEDIA_SITE_URL') . '/manual.html'
+                            "key"  => "WECHAT_XSZN"
                         ),
                         array(
                             "type" => "view",
                             "name" => "模式说明",
-                            "url"  => C('MEDIA_SITE_URL') . '/manual.html'
+                            "url"  => C('MEDIA_SITE_URL') . '/sales_model.html'
                         ),
                         array(
                             "type" => "view",
