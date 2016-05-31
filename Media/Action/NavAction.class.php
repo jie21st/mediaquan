@@ -15,7 +15,12 @@ class NavAction extends CommonAction
     public function CreateNavOp()
     {
         $result = $this->_NavJson();
-        (new Wechat)->createMenu($result);
+        $result = (new Wechat)->createMenu($result);
+        if ($result) {
+            echo 'success';
+        } else {
+            echo 'error';
+        }
     }
 
     /**
