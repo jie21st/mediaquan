@@ -286,6 +286,7 @@ class WechatResponseService
             if (! $result) {
                 throw new \Exception('绑定写入失败');
             }
+            $this->userInfo['parent_id'] = $recomUserInfo['user_id']; // 后续用到
             
             // 二维码加粉次数
             if ($fromType == 'scan') {
