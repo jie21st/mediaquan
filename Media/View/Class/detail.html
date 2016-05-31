@@ -24,7 +24,7 @@
             <p>课程介绍：<span><{$class_info.class_body|html_entity_decode}></span></p>
         </div>
 
-        <div class="con js_cahpter_list">
+        <div class="con con2 js_cahpter_list">
             <p>课程目录：<br />
                 <volist name="class_info.chapter_list" id="vo">
                     <a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html"><{$vo.chapter_title}></a>
