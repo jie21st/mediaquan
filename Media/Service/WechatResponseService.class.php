@@ -262,7 +262,7 @@ class WechatResponseService
             return false;
         }
         
-        if (in_array($parentId, C('DEFAULT_USER_PARENT'))) {
+        if (in_array($this->userInfo['user_id'], C('DEFAULT_USER_PARENT'))) {
             \Think\Log::write('parent_id存在于用户默认parent中');
             return false;
         }
