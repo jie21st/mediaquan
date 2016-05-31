@@ -58,7 +58,7 @@ class NavAction extends CommonAction
                             "url"  => C('MEDIA_SITE_URL') . '/sales_model.html'
                         ),
                         array(
-                            "type" => "view",
+                            "type" => "click",
                             "name" => "在线客服",
                             "key"  => "WECHAT_ZXKF"
                         ),
