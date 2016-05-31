@@ -118,6 +118,8 @@ class WechatResponseService
                 $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
             }
             $this->sendNews($userInfo);
+        } elseif ($event['event'] == 'CLICK') {
+            $this->clickEvent($event['key']);
         }
         /*elseif ($event['event'] == 'CLICK') {
             if ($event['key'] == 'WECHAT_QRCODE') {
