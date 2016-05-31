@@ -66,6 +66,7 @@ class WechatResponseService
             if (empty($userInfo)) {
                 // 注册用户
                 $userInfo = $this->registerOp($openId);
+                $this->userInfo = $userInfo;
             }
 
             // 用户未关注时，进行关注后的事件推送
@@ -154,18 +155,18 @@ class WechatResponseService
             case 'WECHAT_QRCODE':
                 if (C('SPREAD_POSTER_USE')) {
                     if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
-                        if ($userInfo['buy_num'] == 0) {
+                        if ($this->userInfo['buy_num'] == 0) {
                             $url = C('MEDIA_SITE_URL');
                             $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
                         } else {
                             echo '';
                             $posterService = new \Media\Service\CreatePosterService();
-                            $posterService->getPoster($userInfo['user_id']);
+                            $posterService->getPoster($this->userInfo['user_id']);
                         }
                     } else {
                         echo '';
                         $posterService = new \Media\Service\CreatePosterService();
-                        $posterService->getPoster($userInfo['user_id']);
+                        $posterService->getPoster($this->userInfo['user_id']);
                     }
                 } else {
                     $this->wechat->text('暂时无法获取海报')->reply();
