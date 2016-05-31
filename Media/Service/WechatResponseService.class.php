@@ -351,7 +351,7 @@ class WechatResponseService
         }
 
         $data = [
-            'touser' => $userInfo['user_wechatopenid'],
+            'touser' => $this->userInfo['user_wechatopenid'],
             'msgtype' => 'news',
             'news'  => [
                 'articles' => [
@@ -364,7 +364,7 @@ class WechatResponseService
                     [
                         "title"=>"新手指南",
                         "description"=>"新手指南",
-                        "url"=> C('MEDIA_SITE_URL') . "/manual.html",
+                        "url"=> C('MEDIA_SITE_URL') . "/article/",
                         "picurl"=> $url . "/image/xs.jpg"
                     ],
                     [
@@ -384,8 +384,8 @@ class WechatResponseService
 
         ];
 
-        $wechat = new Wechat;
-        $wechat->sendCustomMessage($data);
+        $wechatService = new \Common\Service\WechatService();
+        $wechatService->sendCustomMessage($data);
     }
     
     /**
