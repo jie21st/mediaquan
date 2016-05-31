@@ -100,10 +100,18 @@ class UserService
             return true;
         }
         $wechatService = new \Common\Service\WechatService();
+        $posterModel = new \Common\Model\PosterModel();
         foreach ($userList as $user) {
-            if (intval($user['buy_num']) || intval($user['user_spread_time'])) {
+            // 判断是否已购买
+            if (intval($user['buy_num'])) {
                 continue;
             }
+            // 查询用户海报
+            $poster = $posterModel->getUserPoster(['user_id' => $user['user_id']]);
+            if (!empty($poster)) {
+                continue;
+            }
+            
             $wechatService->sendCustomMessage([
                 'touser' => $user['user_wechatopenid'],
                 'msgtype' => 'text',
