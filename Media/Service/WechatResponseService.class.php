@@ -2,6 +2,7 @@
 namespace Media\Service;
 
 use Org\Util\Wechat;
+use \Common\Model\UserModel;
 
 /**
  * 微信推送消息处理/响应
@@ -15,6 +16,12 @@ class WechatResponseService
      * @var type 
      */
     protected $wechat;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $userModel;
 
     private $userInfo = array();
 
@@ -25,6 +32,7 @@ class WechatResponseService
     public function __construct()
     {
         $this->wechat = new Wechat();
+        $this->userModel = new UserModel();
     }
 
     /**
@@ -96,29 +104,31 @@ class WechatResponseService
             $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
         } elseif ($event['event'] == 'unsubscribe') {
             // 如果存在用户设置为未订阅
-            if (!empty($userInfo)) {
-                $userModel->editUser([
-                    'subscribe_state' => 0,
-                        ], [
-                    'user_id' => $userInfo['user_id'],
-                ]);
-            }
+//            if (!empty($userInfo)) {
+//                $this->userModel->editUser([
+//                    'subscribe_state' => 0,
+//                ], [
+//                    'user_id' => $this->userInfo['user_id'],
+//                ]);
+//            }
+            $this->unsubscribeEvent();
         } elseif ($event['event'] == 'SCAN') {
+            $this->scanEvent($event['key']);
             // 用户已关注时的事件推送
             // 给用户提示一下
-            $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
-            if (!empty($recomUserInfo)) {
-                $msg = array();
-                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-                $msg['msgtype'] = 'text';
-                $msg['text'] = ['content' => $userInfo['user_nickname'] . '扫描了您分享的二维码'];
-                $wechatService = new \Common\Service\WechatService;
-                $wechatService->sendCustomMessage($msg);
-
-                $posterModel = new \Common\Model\PosterModel();
-                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
-            }
-            $this->sendNews($userInfo);
+//            $recomUserInfo = $userModel->getUserInfo(['user_id' => $event['key']]);
+//            if (!empty($recomUserInfo)) {
+//                $msg = array();
+//                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+//                $msg['msgtype'] = 'text';
+//                $msg['text'] = ['content' => $userInfo['user_nickname'] . '扫描了您分享的二维码'];
+//                $wechatService = new \Common\Service\WechatService;
+//                $wechatService->sendCustomMessage($msg);
+//
+//                $posterModel = new \Common\Model\PosterModel();
+//                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
+//            }
+//            $this->sendNews($userInfo);
         } elseif ($event['event'] == 'CLICK') {
             $this->clickEvent($event['key']);
         }
@@ -149,6 +159,47 @@ class WechatResponseService
         }*/
     }
     
+    /**
+     * 取消关注事件
+     */
+    private function unsubscribeEvent()
+    {
+        if (! empty($this->userInfo)) {
+            $result = $this->userModel->editUser([
+                'subscribe_state' => 0,
+            ], [
+                'user_id' => $this->userInfo['user_id'],
+            ]);
+        }
+    }
+
+    /**
+     * 用户已关注时的事件推送
+     */
+    private function scanEvent($key)
+    {
+        // 通知推荐人有粉丝扫码
+        $recomUserInfo = $this->userModel->getUserInfo(['user_id' => $key]);
+        if (! empty($recomUserInfo)) {
+            $msg = array();
+            $msg['touser'] = $recomUserInfo['user_wechatopenid'];
+            $msg['msgtype'] = 'text';
+            $msg['text'] = ['content' => $this->userInfo['user_nickname'] . '扫描了您分享的二维码'];
+            $wechatService = new \Common\Service\WechatService;
+            $wechatService->sendCustomMessage($msg);
+
+            $posterModel = new \Common\Model\PosterModel();
+            $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
+        }
+        // 推送图文消息
+        $this->sendNews();
+    }
+
+    /**
+     * 点击菜单拉取消息时的事件推送
+     * 
+     * @param type $key
+     */
     private function clickEvent($key)
     {
         switch ($key) {
@@ -309,20 +360,18 @@ class WechatResponseService
     /**
      * 关注图文消息推送
      */
-    private function sendNews($userInfo)
+    private function sendNews()
     {
         $url = C('RESOURCE_SITE_URL');
-        $name = ($userInfo['user_truename']) ? $userInfo['user_truename'] : $userInfo['user_nickname'];
-        $parentInfo = D('User', 'Service')->getUserBaseInfo($userInfo['parent_id']);
-
+        $name = ($this->userInfo['user_truename']) ? $this->userInfo['user_truename'] : $this->userInfo['user_nickname'];
+        
+        $parentInfo = D('User', 'Service')->getUserBaseInfo($this->userInfo['parent_id']);
         if(! empty($parentInfo)) {
             $parentName = ($parentInfo['user_truename']) ? $parentInfo['user_truename'] : $parentInfo['user_nickname'];
-//            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $parentInfo['user_avatar'];
             $userImg = getMemberAvatar($parentInfo['user_avatar']);
         } else {
             $parentName = $name;
-//            $userImg = C('UPLOADS_SITE_URL') . "/avatar/" . $userInfo['user_avatar'];
-            $userImg = getMemberAvatar($userInfo['user_avatar']);
+            $userImg = getMemberAvatar($this->userInfo['user_avatar']);
         }
 
         $data = [
