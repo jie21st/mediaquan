@@ -24,7 +24,7 @@
             <p>课程介绍：<span><{$class_info.class_body|html_entity_decode}></span></p>
         </div>
 
-        <div class="con">
+        <div class="con js_cahpter_list">
             <p>课程目录：<br />
                 <volist name="class_info.chapter_list" id="vo">
                     <a href="/class/<{$vo.class_id}>/<{$vo.chapter_id}>.html"><{$vo.chapter_title}></a>
@@ -39,12 +39,28 @@
             </if>
         </div>
         <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/layer/layer.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
         <script type="text/javascript">
+            var is_buy = <if condition="$class_info['is_buy']">true<else/>false</if>;
             $().ready(function () {
                 $('.btn-join').click(function () {
                     window.location.href = $(this).data('link') + window.location.search;
+                });
+                
+                $('.js_cahpter_list a').click(function(){
+                    if (! is_buy) {
+                        layer.open({
+                            content: '报名才能学习该课程，确认报名吗？',
+                            btn: ['确认', '取消'],
+                            shadeClose: false,
+                            yes:function() {
+                                window.location.href = '/order/<{$class_info.class_id}>';
+                            }
+                        });
+                        return false;
+                    }
                 })
             });
             // 微信
