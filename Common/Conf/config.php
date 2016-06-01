@@ -14,7 +14,6 @@ return array(
 
     // cookie
     'COOKIE_DOMAIN'     => '.mediaquan.com',
-//    'COOKIE_EXPIRE'     => 259200, // 3天
 
     // URL设置
     'URL_MODEL'         => 2, // URL访问模式 0 普通模式, 1 PATHINFO模式(默认), 2 REWRITE模式, 3 兼容模式
@@ -48,10 +47,6 @@ return array(
     'REDIS_HOST'        => '127.0.0.1',
     'REDIS_PORT'        => '6319',
     'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
-    
-
-    // 数据模型
-    'READ_DATA_MAP'     => true,
 
     // 日志记录
     'LOG_TYPE'          => 'file',
@@ -59,10 +54,10 @@ return array(
     'LOG_LEVEL'         => 'EMERG,ALERT,CRIT,ERR',
     
     // 微信配置
-    'WECHAT_TOKEN'      => '86a8c273c5a0110d49a0dd7c724ac3fc',
-    'WECHAT_APPID'      => 'wxd18b1177628b7f9a',
-    'WECHAT_APPSECRET'  => '124f73ec548d7b372bf4a612e81753c4',
-    'WECHAT_ENCODING'   => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
+    'WECHAT_TOKEN'      => '',
+    'WECHAT_APPID'      => '',
+    'WECHAT_APPSECRET'  => '',
+    'WECHAT_ENCODING'   => '',
     
     // 推广配置
     'SPREAD_POSTER_USE'                 => true,                 // 推广海报是否启用
