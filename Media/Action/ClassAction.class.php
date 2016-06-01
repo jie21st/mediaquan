@@ -48,12 +48,16 @@ class ClassAction extends CommonAction
         // 是否已购买
         $classService = new \Common\Service\ClassService();
         $classInfo['is_buy'] = $classService->checkClassUser($classInfo['class_id'], session('user_id'));
+        // 讲师信息
+        $teacherModel = new \Common\Model\TeacherModel();
+        $teacherInfo = $teacherModel->getTeacherInfo(['teacher_id' => $classInfo['teacher_id']]);
         
         // 获取课程章节列表
         $chapterModel = new \Common\Model\ChapterModel();
         $classInfo['chapter_list'] = $chapterModel->getCourseList(['class_id' => $classId]);
         
         $this->assign('class_info', $classInfo);
+        $this->assign('teacher_info', $teacherInfo);
         $this->display();
     }
     

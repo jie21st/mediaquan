@@ -9,7 +9,7 @@ class CronModel extends CommonModel
      * @param array $data 任务数据
      * @param boolean $ifdel 是否删除以原记录
      */
-    public function addcron($data = array(), $ifdel = false) {
+    public function addCron($data = array(), $ifdel = false) {
         // 删除原纪录
         if ($ifdel) {
             $this->delCron(['type' => $data['type'], 'exec_id' => $data['exec_id']]);
