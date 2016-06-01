@@ -156,7 +156,7 @@ class PayService
             // 回滚修改
             $orderModel->rollback(); 
             // 记录日志
-            \Think\Log::write($e->getMessage());
+            \Think\Log::write('支付完成订单失败: '.$e->getMessage());
             // 返回错误信息
             return ['error' => $e->getMessage()];
         }
