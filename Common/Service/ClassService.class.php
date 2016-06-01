@@ -60,7 +60,7 @@ class ClassService
             'class_title'   => $input['class_title'],
             'class_image'   => $input['class_image'],
             'class_price'   => $input['class_price'],
-            'class_teacher' => $input['class_teacher'],
+            'class_teacher' => $input['teacher_name'],
             'order_amount'  => $input['class_price'],
             'expire_time'   => (time() + ORDER_EXPIRE),
             'payment_code'  => '',
