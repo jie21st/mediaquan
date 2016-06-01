@@ -41,3 +41,5 @@ define('ORDER_STATE_CANCEL', '0');
 define('ORDER_STATE_NEW', '10');
 // 已支付
 define('ORDER_STATE_PAY', '20');
+// 订单过期时间，2小时，60*60*2
+define('ORDER_EXPIRE', 7200);
