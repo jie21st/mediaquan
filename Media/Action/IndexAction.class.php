@@ -21,7 +21,7 @@ class IndexAction extends CommonAction
         $chapterModel = new \Common\Model\ChapterModel;
         $classService = new \Common\Service\ClassService();
         
-        $field = 'class_id,class_title,class_image,teacher_id,class_price,study_num';
+        $field = 'class_id,class_title,class_image,teacher_id,teacher_name,class_price,study_num';
         $classList = $classModel->field($field)->select();
         foreach ($classList as &$classInfo) {
             // 课程是否已购买
