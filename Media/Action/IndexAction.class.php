@@ -8,7 +8,7 @@ class IndexAction extends CommonAction
     /**
      * 构造方法
      */
-    public function __construct() { 
+    public function __construct() {
         parent::__construct();
     }
     
@@ -21,7 +21,8 @@ class IndexAction extends CommonAction
         $chapterModel = new \Common\Model\ChapterModel;
         $classService = new \Common\Service\ClassService();
         
-        $classList = $classModel->select();
+        $field = 'class_id,class_title,class_image,teacher_id,class_price,study_num';
+        $classList = $classModel->field($field)->select();
         foreach ($classList as &$classInfo) {
             // 课程是否已购买
             $classInfo['is_buy'] = $classService->checkClassUser($classInfo['class_id'], session('user_id'));
