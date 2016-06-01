@@ -41,7 +41,7 @@ class NavAction extends CommonAction
             "button" => array(
                 array(
                     "type" => "view",
-                    "name" => "全部商品",
+                    "name" => "全部课程",
                     "url"  => C('MEDIA_SITE_URL') 
                 ),
                 array(
