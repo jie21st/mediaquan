@@ -62,7 +62,7 @@ class ClassService
             'class_price'   => $input['class_price'],
             'class_teacher' => $input['class_teacher'],
             'order_amount'  => $input['class_price'],
-            'expire_time'   => (time() + C('ORDER_EXPIRE')),
+            'expire_time'   => (time() + ORDER_EXPIRE),
             'payment_code'  => '',
             'order_state'   => $input['_is_free'] ? ORDER_STATE_PAY : ORDER_STATE_NEW,
             'from_seller'   => session('from_seller') ? : 0,
