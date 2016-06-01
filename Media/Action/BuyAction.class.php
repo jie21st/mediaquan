@@ -34,10 +34,7 @@ class BuyAction extends CommonAction
             showMessage('未找到需要支付的订单');
         }
         
-        $classInfo = $classModel->getClassInfo(['class_id' => $orderInfo['class_id']]);
-        
         $this->assign('order_info', $orderInfo);
-        $this->assign('class_info', $classInfo);
         
         $this->display();
     }
