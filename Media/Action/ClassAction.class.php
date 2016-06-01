@@ -77,7 +77,7 @@ class ClassAction extends CommonAction
         
         // 取得课程信息
         $classModel = new \Common\Model\ClassModel();
-        $classInfo = $classModel->getClassInfo(['class_id' => $classId]);
+        $classInfo = $classModel->getClassInfo(['class_id' => $classId], 'class_id,class_title,class_image,teacher_name,class_price');
         if (empty($classInfo)) {
             showMessage('课程不存在');
         }
