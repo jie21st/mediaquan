@@ -39,10 +39,10 @@
                             window.location.replace(pay_success_url);
                             break;
                         case 'get_brand_wcpay_request:cancel':
-                            paylog('取消支付');
+                            //paylog('取消支付');
                             break;
                         case 'get_brand_wcpay_request:fail':
-                            paylog('微信支付参数错误');
+                            //paylog('微信支付参数错误');
                             showNativePay();
                             break;
                         default:
