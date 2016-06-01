@@ -119,7 +119,7 @@
                     title: '<{$class_info.fx_title}>',
                     link: '<{$Think.config.MEDIA_SITE_URL}>/class/<{$class_info.class_id}>.html?seller=<{$Think.session.user_id}>',
                     imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
-                    desc: '<{$class_info.fx_desc}>',
+                    desc: '<{$class_info.fx_desc|trim}>',
                 };
                 wx.showOptionMenu();
                 wx.hideMenuItems({
