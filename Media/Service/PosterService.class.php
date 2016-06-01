@@ -43,11 +43,17 @@ class PosterService
     {
         $wechat = new Wechat;
         $url = $wechat->getQRUrl($this->uid, $type, $this->wechatTime);
+        //\Think\Log::write($url);
+
         if (false === $url) {
             return false;
         }
 
-        $this->wechatRQCode = $url;
+        $filePath = downloadFiles($url, md5(time()), DIR_UPLOAD . '/QR');
+        //\Think\Log::write($filePath);
+
+        //$this->wechatRQCode = $url;
+        $this->wechatRQCode = $filePath;
     }
 
     /**

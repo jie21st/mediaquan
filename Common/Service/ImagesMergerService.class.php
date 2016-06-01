@@ -13,7 +13,8 @@ class ImagesMergerService
     // 目标图资源
     private $dstImage = '';
     // 原图资源
-    private $srcImage = [];
+    private $srcImage = '';
+
     public $pathInfo;
     // 默认配置项
     private $config = array(
@@ -53,6 +54,7 @@ class ImagesMergerService
     public function __construct($config = [])
     {
         $this->config = array_merge($this->config, $config);
+
         foreach ($this->config as $key => $value) {
             $this->{$key} = $value;
         }
@@ -189,8 +191,8 @@ class ImagesMergerService
     // 关闭资源
     public function __destruct()
     {
-        imagedestroy($this->dst);
-        imagedestroy($this->src);
+        //imagedestroy($this->dstImage);
+        //imagedestroy($this->srcImage);
     }
 
 }

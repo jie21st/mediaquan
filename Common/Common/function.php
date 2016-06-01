@@ -251,7 +251,7 @@ function downloadFiles($url, $fileName='', $fileSaveDirPath='', $fileSaveType = 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         $file = curl_exec($ch);
-        curl_close();
+        curl_close($ch);
     } else {
         ob_start();
         readfile($url);
