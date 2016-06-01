@@ -45,7 +45,7 @@ return array(
     // 数据缓存
     'DATA_CACHE_TYPE'   => 'Redis',
     'DATA_CACHE_PREFIX' => 'mediaquan:',
-    'REDIS_HOST'        => '123.57.210.1',
+    'REDIS_HOST'        => '127.0.0.1',
     'REDIS_PORT'        => '6319',
     'REDIS_PASS'        => 'f1o2o3b4a5r6e7d8',
     
@@ -73,8 +73,7 @@ return array(
     
     // 其他配置
     'DEFAULT_USER_AVATAR'       => 'personImg.jpg',         // 默认头像
-    'DEFAULT_USER_PARENT'       => array(10013, 10014),     // 用户默认推荐人列表
-    'ORDER_EXPIRE'              => 7200,                    // 订单有效时间（单位秒）
+    'DEFAULT_USER_PARENT'       => array(),                 // 用户默认推荐人列表
     'USER_SUBSCRIBE_CASE_TIME'  => 600,                     // 用户关注多少时间后检查未购买或未生成海报发送通知 为0则不触发
     
     // 分销配置
