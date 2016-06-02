@@ -256,7 +256,7 @@ class WechatResponseService
         // 绑定关系
         $result = $userService->bindParent($this->userInfo['user_id'], $parentId);
         if ($result !== true) {
-            \Think\Log::write('推广用户失败: parent_id存在于用户默认parent中');
+            \Think\Log::write('推广用户失败: '.$result['error']);
             return false;
         }
         $this->userInfo['parent_id'] = $parentId; // 后续用到
