@@ -55,17 +55,17 @@ class WechatResponseService
         
         $type = $this->wechat->getRev()->getRevType();
         switch($type) {
-            case Wechat::MSGTYPE_TEXT:
-                //$this->wechat->text("hello")->reply();
-                exit;
-                break;
             case Wechat::MSGTYPE_EVENT:
                 $this->event();
                 break;
-            case Wechat::MSGTYPE_IMAGE:
-                break;
+            //case Wechat::MSGTYPE_TEXT:
+                //$this->wechat->text("hello")->reply();
+            //    break;
+            //case Wechat::MSGTYPE_IMAGE:
+            //    break;
             default:
-                $this->wechat->text("help info")->reply();
+                //$this->wechat->text("help info")->reply();
+                $this->wechat->transfer_customer_service()->reply();
         }
     }
     
