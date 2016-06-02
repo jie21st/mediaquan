@@ -353,29 +353,46 @@ class WechatResponseService
 
         $data = [
             [
+                "Title"=>"Hi，".$parentName."（推荐人）向你推荐了实用的课程哦",
+                "Description"=>"Hi，".$parentName."（推荐人）向你推荐了实用的课程哦",
+                "Url"=> C('MEDIA_SITE_URL'),
+                "PicUrl"=> $url . "/image/k2.jpg"
+            ]
+            ,
+            /**
+            [
                 "Title"=>"欢迎".$name."光临拇指微课",
                 "Description"=>"欢迎".$name."光临拇指微课",
                 "Url"=> C('MEDIA_SITE_URL') . '/class/1.html',
                 "PicUrl"=> $url . "/image/k2.jpg"
             ],
+            **/
             [
-                "Title"=>"新手指南",
-                "Description"=>"新手指南",
-                "Url"=> C('MEDIA_SITE_URL') . "/article/",
+                "Title"=>"实用好玩又赚钱来试试吧",
+                "Description"=>"实用好玩又赚钱来试试吧",
+                "Url"=> C('MEDIA_SITE_URL') . "/article",
                 "PicUrl"=> $url . "/image/xs.jpg"
             ],
             [
-                "Title"=>"微信运营理论与实操课程",
-                "Description"=>"微信运营与实操课程",
-                "Url"=> C('MEDIA_SITE_URL') . "/class/5.html",
+                "Title"=>"微信营销有何难，30天让你成为微信运营高手",
+                "Description"=>"微信营销有何难，30天让你成为微信运营高手",
+                "Url"=> C('MEDIA_SITE_URL') . "/class/7.html",
                 "PicUrl"=> $url . "/image/k5.jpg"
             ],
+            [
+                "Title"=>"赚钱就玩朋友圈",
+                "Description"=>"赚钱就玩朋友圈",
+                "Url"=> C('MEDIA_SITE_URL') . "/class/9.html",
+                "PicUrl"=> $url . "/image/k6.jpg"
+            ],
+            /**
             [
                 "Title"=>"去逛逛\"".$parentName."\"家的微店",
                 "Description"=>"去逛逛\"".$parentName."\"家的微店",
                 "Url"=> C('MEDIA_SITE_URL'),
                 "PicUrl"=>$userImg 
             ]
+            **/
         ];
         
         $this->wechat->news($data)->reply();
