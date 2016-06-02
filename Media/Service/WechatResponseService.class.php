@@ -383,7 +383,7 @@ class WechatResponseService
                 "Title"=>"赚钱就玩朋友圈",
                 "Description"=>"赚钱就玩朋友圈",
                 "Url"=> C('MEDIA_SITE_URL') . "/class/9.html",
-                "PicUrl"=> $url . "/image/k6.jpg"
+                "PicUrl"=> $url . "/image/k7.jpg"
             ],
             /**
             [
