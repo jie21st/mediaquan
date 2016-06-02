@@ -121,4 +121,48 @@ class UserService
         
         return true;
     }
+    
+    /**
+     * 绑定推荐人
+     * 
+     * @param type $userId
+     * @param type $parentId
+     */
+    public function bindParent($userId, $parentId)
+    {
+        if (intval($parentId) == 0 || $userId == $parentId) {
+            return ['error' => '无效数据'];
+        }
+        
+        $userModel = new \Common\Model\UserModel;
+        $userInfo = $userModel->getUserInfo(['user_id' => $userId]);
+        if (intval($userInfo['parent_id']) !== 0) {
+            return ['error' => '已存在推荐人'];
+        }
+        
+        // 判断该用户有无粉丝。有则不绑定
+        $fansList = $userModel->where(['parent_id' => $userId])->find();
+        if (!empty($fansList)) {
+            return ['error' => '已有自己粉丝，不能成为别人的粉丝'];
+        }
+        
+        $parentInfo = $userModel->getUserInfo(['user_id' => $parentId]);
+        if (empty($parentInfo)) {
+            return ['error' => '推荐人信息不存在'];
+        }
+        
+        if ($parentInfo['parent_id'] == $userId) {
+            return ['error' => '两者已存在关系'];
+        }
+        
+        // 绑定关系
+        $update = array();
+        $update['parent_id'] = $parentId;
+        $result = $userModel->editUser($update, ['user_id' => $userId]);
+        if (! $result) {
+            return ['error' => '更新失败'];
+        }
+        
+        return true;
+    }
 }
