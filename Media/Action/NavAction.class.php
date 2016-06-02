@@ -60,7 +60,7 @@ class NavAction extends CommonAction
                         array(
                             "type" => "view",
                             "name" => "模式说明",
-                            "url"  => C('MEDIA_SITE_URL') . '/sales_model.html'
+                            "url"  => C('MEDIA_SITE_URL') . '/article/1.html'
                         ),
                         array(
                             "type" => "click",
