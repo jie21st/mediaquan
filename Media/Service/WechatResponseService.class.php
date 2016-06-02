@@ -106,13 +106,13 @@ class WechatResponseService
         // 推广用户处理
         if (!empty($key) && preg_match('/^qrscene_\d/', $key)) {
             $parentId = substr($key, 8);
-            $this->userspread($parentId, 'scan');
+            $this->userspread($parentId);
         } else {
             $defaultParents = C('DEFAULT_USER_PARENT');
             if (is_array($defaultParents) && !empty($defaultParents)) {
                 shuffle($defaultParents);
                 $parentId = end($defaultParents);
-                $this->userspread($parentId, 'assign');
+                $this->userspread($parentId);
             }
         }
 
@@ -246,91 +246,61 @@ class WechatResponseService
      * @param type $parentId
      * @return type
      */
-    private function userspread($parentId = 0, $fromType = 'scan'){
+    private function userspread($parentId = 0, $fromType = 'scan')
+    {
         if (intval($this->userInfo['parent_id'])) {
-            \Think\Log::write('该用户已存在推荐人');
-            return false;
-        }
-            
-        if ($parentId == 0) {
-            \Think\Log::write('parent_id为0');
             return false;
         }
         
-        if ($this->userInfo['user_id'] == $parentId) {
-            \Think\Log::write('parent_id为当前用户自己');
+        $userService = new \Common\Service\UserService;
+        // 绑定关系
+        $result = $userService->bindParent($this->userInfo['user_id'], $parentId);
+        if ($result !== true) {
+            \Think\Log::write('推广用户失败: parent_id存在于用户默认parent中');
             return false;
         }
-        
-        if (in_array($this->userInfo['user_id'], C('DEFAULT_USER_PARENT'))) {
-            \Think\Log::write('parent_id存在于用户默认parent中');
-            return false;
-        }
+        $this->userInfo['parent_id'] = $parentId; // 后续用到
+
+        // 二维码加粉次数
+        $posterModel = new \Common\Model\PosterModel;
+        $data = array();
+        $data['poster_from_num'] = ['exp', 'poster_from_num+1'];
+        $data['poster_scan_num'] = ['exp', 'poster_scan_num+1'];
+        $posterModel->posterUpdate(['user_id' => $parentId], $data);
+
+        // 通知
+        $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
+        if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
+            $pdService = new \Common\Service\PredepositService;
+            $pd_data = array();
+            $pd_data['user_id'] = $parentId;
+            $pd_data['amount'] = $spreadUserAmount;
+            $pd_data['name'] = '推荐用户 '.$this->userInfo['user_nickname'];
+            $pdService->changePd('sale_income', $pd_data);
             
-        try {
-            $userModel = new \Common\Model\UserModel;
-
-            $recomUserInfo = $userModel->getUserInfo(['user_id' => $parentId]);
-            if (empty($recomUserInfo)) {
-                throw new \Exception('推荐人用户信息不存在');
-            }
-
-            if ($this->userInfo['user_id'] == $recomUserInfo['parent_id']) {
-                throw new \Exception('该用户是当前推荐人的推荐人');
-            }
-
-            // 绑定关系
-            $update = array();
-            $update['parent_id'] = $recomUserInfo['user_id'];
-            $result = $userModel->editUser($update, ['user_id' => $this->userInfo['user_id']]);
-            if (! $result) {
-                throw new \Exception('绑定写入失败');
-            }
-            $this->userInfo['parent_id'] = $recomUserInfo['user_id']; // 后续用到
-            
-            // 二维码加粉次数
-            if ($fromType == 'scan') {
-                $posterModel = new \Common\Model\PosterModel;
-                $data = array();
-                $data['poster_from_num'] = ['exp', 'poster_from_num+1'];
-                $data['poster_scan_num'] = ['exp', 'poster_scan_num+1'];
-                $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], $data);
-            }
-            // 通知
-            $spreadUserAmount = C('SPERAD_SELLER_GAINS_AMOUNT');
-            if (is_numeric($spreadUserAmount) && $spreadUserAmount > 0) {
-                $pdService = new \Common\Service\PredepositService;
-                $pd_data = array();
-                $pd_data['user_id'] = $recomUserInfo['user_id'];
-                $pd_data['amount'] = $spreadUserAmount;
-                $pd_data['name'] = '推荐用户 '.$this->userInfo['user_nickname'];
-                $pdService->changePd('sale_income', $pd_data);
-
-                // 收益通知
-                $wechatService = new \Common\Service\WechatService;
-                $wechatService->sendCustomMessage([
-                    'touser' => $recomUserInfo['user_wechatopenid'],
-                    'msgtype' => 'text',
-                    'text' => [
-                        'content' => sprintf(
-                                        '%s成为了您的粉丝，您获得收益%s元；推荐好友购买课程还可获得1-99元的收益，<a href="%s">点击查看</a>',
-                                        $this->userInfo['user_nickname'],
-                                        glzh_price_format($spreadUserAmount),
-                                        C('MEDIA_SITE_URL').'/predeposit/'
-                                    )
-                    ]
-                ]);
-            } else {
-                // 通知推荐人
-                $msg = array();
-                $msg['touser'] = $recomUserInfo['user_wechatopenid'];
-                $msg['msgtype'] = 'text';
-                $msg['text'] = ['content' => $this->userInfo['user_nickname'].'成为了您的粉丝'];
-                $wechatService = new \Common\Service\WechatService;
-                $wechatService->sendCustomMessage($msg);
-            }
-        } catch (\Exception $e) {
-            \Think\Log::write('推广用户失败: '.$e->getMessage());
+            $parentInfo = $userService->getUserBaseInfo($parentId);
+            // 收益通知
+            $wechatService = new \Common\Service\WechatService;
+            $wechatService->sendCustomMessage([
+                'touser' => $parentInfo['user_wechatopenid'],
+                'msgtype' => 'text',
+                'text' => [
+                    'content' => sprintf(
+                                    '%s成为了您的粉丝，您获得收益%s元；推荐好友购买课程还可获得1-99元的收益，<a href="%s">点击查看</a>',
+                                    $this->userInfo['user_nickname'],
+                                    glzh_price_format($spreadUserAmount),
+                                    C('MEDIA_SITE_URL').'/predeposit/'
+                                )
+                ]
+            ]);
+        } else {
+            // 通知推荐人
+            $msg = array();
+            $msg['touser'] = $parentInfo['user_wechatopenid'];
+            $msg['msgtype'] = 'text';
+            $msg['text'] = ['content' => $this->userInfo['user_nickname'].'成为了您的粉丝'];
+            $wechatService = new \Common\Service\WechatService;
+            $wechatService->sendCustomMessage($msg);
         }
     }
     
