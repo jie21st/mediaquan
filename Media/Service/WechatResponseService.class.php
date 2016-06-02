@@ -353,8 +353,8 @@ class WechatResponseService
 
         $data = [
             [
-                "Title"=>"Hi，".$parentName."（推荐人）向你推荐了实用的课程哦",
-                "Description"=>"Hi，".$parentName."（推荐人）向你推荐了实用的课程哦",
+                "Title"=>"Hi，".$parentName."向你推荐了实用的课程哦",
+                "Description"=>"Hi，".$parentName."向你推荐了实用的课程哦",
                 "Url"=> C('MEDIA_SITE_URL'),
                 "PicUrl"=> $url . "/image/k2.jpg"
             ]
