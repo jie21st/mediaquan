@@ -132,6 +132,8 @@ class PayService
                     $msg['text'] = ['content' => $buyerInfo['user_nickname'].'成为了您的粉丝'];
                     $wechatService = new \Common\Service\WechatService;
                     $wechatService->sendCustomMessage($msg);
+                } else {
+                    \Think\Log::write('推荐人失败: '.$result['error']);
                 }
             }
             
