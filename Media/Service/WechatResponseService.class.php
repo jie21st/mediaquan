@@ -380,8 +380,8 @@ class WechatResponseService
                 "PicUrl"=> $url . "/image/k5.jpg"
             ],
             [
-                "Title"=>"赚钱就玩朋友圈",
-                "Description"=>"赚钱就玩朋友圈",
+                "Title"=>"微信朋友圈第一课:19节课, 108个案例, 150个技巧",
+                "Description"=>"微信朋友圈第一课:19节课, 108个案例, 150个技巧",
                 "Url"=> C('MEDIA_SITE_URL') . "/class/9.html",
                 "PicUrl"=> $url . "/image/k7.jpg"
             ],
