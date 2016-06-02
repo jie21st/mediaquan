@@ -160,7 +160,7 @@ class WechatResponseService
             $posterModel->posterUpdate(['user_id' => $recomUserInfo['user_id']], ['poster_scan_num' => ['exp', 'poster_scan_num+1']]);
         }
         // 推送图文消息
-        $this->sendNews();
+        $this->subscribeReply();
     }
 
     /**
