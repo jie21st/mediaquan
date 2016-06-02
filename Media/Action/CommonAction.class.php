@@ -100,5 +100,6 @@ class CommonAction extends Action
     protected function _empty()
     {
         send_http_status(404);
+        $this->display('Public/404');
     }
 }
