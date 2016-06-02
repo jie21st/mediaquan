@@ -58,7 +58,8 @@
             <p>时间：<span><{$class_info.class_addtime|date="Y-m-d H:i:s",###}></span></p>
         </div>
         <div class="con">
-            <p>讲师介绍：<span><{$teacher_info.teacher_intro|html_entity_decode}></span></p>
+            <p>讲师介绍：<br/>
+                <span><{$teacher_info.teacher_intro|nl2br}></span></p>
         </div>
         <div class="con">
             <p>课程介绍：<span><{$class_info.class_body|html_entity_decode}></span></p>
