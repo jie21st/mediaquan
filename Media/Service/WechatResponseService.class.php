@@ -379,11 +379,8 @@ class WechatResponseService
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
         
-        $str = "拇指微课测试期加大奖励力度，邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n";
-        $str.= "戳链接了解详情。\r\n\r\n";
-        $str.= "1、<a href=\"{$domain}/sales_model.html\">模式说明</a>\r\n\r\n";
-        
-        $i = 2;
+        $str = "拇指微课测试期加大奖励力度，邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。戳链接了解详情。\r\n\r\n";
+        $i = 1;
         foreach ($articleList as $article) {
             $str.= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n\r\n";
             $i++;
