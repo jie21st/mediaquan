@@ -278,7 +278,7 @@ class WechatResponseService
             $pd_data['name'] = '推荐用户 '.$this->userInfo['user_nickname'];
             $pdService->changePd('sale_income', $pd_data);
             
-            $parentInfo = $userService->getUserBaseInfo($parentId);
+            $parentInfo = $userService->getUserInfo($parentId);
             // 收益通知
             $wechatService = new \Common\Service\WechatService;
             $wechatService->sendCustomMessage([

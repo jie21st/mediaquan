@@ -15,9 +15,14 @@ class UserService
      */
     public function getUserInfo($uid) {
         static $cache = [];
+        
         if (! isset($cache[$uid])) {
-            $cache[$uid] = $this->getUserBaseInfo($uid);
+            $model = new \Common\Model\UserModel;
+            $field = 'user_id,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar,user_wechatopenid,parent_id,buy_num';
+            $data = $model->getUserInfo(['user_id' => $uid], $field);
+            $cache[$uid] = $data;
         }
+        
         return $cache[$uid];
     }
 
@@ -135,7 +140,8 @@ class UserService
         }
         
         $userModel = new \Common\Model\UserModel;
-        $userInfo = $userModel->getUserInfo(['user_id' => $userId]);
+        
+        $userInfo = $this->getUserInfo($userId);
         if (intval($userInfo['parent_id']) !== 0) {
             return ['error' => '已存在推荐人'];
         }
@@ -146,7 +152,7 @@ class UserService
             return ['error' => '已有自己粉丝，不能成为别人的粉丝'];
         }
         
-        $parentInfo = $userModel->getUserInfo(['user_id' => $parentId]);
+        $parentInfo = $this->getUserInfo($parentId);
         if (empty($parentInfo)) {
             return ['error' => '推荐人信息不存在'];
         }

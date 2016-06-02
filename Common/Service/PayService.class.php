@@ -121,29 +121,17 @@ class PayService
             // 绑定购买用户为此销售员粉丝
             if (intval($orderInfo['from_seller']) && ($orderInfo['buyer_id'] != $orderInfo['from_seller'])) {
                 // 如果订单来自销售员
-                $userModel = new \Common\Model\UserModel;
-                $buyerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['buyer_id']]);
-                if (! intval($buyerInfo['parent_id'])) {
-                    // 如果购买者不存在parent
-                    $sellerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['from_seller']]);
-                    if (! empty($sellerInfo)) {
-                        // 如果销售员有效
-                        if ($sellerInfo['parent_id'] != $buyerInfo['user_id']) {
-                            // 确定二者没有关系
-                            $update = $userModel->editUser(['parent_id' => $sellerInfo['user_id']], ['user_id' => $buyerInfo['user_id']]);
-                            if ($update) {
-                                // 通知推荐人
-                                $msg = array();
-                                $msg['touser'] = $sellerInfo['user_wechatopenid'];
-                                $msg['msgtype'] = 'text';
-                                $msg['text'] = ['content' => $buyerInfo['user_nickname'].'成为了您的粉丝'];
-                                $wechatService = new \Common\Service\WechatService;
-                                $wechatService->sendCustomMessage($msg);
-                            } else {
-                                \Think\Log::write('绑定失败'.$userModel->_sql());
-                            }
-                        }
-                    }
+                $userService = new \Common\Service\UserService();
+                $result = $userService->bindParent($orderInfo['buyer_id'], $orderInfo['from_seller']);
+                if ($result === true) {
+                    $parentInfo = $userService->getUserInfo($orderInfo['from_seller']);
+                    // 通知推荐人
+                    $msg = array();
+                    $msg['touser'] = $parentInfo['user_wechatopenid'];
+                    $msg['msgtype'] = 'text';
+                    $msg['text'] = ['content' => $buyerInfo['user_nickname'].'成为了您的粉丝'];
+                    $wechatService = new \Common\Service\WechatService;
+                    $wechatService->sendCustomMessage($msg);
                 }
             }
             
