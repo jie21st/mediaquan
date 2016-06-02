@@ -123,10 +123,8 @@ class WechatResponseService
             'user_id' => $this->userInfo['user_id'],
         ]);
 
-        // 关注推送消息
-        $this->sendNews();
-        
-        $this->wechat->text("服务号建设中，请不要购买支付任何商品")->reply();
+        // 回复
+        $this->subscribeReply();
     }
     
     /**
@@ -194,21 +192,10 @@ class WechatResponseService
                 }
                 break;
             case 'WECHAT_XSZN':
-                $str = $this->sendXszn();
-                $this->wechat->text($str)->reply();
+                $this->clickHelpReply();
                 break;
             case 'WECHAT_ZXKF':
-                $url = C('MEDIA_SITE_URL') .'/article/';
-                if ((date('w') == 0 || date('w') == 6)) {
-                    $str = "在线客服时间为：\r\n";
-                    $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
-                } elseif (date('Gi') >= 930 && date('Gi') <= 1730) {
-                    $str = 'hi，我是今日值班编辑小秋，有什么可以帮您的么？';
-                }else {
-                    $str = "在线客服时间为：\r\n";
-                    $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
-                }
-                $this->wechat->text($str)->reply();
+                $this->clickKfReply();
                 break;
         }
     }
@@ -348,9 +335,9 @@ class WechatResponseService
     }
     
     /**
-     * 关注图文消息推送
+     * 关注回复
      */
-    private function sendNews()
+    private function subscribeReply()
     {
         $url = C('RESOURCE_SITE_URL');
         $name = ($this->userInfo['user_truename']) ? $this->userInfo['user_truename'] : $this->userInfo['user_nickname'];
@@ -365,49 +352,41 @@ class WechatResponseService
         }
 
         $data = [
-            'touser' => $this->userInfo['user_wechatopenid'],
-            'msgtype' => 'news',
-            'news'  => [
-                'articles' => [
-                    [
-                        "title"=>"欢迎".$name."光临拇指微课",
-                        "description"=>"欢迎".$name."光临拇指微课",
-                        "url"=> C('MEDIA_SITE_URL') . '/class/1.html',
-                        "picurl"=> $url . "/image/k2.jpg"
-                    ],
-                    [
-                        "title"=>"新手指南",
-                        "description"=>"新手指南",
-                        "url"=> C('MEDIA_SITE_URL') . "/article/",
-                        "picurl"=> $url . "/image/xs.jpg"
-                    ],
-                    [
-                        "title"=>"微信运营理论与实操课程",
-                        "description"=>"微信运营与实操课程",
-                        "url"=> C('MEDIA_SITE_URL') . "/class/5.html",
-                        "picurl"=> $url . "/image/k5.jpg"
-                    ],
-                    [
-                        "title"=>"去逛逛\"".$parentName."\"家的微店",
-                        "description"=>"去逛逛\"".$parentName."\"家的微店",
-                        "url"=> C('MEDIA_SITE_URL'),
-                        "picurl"=>$userImg 
-                    ],
-                ]
+            [
+                "Title"=>"欢迎".$name."光临拇指微课",
+                "Description"=>"欢迎".$name."光临拇指微课",
+                "Url"=> C('MEDIA_SITE_URL') . '/class/1.html',
+                "PicUrl"=> $url . "/image/k2.jpg"
+            ],
+            [
+                "Title"=>"新手指南",
+                "Description"=>"新手指南",
+                "Url"=> C('MEDIA_SITE_URL') . "/article/",
+                "PicUrl"=> $url . "/image/xs.jpg"
+            ],
+            [
+                "Title"=>"微信运营理论与实操课程",
+                "Description"=>"微信运营与实操课程",
+                "Url"=> C('MEDIA_SITE_URL') . "/class/5.html",
+                "PicUrl"=> $url . "/image/k5.jpg"
+            ],
+            [
+                "Title"=>"去逛逛\"".$parentName."\"家的微店",
+                "Description"=>"去逛逛\"".$parentName."\"家的微店",
+                "Url"=> C('MEDIA_SITE_URL'),
+                "PicUrl"=>$userImg 
             ]
-
         ];
-
-        $wechatService = new \Common\Service\WechatService();
-        $wechatService->sendCustomMessage($data);
+        
+        $this->wechat->news($data)->reply();
     }
     
     /**
-     * 帮助消息回复
+     * 点击帮助事件回复
      * 
      * @return string
      */
-    private function sendXszn()
+    private function clickHelpReply()
     {
         $arcModel = new \Common\Model\ArticleModel;
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
@@ -425,6 +404,24 @@ class WechatResponseService
         
         $str.= "<a href=\"{$domain}/article/\">了解更多</a>";
         
-        return $str;
+        $this->wechat->text($str)->reply();
+    }
+    
+    /**
+     * 点击在线客服回复
+     */
+    private function clickKfReply()
+    {
+        $url = C('MEDIA_SITE_URL') .'/article/';
+        if ((date('w') == 0 || date('w') == 6)) {
+            $str = "在线客服时间为：\r\n";
+            $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
+        } elseif (date('Gi') >= 930 && date('Gi') <= 1730) {
+            $str = 'hi，我是今日值班编辑小秋，有什么可以帮您的么？';
+        }else {
+            $str = "在线客服时间为：\r\n";
+            $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
+        }
+        $this->wechat->text($str)->reply();
     }
 }
