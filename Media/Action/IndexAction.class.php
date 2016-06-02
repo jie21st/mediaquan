@@ -54,4 +54,12 @@ class IndexAction extends CommonAction
     {
         $this->display();
     }
+
+    /**
+    public function testOp()
+    {
+        $uid = session('user_id');
+        $poster = new \Media\Service\CreatePosterService;
+        $poster->getPoster($uid);
+    } **/
 }

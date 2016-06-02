@@ -77,19 +77,20 @@ class PosterService
             'src' => array(
                 array(
                     'srcPath'   =>  $this->wechatRQCode,     // 图片路径
-                    'srcX'      =>  '168',      // X轴位置
-                    'srcY'      =>  '570',      // Y轴位置
-                    'srcW'      =>  '412',      // 图片宽度
-                    'srcH'      =>  '412',      // 图片高度
+                    'srcX'      =>  '222',      // X轴位置
+                    'srcY'      =>  '620',      // Y轴位置
+                    'srcW'      =>  '130',      // 图片宽度
+                    'srcH'      =>  '130',      // 图片高度
                 ),
                 array(
                     'srcPath'   =>  $this->userImageSrc,   // 图片路径
-                    'srcX'      =>  '300',      // X轴位置
-                    'srcY'      =>  '267',      // Y轴位置
-                    'srcW'      =>  '150',      // 图片宽度
-                    'srcH'      =>  '150',      // 图片高度
+                    'srcX'      =>  '208',      // X轴位置
+                    'srcY'      =>  '374',      // Y轴位置
+                    'srcW'      =>  '160',      // 图片宽度
+                    'srcH'      =>  '161',      // 图片高度
                 ),
             ),
+            /**
             'font' => array(
                  array(
                      'text'      => '该二维码30天('.$today.'前)有效，过期请重新获取', 	// 字体路径
@@ -109,8 +110,8 @@ class PosterService
                      'fontY'     => '466',					// Y轴位置
                      'adjust'    => '0' 					// 位置调整
                  ),
-
-            ),
+            ), 
+            **/
         );
 
         $this->config = $config;
