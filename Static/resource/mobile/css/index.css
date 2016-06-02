@@ -81,7 +81,7 @@ a{display:block; text-decoration:none; color: #666}
 .jiben p{width:94%; padding:0 3%; height:45px; line-height:45px; color:#222222; font-size:14px; background:#fff; margin-bottom:1px;}
 .jiben p span{color:#666666;}
 .jiben p span.jg{color:#ff0000}
-.con p{background:#fff; margin-top:10px; width:94%; padding:15px 3%; font-size:15px; line-height:33px;}
+.con p{background:#fff; margin-top:10px; width:94%; padding:15px 3%; font-size:15px; line-height:1.6;}
 .con p span{color:#666666;}
 .con span{width:100%;}
 .con2 p a {line-height: 25px; padding: 12px 0; border-bottom: 1px solid #f2f2f2;}
