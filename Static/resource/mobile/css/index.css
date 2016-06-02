@@ -214,6 +214,11 @@ a{display:block; text-decoration:none; color: #666}
 .article h2{font-size: 16px; font-weight: 400; margin-bottom: .3em;}
 .article h3{font-weight: 400; font-size: 15px;}
 .article p{margin: 10px 0;}
+.article .hd h1{color: #222;font-size: 23px;}
+.article .hd .meta{}
+.article .hd .meta span{color: #707f9e;font-size: 16px;}
+.article .hd .meta time{color: #909090;font-size: 14px;}
+.article .bd{margin-top: 40px;}
 
 .page-index {padding-bottom: 56px;}
 .nav{position: fixed; bottom: 0; left: 0; display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; width: 100%; background: #fafafa;}
