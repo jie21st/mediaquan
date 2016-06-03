@@ -27,21 +27,16 @@
             $.wechat.init(function(){
                 var shareData = {
                     title: '<{$article.article_title}>',
-                    desc: '<{$article.article_title}>'
+                    desc: '<{$article.article_title}>',
+                    imgUrl: 'UPLOADS_SITE_URL/article/<{$article.article_image}>',
                 };
                 wx.showOptionMenu();
-                wx.hideMenuItems({
-                    menuList: [
-                        'menuItem:share:qq',
-                        'menuItem:share:weiboApp',
-                        'menuItem:share:QZone',
-                        'menuItem:copyUrl',
-                        'menuItem:openWithSafari',
-                        'menuItem:openWithQQBrowser'
-                    ]
-                });
                 wx.onMenuShareAppMessage(shareData);
                 wx.onMenuShareTimeline(shareData);
+                wx.onMenuShareTimeline(shareData);
+                wx.onMenuShareQQ(shareData);
+                wx.onMenuShareWeibo(shareData);
+                wx.onMenuShareQZone(shareData);
             });
         </script>
     </body>

@@ -141,5 +141,24 @@
             </volist>
         </div>
         </div>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/media.js"></script>
+        <script>
+            // 微信
+            $.wechat.init(function(){
+                var shareData = {
+                    title: '新手指南',
+                    desc: '实用好玩又赚钱来试试吧',
+                    imgUrl: 'RESOURCE_SITE_URL/image/xs.jpg'
+                };
+                wx.showOptionMenu();
+                wx.onMenuShareAppMessage(shareData);
+                wx.onMenuShareTimeline(shareData);
+                wx.onMenuShareQQ(shareData);
+                wx.onMenuShareWeibo(shareData);
+                wx.onMenuShareQZone(shareData);
+            });
+        </script>
     </body>
 </html>
