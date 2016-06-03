@@ -111,7 +111,7 @@ class MyAction extends \Media\Action\CommonAction
     }
 
     /**
-     * 我的海报
+     * 推广 
      */
     public function posterOp()
     {
@@ -127,15 +127,5 @@ class MyAction extends \Media\Action\CommonAction
             $this->assign('imageSrc', $imagePath['pathName']);
             $this->display();
         }
-    }
-    
-    public function newPosterOp()
-    {
-        $data = I('get.data');
-        $imagePath = json_decode(base64_decode($data), true); 
-
-        $this->assign('data', $data);
-        $this->assign('imageSrc', $imagePath['pathName']);
-        $this->display('My/poster');
     }
 }
