@@ -137,4 +137,28 @@ class Redis extends Cache {
     public function clear() {
         return $this->handler->flushDB();
     }
+    
+    /**
+     * 为有序集 key 的成员 member 的 score 值加上增量 increment
+     * 
+     * @param type $key
+     * @param type $increment
+     * @param type $member
+     * @return type
+     */
+    public function zIncrBy($key, $increment, $member) {
+        return $this->handler->zIncrBy($key, $increment, $member);
+    }
+    
+    /**
+     * 返回有序集 key 中，指定区间内的成员
+     * 
+     * @param type $key
+     * @param type $start
+     * @param type $stop
+     */
+    public function zRevRange($key, $start = 0, $stop = -1, $withscores = false)
+    {
+        return $this->handler->zRevRange($key, $start, $stop, $withscores);
+    }
 }
