@@ -193,8 +193,8 @@ class UserService
      */
     public function addFans($userId, $fansUserId)
     {
-        $redis = \Think\Cache::getInstance('Redis');
         $key = "user:{$userId}:fans";
-        $redis->zAdd($key, time(), $fansUserId);
+        $result = $this->redis->zAdd($key, time(), $fansUserId);
+        \Think\Log::write('添加粉丝'.$fansUserId.'To'.$userId.': '.$result);
     }
 }
