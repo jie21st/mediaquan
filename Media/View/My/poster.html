@@ -3,8 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>海报二维码</title>
+    <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" /> 
 </head>
 <body>
     <img src="UPLOADS_SITE_URL/poster/<{$imageSrc}>" style="width:100%;height:100%">
+    <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
+    <script>
+   // 微信
+   $.wechat.init(function(){
+       var shareData = {
+           title: 'test',
+           link: '<{$Think.config.MEDIA_SITE_URL}>/my/postar?',
+           //imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
+           desc: 'test',
+       };
+       wx.showOptionMenu();
+       wx.hideMenuItems({
+           menuList: [
+               'menuItem:share:qq',
+               'menuItem:share:weiboApp',
+               'menuItem:share:QZone',
+               'menuItem:copyUrl',
+               'menuItem:openWithSafari',
+               'menuItem:openWithQQBrowser'
+           ]
+       });
+       wx.onMenuShareAppMessage(shareData);
+       wx.onMenuShareTimeline(shareData);
+   }); 
+    
+    </script>
 </body>
 </html>
