@@ -140,7 +140,7 @@ class Redis extends Cache {
     
     public function zAdd($key, $score, $member) {
         $key = $this->options['prefix'].$key;
-        return $this->zAdd($key, $score, $member);
+        return $this->handler->zAdd($key, $score, $member);
     }
     
     /**
