@@ -19,5 +19,27 @@
                 <{$article.article_content}>
             </div>
         </article>
+        <script>
+            // 微信
+            $.wechat.init(function(){
+                var shareData = {
+                    title: '<{$article.article_title}>',
+                    desc: '<{$article.article_title}>'
+                };
+                wx.showOptionMenu();
+                wx.hideMenuItems({
+                    menuList: [
+                        'menuItem:share:qq',
+                        'menuItem:share:weiboApp',
+                        'menuItem:share:QZone',
+                        'menuItem:copyUrl',
+                        'menuItem:openWithSafari',
+                        'menuItem:openWithQQBrowser'
+                    ]
+                });
+                wx.onMenuShareAppMessage(shareData);
+                wx.onMenuShareTimeline(shareData);
+            });
+        </script>
     </body>
 </html>
