@@ -28,7 +28,10 @@ class IndexAction extends CommonAction
             $classInfo['is_buy'] = $classService->checkClassUser($classInfo['class_id'], session('user_id'));
             
             // 课程章节数
-            $classInfo['chapter_num'] = $chapterModel->getCourseCount(['class_id' => $classInfo['class_id']]);
+            $classInfo['chapter_num'] = $chapterModel->getCourseCount([
+                'class_id' => $classInfo['class_id'],
+                'status' => 1,
+            ]);
         }
         $this->assign('class_list', $classList);
         $this->display();
@@ -52,15 +55,6 @@ class IndexAction extends CommonAction
     
     public function sales_modelOp()
     {
-        $this->display();
-    }
-
-    public function posterOp()
-    {
-        $uid = session('user_id');
-        $poster = new \Media\Service\CreatePosterService;
-        $imagePath = $poster->getPoster($uid);
-        $this->assign('imageSrc', $imagePath);
         $this->display();
     }
 }
