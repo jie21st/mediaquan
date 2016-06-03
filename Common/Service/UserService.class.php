@@ -17,9 +17,16 @@ class UserService
         static $cache = [];
         
         if (! isset($cache[$uid])) {
-            $model = new \Common\Model\UserModel;
-            $field = 'user_id,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar,user_wechatopenid,parent_id,buy_num';
-            $data = $model->getUserInfo(['user_id' => $uid], $field);
+            $redis = \Think\Cache::getInstance('Redis');
+            $name = "user:{$uid}:info";
+            $data = $redis->hGetAll($name);
+            if (empty($data)) {
+                // 读取数据库
+                $model = new \Common\Model\UserModel;
+                $field = 'user_id,user_nickname,user_truename,user_sex,user_mobile,user_wx,user_avatar,user_wechatopenid,parent_id,buy_num';
+                $data = $model->getUserInfo(['user_id' => $uid], $field);
+                $redis->hSet($name, $data);// 写入缓存
+            }
             $cache[$uid] = $data;
         }
         
@@ -168,7 +175,19 @@ class UserService
         if (! $result) {
             return ['error' => '更新失败'];
         }
-        
+        $this->addFans($parentId, $userId);
         return true;
+    }
+    
+    /**
+     * 添加粉丝
+     * @param type $userId
+     * @param type $fansUserId
+     */
+    public function addFans($userId, $fansUserId)
+    {
+        $redis = \Think\Cache::getInstance('Redis');
+        $key = "user:{$userId}:fans";
+        $redis->zAdd($key, time(), $fansUserId);
     }
 }
