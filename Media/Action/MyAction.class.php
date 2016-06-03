@@ -132,7 +132,7 @@ class MyAction extends \Media\Action\CommonAction
     public function newPosterOp()
     {
         $data = I('get.data');
-        $imagePath = json_decode(base64_decode($data)); 
+        $imagePath = json_decode(base64_decode($data), true); 
 
         $this->assign('data', $data);
         $this->assign('imageSrc', $imagePath['pathName']);
