@@ -399,12 +399,12 @@ class WechatResponseService
         $url = C('MEDIA_SITE_URL') .'/article/';
         if ((date('w') == 0 || date('w') == 6)) {
             $str = "在线客服时间为：\r\n";
-            $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
-        } elseif (date('Gi') >= 930 && date('Gi') <= 1730) {
+            $str.= "周一至周五9:30至23:00，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
+        } elseif (date('Gi') >= 930 && date('Gi') <= 2300) {
             $str = 'hi，我是今日值班编辑小秋，有什么可以帮您的么？';
         }else {
             $str = "在线客服时间为：\r\n";
-            $str.= "周一至周五9:30至17:30，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
+            $str.= "周一至周五9:30至23:00，有什么问题可以<a href=\"{$url}\">查阅新手指南</a>";
         }
         $this->wechat->text($str)->reply();
     }
