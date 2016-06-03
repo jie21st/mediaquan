@@ -20,7 +20,7 @@ return array(
     'URL_HTML_SUFFIX'   => 'html',
     
     // 项目配置
-    'MEDIA_SITE_URL'   => 'http://test.mediaquan.com',
+    'MEDIA_SITE_URL'   => 'http://www.mediaquan.com',
     'RESOURCE_SITE_URL' => 'http://static.mediaquan.com/resource',
     'UPLOADS_SITE_URL'  => 'http://static.mediaquan.com/uploads',
 
@@ -54,21 +54,21 @@ return array(
     'LOG_LEVEL'         => 'EMERG,ALERT,CRIT,ERR',
     
     // 微信配置
-    'WECHAT_TOKEN'      => '',
-    'WECHAT_APPID'      => '',
-    'WECHAT_APPSECRET'  => '',
-    'WECHAT_ENCODING'   => '',
+    'WECHAT_TOKEN'      => '86a8c273c5a0110d49a0dd7c724ac3fc',
+    'WECHAT_APPID'      => 'wxbbaf282fda56c460',
+    'WECHAT_APPSECRET'  => '5a1274946216c518cf35a0e561bd81fd',
+    'WECHAT_ENCODING'   => 'cYt6GNmT4gLs0bGiTkvKHS11g3hksD4BpbvWMZKwSyu',
     
     // 推广配置
     'SPREAD_POSTER_USE'                 => true,                 // 推广海报是否启用
     'SPREAD_POSTER_EXPIRE'              => 2592000,              // 推广海报有效期 单位秒）
-    'SPERAD_POSTER_GENERATE_NEEDBUY'    => true,                 // 推广生成海报是否需要购买
-    'SPERAD_SELLER_GAINS_AMOUNT'        => 0,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
+    'SPERAD_POSTER_GENERATE_NEEDBUY'    => false,                 // 推广生成海报是否需要购买
+    'SPERAD_SELLER_GAINS_AMOUNT'        => 0.05,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
     'SPERAD_POSTER_CHECK_SCAN_TIME'     => 43200,                // 推广海报生成后多少时间后进行未扫码检测
     
     // 其他配置
     'DEFAULT_USER_AVATAR'       => 'personImg.jpg',         // 默认头像
-    'DEFAULT_USER_PARENT'       => array(),                 // 用户默认推荐人列表
+    'DEFAULT_USER_PARENT'       => array(10001),                 // 用户默认推荐人列表
     'USER_SUBSCRIBE_CASE_TIME'  => 600,                     // 用户关注多少时间后检查未购买或未生成海报发送通知 为0则不触发
     
     // 分销配置
