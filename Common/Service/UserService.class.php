@@ -182,19 +182,7 @@ class UserService
             return ['error' => '更新失败'];
         }
         $this->redis->hSet("user:{$userId}:info", 'parent_id', $parentId);
-        $this->addFans($parentId, $userId);
+        $this->redis->zAdd("user:{$parentId}:fans", time(), $userId);
         return true;
-    }
-    
-    /**
-     * 添加粉丝
-     * @param type $userId
-     * @param type $fansUserId
-     */
-    public function addFans($userId, $fansUserId)
-    {
-        $key = "user:{$userId}:fans";
-        $result = $this->redis->zAdd($key, time(), $fansUserId);
-        \Think\Log::write('添加粉丝'.$fansUserId.'To'.$userId.': '.$result);
     }
 }
