@@ -115,10 +115,15 @@ class MyAction extends \Media\Action\CommonAction
      */
     public function posterOp()
     {
-        $uid = session('user_id');
-        $poster = new \Media\Service\CreatePosterService;
-        $imagePath = $poster->getPoster($uid);
-        $this->assign('imageSrc', $imagePath);
-        $this->display();
+        $posterService = new \Media\Service\CreatePosterService();
+        $imagePath = $posterService->getPoster(session('user_id'), true);
+
+        if($imagePath['pathName'] == '') {
+            //dump($imagePath);
+            exit('获取海报失败');
+        } else {
+            $this->assign('imageSrc', $imagePath['pathName']);
+            $this->display();
+        }
     }
 }
