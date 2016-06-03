@@ -151,11 +151,11 @@
                     });
 
                     // 开始按钮
-                    $('.audioplayer').bind('click tap', this.playpauseClick);
+                    $('.audioplayer-playpause').bind('click tap', this.playpauseClick);
 
                     // 开始播放
                     if (!media.autoPlay) {
-                        $('.audioplayer').click();
+                        $('.audioplayer-playpause').click();
                         postAjax();
                     };
                 },
@@ -165,17 +165,17 @@
                     var player = e.delegateTarget; // 图标
                     var playpause = e.currentTarget; // 标识
 
-                    if ($(playpause).attr('title') == 'Pause') {
+                    if ($(this).attr('title') == 'Pause') {
                         // 暂停
-                        $(player).removeClass('audioplayer-playing');
-                        $(playpause).attr({'title': 'Play'}).find('a').html('Play');
+                        $(this).parent().removeClass('audioplayer-playing');
+                        $(this).attr({'title': 'Play'}).find('a').html('Play');
                         media.pause();
                         UnSetTime();
                         setTimeData();
                     } else {
                         // 开始
-                        $(player).addClass('audioplayer-playing');
-                        $(playpause).attr({'title': 'Pause'}).find('a').html('Pause');
+                        $(this).attr({'title': 'Pause'}).find('a').html('Pause');
+                        $(this).parent().addClass('audioplayer-playing');
     //
                         media.play();
                         SetTime();
