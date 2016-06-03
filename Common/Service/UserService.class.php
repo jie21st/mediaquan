@@ -6,6 +6,12 @@ namespace Common\Service;
  */
 class UserService
 {
+    protected $redis;
+    
+    public function __construct()
+    {
+        $this->redis = \Think\Cache::getInstance('Redis');
+    }
     /**
      * 获取用户详细信息
      *
@@ -175,6 +181,7 @@ class UserService
         if (! $result) {
             return ['error' => '更新失败'];
         }
+        $this->redis->hSet("user:{$userId}:info", 'parent_id', $userId);
         $this->addFans($parentId, $userId);
         return true;
     }
