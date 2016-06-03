@@ -57,4 +57,18 @@ class IndexAction extends CommonAction
     {
         $this->display();
     }
+
+    /**
+     * 分享海报
+     **/ 
+    public function posterOp()
+    {
+        $data = I('get.data');
+        $imagePath = json_decode(base64_decode($data)); 
+
+        $this->assign('data', $data);
+        $this->assign('imageSrc', $imagePath['pathName']);
+        $this->display('My/poster');
+    }
+
 }
