@@ -22,7 +22,7 @@ class IndexAction extends CommonAction
         $classService = new \Common\Service\ClassService();
         
         $field = 'class_id,class_title,class_image,teacher_id,teacher_name,class_price,study_num';
-        $classList = $classModel->field($field)->select();
+        $classList = $classModel->getClassOnlineList([], $field);
         foreach ($classList as &$classInfo) {
             // 课程是否已购买
             $classInfo['is_buy'] = $classService->checkClassUser($classInfo['class_id'], session('user_id'));
