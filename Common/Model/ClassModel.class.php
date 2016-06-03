@@ -13,6 +13,9 @@ namespace Common\Model;
  */
 class ClassModel extends CommonModel
 {
+    const STATE_ONLINE = 1; // 正常
+    const STATE_OFFLINE = 0; // 下架
+
     /**
      * 课程表名称
      *
@@ -32,6 +35,22 @@ class ClassModel extends CommonModel
     public function getClassInfo($condition, $field = '*', $order = "")
     {
         return $this->field($field)->where($condition)->order($order)->find();
+    }
+    
+    /**
+     * 上架课程列表
+     * 
+     * @param array $condition
+     * @param type $field
+     * @param type $order
+     * @param type $page
+     * @param type $limit
+     * @return type
+     */
+    public function getClassOnlineList($condition, $field = '*', $order = 'class_id desc', $page = 1, $limit = 1000)
+    {
+        $condition['class_state']   = self::STATE_ONLINE;
+        return $this->getClassList($condition, $field, $order, $page, $limit);
     }
 
     /**
@@ -108,22 +127,6 @@ class ClassModel extends CommonModel
     public function totalClassList($condition = array())
     {
         return $this->where($condition)->count();
-    }
-
-    /**
-     * 取得允许分销商转销的课程列表
-     *
-     * @param array $condition
-     * @param type $field
-     * @param type $order
-     * @param type $page
-     * @param type $limit
-     * @return type
-     */
-    public function getAllowResellClassList($condition = array(), $field = '*', $order = '', $page = 1, $limit = 1000)
-    {
-        $condition['allow_resell'] = 1;
-        return $this->getClassList($condition, $field, $order, $page, $limit);
     }
 
     /**
