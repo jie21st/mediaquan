@@ -54,7 +54,7 @@ class ClassAction extends CommonAction
         
         // 获取课程章节列表
         $chapterModel = new \Common\Model\ChapterModel();
-        $classInfo['chapter_list'] = $chapterModel->getCourseList(['class_id' => $classId]);
+        $classInfo['chapter_list'] = $chapterModel->getCourseList(['class_id' => $classId, 'status' => 1]);
         
         $this->assign('class_info', $classInfo);
         $this->assign('teacher_info', $teacherInfo);
