@@ -109,4 +109,16 @@ class MyAction extends \Media\Action\CommonAction
         $this->assign('apply_list', $applyList);
         $this->display();
     }
+
+    /**
+     * 我的海报
+     */
+    public function posterOp()
+    {
+        $uid = session('user_id');
+        $poster = new \Media\Service\CreatePosterService;
+        $imagePath = $poster->getPoster($uid);
+        $this->assign('imageSrc', $imagePath);
+        $this->display();
+    }
 }
