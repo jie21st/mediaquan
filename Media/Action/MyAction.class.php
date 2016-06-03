@@ -122,8 +122,20 @@ class MyAction extends \Media\Action\CommonAction
             //dump($imagePath);
             exit('获取海报失败');
         } else {
+            $data = base64_encode(json_encode($imagePath));
+            $this->assign('data', $data);
             $this->assign('imageSrc', $imagePath['pathName']);
             $this->display();
         }
+    }
+    
+    public function newPosterOp()
+    {
+        $data = I('get.data');
+        $imagePath = json_decode(base64_decode($data)); 
+
+        $this->assign('data', $data);
+        $this->assign('imageSrc', $imagePath['pathName']);
+        $this->display('My/poster');
     }
 }
