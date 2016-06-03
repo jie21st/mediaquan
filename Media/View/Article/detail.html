@@ -28,7 +28,7 @@
                 var shareData = {
                     title: '<{$article.article_title}>',
                     desc: '<{$article.article_title}>',
-                    imgUrl: 'UPLOADS_SITE_URL/article/<{$article.article_image}>',
+                    imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_COMMON}>/article_share.jpg',
                 };
                 wx.showOptionMenu();
                 wx.onMenuShareAppMessage(shareData);
