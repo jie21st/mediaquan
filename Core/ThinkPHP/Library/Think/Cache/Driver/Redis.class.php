@@ -138,6 +138,11 @@ class Redis extends Cache {
         return $this->handler->flushDB();
     }
     
+    public function zAdd($key, $score, $member) {
+        $key = $this->options['prefix'].$key;
+        return $this->zAdd($key, $score, $member);
+    }
+    
     /**
      * 为有序集 key 的成员 member 的 score 值加上增量 increment
      * 
@@ -147,6 +152,7 @@ class Redis extends Cache {
      * @return type
      */
     public function zIncrBy($key, $increment, $member) {
+        $key = $this->options['prefix'].$key;
         return $this->handler->zIncrBy($key, $increment, $member);
     }
     
@@ -159,6 +165,7 @@ class Redis extends Cache {
      */
     public function zRevRange($key, $start = 0, $stop = -1, $withscores = false)
     {
+        $key = $this->options['prefix'].$key;
         return $this->handler->zRevRange($key, $start, $stop, $withscores);
     }
 }
