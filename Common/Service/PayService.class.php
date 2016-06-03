@@ -125,6 +125,7 @@ class PayService
                 $result = $userService->bindParent($orderInfo['buyer_id'], $orderInfo['from_seller']);
                 if ($result === true) {
                     $parentInfo = $userService->getUserInfo($orderInfo['from_seller']);
+                    $buyerInfo = $userService->getUserInfo($orderInfo['buyer_id']);
                     // 通知推荐人
                     $msg = array();
                     $msg['touser'] = $parentInfo['user_wechatopenid'];
