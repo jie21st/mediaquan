@@ -53,10 +53,10 @@
                                         'closeWindow',
                                         'chooseWXPay',
                                         'onMenuShareAppMessage',
-                                        'onMenuShareTimeline'
-    //                                    'onMenuShareQQ',
-    //                                    'onMenuShareWeibo',
-    //                                    'onMenuShareQZone'
+                                        'onMenuShareTimeline',
+                                        'onMenuShareQQ',
+                                        'onMenuShareWeibo',
+                                        'onMenuShareQZone'
                                     ]
                                 });
                                 
