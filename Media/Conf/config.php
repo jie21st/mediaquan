@@ -21,7 +21,6 @@ $config = array(
         'article/:id\d'     => 'article/detail',
         // 单页面
         'contact'           => 'index/contact',
-        'poster'            => 'my/poster',
     ),
     
     // 海报时效
