@@ -11,7 +11,7 @@ class CreatePosterService
     /**
      * 获取海报
      */
-    public function getPoster($uid)
+    public function getPoster($uid, $fx = false)
     {
         ignore_user_abort(true); // 后台运行
         set_time_limit(0); // 取消脚本运行时间的超时上限
@@ -107,7 +107,7 @@ class CreatePosterService
                 $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
                 $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
                 $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
-                //$imageSrc['pathName']       = $posterInfo['poster_images_name'];
+                $imageSrc['pathName']       = $posterInfo['poster_images_name'];
             }
         }
 
@@ -117,7 +117,14 @@ class CreatePosterService
         if ( false === $sendBool) {
             $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
             //return $this->returnJson(0, '发送消息失败', '');
+        } else {
+
+            if (true === $fx) {
+                return $imageSrc;
+            }
+
         }
+
 
         //$this->returnJson(1, 'success', '');
         //$this->assign('imageSrc', $imageSrc['pathName']);
