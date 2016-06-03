@@ -77,17 +77,17 @@ class PosterService
             'src' => array(
                 array(
                     'srcPath'   =>  $this->wechatRQCode,     // 图片路径
-                    'srcX'      =>  '222',      // X轴位置
-                    'srcY'      =>  '620',      // Y轴位置
-                    'srcW'      =>  '130',      // 图片宽度
-                    'srcH'      =>  '130',      // 图片高度
+                    'srcX'      =>  '284',      // X轴位置
+                    'srcY'      =>  '898',      // Y轴位置
+                    'srcW'      =>  '183',      // 图片宽度
+                    'srcH'      =>  '183',      // 图片高度
                 ),
                 array(
                     'srcPath'   =>  $this->userImageSrc,   // 图片路径
-                    'srcX'      =>  '208',      // X轴位置
-                    'srcY'      =>  '374',      // Y轴位置
-                    'srcW'      =>  '160',      // 图片宽度
-                    'srcH'      =>  '161',      // 图片高度
+                    'srcX'      =>  '278',      // X轴位置
+                    'srcY'      =>  '584',      // Y轴位置
+                    'srcW'      =>  '192',      // 图片宽度
+                    'srcH'      =>  '192',      // 图片高度
                 ),
             ),
             /**
