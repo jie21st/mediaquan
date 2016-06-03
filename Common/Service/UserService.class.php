@@ -181,7 +181,7 @@ class UserService
         if (! $result) {
             return ['error' => '更新失败'];
         }
-        $this->redis->hSet("user:{$userId}:info", 'parent_id', $userId);
+        $this->redis->hSet("user:{$userId}:info", 'parent_id', $parentId);
         $this->addFans($parentId, $userId);
         return true;
     }
