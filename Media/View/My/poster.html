@@ -13,12 +13,17 @@
     <script>
    // 微信
    $.wechat.init(function(){
+       wx.hideOptionMenu();
+   });
+   /**
+   $.wechat.init(function(){
        var shareData = {
            title: 'test',
            link: '<{$Think.config.MEDIA_SITE_URL}>/my/postar?',
            //imgUrl: 'UPLOADS_SITE_URL/<{$Think.const.ATTACH_CLASS}>/<{$class_info.fx_img}>',
            desc: 'test',
        };
+
        wx.showOptionMenu();
        wx.hideMenuItems({
            menuList: [
@@ -33,7 +38,7 @@
        wx.onMenuShareAppMessage(shareData);
        wx.onMenuShareTimeline(shareData);
    }); 
-    
+   **/ 
     </script>
 </body>
 </html>
