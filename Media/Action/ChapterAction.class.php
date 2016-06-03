@@ -14,7 +14,7 @@ class ChapterAction extends CommonAction
 
         $userId  = session('user_id');
 
-        // 取得课程信息
+        // 取得课程信
         $classModel = new \Common\Model\ClassModel();
         $classInfo = $classModel->getClassInfo(['class_id' => $classId]);
         if (empty($classInfo)) {
@@ -30,7 +30,7 @@ class ChapterAction extends CommonAction
         }
 
         // 课程列表
-        $chapterList = $this->getChapterList($classId);
+        $chapterList = $this->getChapterList(['class_id' => $classId, 'status'=>['eq', 1]]);
 
         $this->assign('classInfo', $classInfo);
         $this->assign('user_id', $userId);
@@ -64,9 +64,10 @@ class ChapterAction extends CommonAction
             }
 
             //章节列表
-            $chapterList = $this->getChapterList($classId);
+            $chapterList = $this->getChapterList(['class_id'=>$classId, 'status'=>1]);
 
             $condition = ['class_id' => $classId, 'chapter_id' => $chapterId, 'user_id' => $userId];
+
             // 章节详情
             $chapterInfo = D('Chapter')->getCourseInfo($condition);
 
@@ -124,9 +125,9 @@ class ChapterAction extends CommonAction
 
     }
 
-    private function getChapterList($classId)
+    private function getChapterList($condition)
     {
-        return D('Chapter')->getCourseList(['class_id' => $classId]);
+        return D('Chapter')->getCourseList($condition);
     }
 
 }
