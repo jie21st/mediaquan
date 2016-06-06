@@ -72,7 +72,9 @@ class ChapterAction extends CommonAction
             $chapterInfo = D('Chapter')->getCourseInfo(['class_id' => $classId, 'chapter_id' => $chapterId, 'status'=>1]);
 
             // 上次播放时间
-            $time = D('ChapterUser')->getCoursesClientTime(['class_id' => $classId, 'chapter_id' => $chapterId, 'user_id'=>$userId]);
+            $redis = \Think\Cache::getInstance('Redis');
+            $time= $redis->hGet('courses:histoty:'.$userId, 'time');
+            //$time = D('ChapterUser')->getCoursesClientTime(['class_id' => $classId, 'chapter_id' => $chapterId, 'user_id'=>$userId]);
 
             $this->assign('ext', 'jpg');
             $this->assign('title', $classInfo['class_title']);
@@ -80,7 +82,7 @@ class ChapterAction extends CommonAction
             $this->assign('chapterId', $chapterId);
             $this->assign('user_id', $userId);
             $this->assign('info', $chapterInfo);
-            $this->assign('time', (! empty($time) and $time['time'] > 0) ? $time['time'] : 0);
+            $this->assign('time', (! empty($time) and $time > 0) ? $time : 0);
             $this->display();
 
         } else {
@@ -90,15 +92,20 @@ class ChapterAction extends CommonAction
         
     }
 
-
+    /**
+    * 更新听课时间
+    * @access public
+    * @return boolean
+    **/
     public function updateOp()
     {
         ignore_user_abort(true); // 后台运行
         set_time_limit(0); // 取消脚本运行时间的超时上限
 
+        $userId = session('user_id');
         $classId = I('class_id');
         $chapterId = I('chapter_id');
-        $userId = I('user_id');
+        //$userId = I('user_id');
         $time = I('time');
 
         $updata = [
@@ -108,14 +115,12 @@ class ChapterAction extends CommonAction
             'create_time' => date('Y-m-d H:i:s'),
             'time' => $time,
         ];
-
-//        print_r($updata);exit();
-
-
+        
         try{
-            $id = D('ChapterUser')->data($updata)->add();
-            if (! $id) {
-                throw new \Exception("db not find");
+            $redis = \Think\Cache::getInstance('Redis');
+            $result= $redis->hSet('courses:histoty:'.$userId, $updata);
+            if (false === $result) {
+                throw new \Exception("insert data error");
             } else {
                 echo json_encode(['code'=>1, 'msg'=>'success']);
             }
