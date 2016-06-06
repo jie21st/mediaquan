@@ -313,18 +313,23 @@ class WechatResponseService
         $name = ($this->userInfo['user_truename']) ? $this->userInfo['user_truename'] : $this->userInfo['user_nickname'];
         
         $parentInfo = D('User', 'Service')->getUserBaseInfo($this->userInfo['parent_id']);
+
         if(! empty($parentInfo)) {
+            
             $parentName = ($parentInfo['user_truename']) ? $parentInfo['user_truename'] : $parentInfo['user_nickname'];
-            $userImg = getMemberAvatar($parentInfo['user_avatar']);
+            
+            $title = "Hi，".$parentName."向你推荐了实用的课程哦";
+            //$userImg = getMemberAvatar($parentInfo['user_avatar']);
         } else {
             $parentName = $name;
-            $userImg = getMemberAvatar($this->userInfo['user_avatar']);
+            $title = "Hi，这里有很多实用的课程哦";
+            //$userImg = getMemberAvatar($this->userInfo['user_avatar']);
         }
 
         $data = [
             [
-                "Title"=>"Hi，".$parentName."向你推荐了实用的课程哦",
-                "Description"=>"Hi，".$parentName."向你推荐了实用的课程哦",
+                "Title"=>$title,
+                "Description"=>$title,
                 "Url"=> C('MEDIA_SITE_URL'),
                 "PicUrl"=> $url . "/image/k2.jpg"
             ]
