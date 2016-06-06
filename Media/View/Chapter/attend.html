@@ -256,10 +256,10 @@
             var setTimeData = function(){
                 var class_id = $('input[name=class_id]').val();
                 var chapter_id = $('input[name=chapter_id]').val();
-                var user_id = $('input[name=user_id]').val();
+                //var user_id = $('input[name=user_id]').val();
                 var time = media.currentTime;
                 // console.log(media.currentTime);
-                $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, user_id : user_id, time: time} );
+                $.post(updateUrl, { class_id: class_id, chapter_id : chapter_id, /**user_id : user_id,**/ time: time} );
             }
 
             var postAjax = function()
