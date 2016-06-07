@@ -30,7 +30,6 @@ class MyAction extends \Media\Action\CommonAction
         $redis = \Think\Cache::getInstance('redis');
         $historyInfo = $redis->hGetAll('courses:histoty:' . session('user_id'));
         if (!empty($historyInfo)) {
-            dump($history);
             $chapterModel = new \Common\Model\ChapterModel;
             $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
         }
