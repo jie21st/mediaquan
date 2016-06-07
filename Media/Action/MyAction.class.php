@@ -28,10 +28,11 @@ class MyAction extends \Media\Action\CommonAction
 //            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
 //        }
         $redis = \Think\Cache::getInstance('redis');
-        $history = $redis->hGetAll('courses:histoty:' . session('user_id'));
+        $historyInfo = $redis->hGetAll('courses:histoty:' . session('user_id'));
         if (!empty($history)) {
+            dump($history);
             $chapterModel = new \Common\Model\ChapterModel;
-            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $history['chapter_id']]);
+            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
         }
         
         $this->assign('user_info', $userInfo);
