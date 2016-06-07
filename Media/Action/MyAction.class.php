@@ -31,7 +31,10 @@ class MyAction extends \Media\Action\CommonAction
         $historyInfo = $redis->hGetAll('courses:histoty:' . session('user_id'));
         if (!empty($historyInfo)) {
             $chapterModel = new \Common\Model\ChapterModel;
-            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo(['chapter_id' => $historyInfo['chapter_id']]);
+            $condition = array();
+            $condition['chapter_id'] = $historyInfo['chapter_id'];
+            $field = 'chapter_id,chapter_title,class_id,teacher_name,cover_img_url';
+            $historyInfo['chapter_info'] = $chapterModel->getCourseInfo($condition, $field);
         }
         
         $this->assign('user_info', $userInfo);
