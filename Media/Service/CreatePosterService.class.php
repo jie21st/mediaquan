@@ -11,7 +11,7 @@ class CreatePosterService
     /**
      * 获取海报
      */
-    public function getPoster($uid, $fx = false)
+    public function getPoster($uid, $fx = false, $is_forever = 0)
     {
         ignore_user_abort(true); // 后台运行
         set_time_limit(0); // 取消脚本运行时间的超时上限
@@ -40,7 +40,7 @@ class CreatePosterService
             $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
             
             // 制作海报
-            $imageSrc   = $this->_getImageInfo($userInfo);
+            $imageSrc   = $this->_getImageInfo($userInfo, false, $is_forever);
             if(false === $imageSrc) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
             }
@@ -70,7 +70,7 @@ class CreatePosterService
         } else {
             // 已存在海报
             
-            if(time() > $posterInfo['poster_end_time']) {
+            if(time() > $posterInfo['poster_end_time'] && $posterInfo['is_forever'] == 0) {
                 //echo '重新制作';
                 //制作海报
                 $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
@@ -150,7 +150,7 @@ class CreatePosterService
      *
      * @return mixed url
      */
-    private function _getImageInfo($userInfo, $posterInfo = false)
+    private function _getImageInfo($userInfo, $posterInfo = false, $is_forever = 0)
     {
         $poster = D('Poster', 'Service');
 
@@ -162,7 +162,7 @@ class CreatePosterService
         $todayEndTime = mktime(23, 59, 59, $m, $d, $y) - $todayStartTime;
         $wechatTime = 29 * 86400 + $todayEndTime;
         
-        $imageSrc = $poster->getPoster($userInfo, $wechatTime, $todayStartTime);
+        $imageSrc = $poster->getPoster($userInfo, $wechatTime, $todayStartTime, $is_forever);
 
         if(false === $imageSrc) {
             return false;
@@ -174,6 +174,7 @@ class CreatePosterService
             'poster_create_time' => $todayStartTime,
             'poster_end_time' => ($todayStartTime + $wechatTime),
             'poster_status' => ($imageSrc['pathName'] != '') ? 1 : 0,
+            'poster_is_forever' => ($is_forever) : 1 ? 0
         );
         
         if (false !== $posterInfo ) {

@@ -9,7 +9,7 @@ use Common\Service\WechatService as Wechat;
 
 class PosterService
 {
-    public function getPoster($userInfo, $wechatTime, $times)
+    public function getPoster($userInfo, $wechatTime, $times, $is_forever = 0)
     {
         // 用户头像地址
         $this->uid = $userInfo['user_id'];
@@ -17,7 +17,7 @@ class PosterService
         $this->times = $times;
         $this->userName = ($userInfo['user_truename'])? $userInfo['user_truename'] : $userInfo['user_nickname'];
         $this->_setUserImageSrc($userInfo['user_avatar']);
-        if(false === $this->_getWechatRQCode()) return false;
+        if(false === $this->_getWechatRQCode($is_forever)) return false;
         $this->_setConfig();
         return $this->_getImagePath();
     }
@@ -36,10 +36,10 @@ class PosterService
 
     /**
      * 获取微信二维码地址
-     * @param string $type  类型 (临时 QR_SCENE  永久 QR_LIMIT_SCENE)
+     * @param string $type  类型 (临时 0  永久 1)
      * @param string $expire
      */
-    private function _getWechatRQCode($type = 'QR_SCENE')
+    private function _getWechatRQCode($type = 0)
     {
         $wechat = new Wechat;
         $url = $wechat->getQRUrl($this->uid, $type, $this->wechatTime);
