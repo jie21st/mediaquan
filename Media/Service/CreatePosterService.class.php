@@ -41,12 +41,14 @@ class CreatePosterService
             
             // 制作海报
             $imageSrc   = $this->_getImageInfo($userInfo, false, $is_forever);
+
             if(false === $imageSrc) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
             }
             
             // 微信上传
             $mediaInfo  = $this->_uploadMedia($imageSrc, 'image');
+
             if(false === $mediaInfo) {
                 $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
             }
@@ -69,12 +71,11 @@ class CreatePosterService
             }
         } else {
             // 已存在海报
-            
-            if(time() > $posterInfo['poster_end_time'] && $posterInfo['is_forever'] == 0) {
+            if(time() > $posterInfo['poster_end_time'] && $posterInfo['poster_is_forever'] == 0) {
                 //echo '重新制作';
                 //制作海报
                 $this->_sendText($userInfo, '正在为您生成海报，大约需要几秒钟，请稍后...');
-                $imageSrc   = $this->_getImageInfo($userInfo, $posterInfo);
+                $imageSrc   = $this->_getImageInfo($userInfo, $posterInfo, $is_forever);
                 
                 if(false === $imageSrc) {
                     $this->_sendText($userInfo, '万分抱歉，海报生成失败，请您重新获取...');exit();
@@ -102,8 +103,8 @@ class CreatePosterService
                     //return $this->returnJson(0, '微信上传失败', '');
                 }
             } else {
-                $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
                 //echo '无变化';
+                $this->_sendText($userInfo, '正在为您发送海报，请稍后...');
                 $mediaInfo['media_id']      = $posterInfo['wechat_media_id'];
                 $mediaInfo['end_time']      = $posterInfo['poster_end_time'];
                 $mediaInfo['start_time']    = $posterInfo['poster_create_time'];
@@ -174,7 +175,7 @@ class CreatePosterService
             'poster_create_time' => $todayStartTime,
             'poster_end_time' => ($todayStartTime + $wechatTime),
             'poster_status' => ($imageSrc['pathName'] != '') ? 1 : 0,
-            'poster_is_forever' => ($is_forever) : 1 ? 0
+            'poster_is_forever' => ($is_forever) ? 1 : 0
         );
         
         if (false !== $posterInfo ) {
