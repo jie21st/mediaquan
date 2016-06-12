@@ -71,4 +71,11 @@ class IndexAction extends CommonAction
         $this->display('My/poster');
     }
 
+    public function posterForeverOp()
+    {
+        $forever = 1;
+        $posterService = new \Media\Service\CreatePosterService();
+        $imagePath = $posterService->getPoster(session('user_id'), true, $forever);
+    } 
+
 }
