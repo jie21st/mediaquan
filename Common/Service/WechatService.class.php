@@ -15,12 +15,16 @@ class WechatService
     
     /**
      * 生成带参数的二维码
-     *
+     * 
+     * @param type $scene_id
+     * @param type $type 0:临时二维码；1:永久二维码(此时expire参数无效)
+     * @param type $expire
+     * @return boolean
      */
-    public function getQRUrl($scene_id, $type = 'QR_SCENE', $expire = 3600)
+    public function getQRUrl($scene_id, $type = 0, $expire = 3600)
     {
         if ($scene_id <= 0) {
-            return false; 
+            return false;
         }
         $result= $this->wechat->getQRCode($scene_id, $type, $expire);
         if ($result) {
