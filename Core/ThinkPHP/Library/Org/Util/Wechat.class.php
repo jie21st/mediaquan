@@ -1063,7 +1063,7 @@ class Wechat
 	 * GET 请求
 	 * @param string $url
 	 */
-	private function http_get($url){
+	protected function http_get($url){
 		$oCurl = curl_init();
 		if(stripos($url,"https://")!==FALSE){
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -1089,7 +1089,7 @@ class Wechat
 	 * @param boolean $post_file 是否文件上传
 	 * @return string content
 	 */
-	private function http_post($url,$param,$post_file=false){
+	protected function http_post($url,$param,$post_file=false){
 		$oCurl = curl_init();
 		if(stripos($url,"https://")!==FALSE){
 			curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
