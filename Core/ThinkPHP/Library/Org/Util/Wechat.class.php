@@ -152,7 +152,7 @@ class Wechat
 	const CARD_MOVIETICKET_UPDATEUSER     = '/card/movieticket/updateuser?';   //更新电影票(未加方法)
 	const CARD_BOARDINGPASS_CHECKIN       = '/card/boardingpass/checkin?';     //飞机票-在线选座(未加方法)
 	const CARD_LUCKYMONEY_UPDATE          = '/card/luckymoney/updateuserbalance?';     //更新红包金额
-	const SEMANTIC_API_URL = '/semantic/semproxy/search?'; //语义理解
+	const SEMANTIC_API_URL = '/semantic/semproxy/search?'; //语义理解       
 	///数据分析接口
 	static $DATACUBE_URL_ARR = array(        //用户分析
 	        'user' => array(
@@ -181,24 +181,24 @@ class Wechat
 	                'summaryhour' => '/datacube/getinterfacesummaryhour?',	//获取接口分析分时数据（getinterfacesummaryhour）
 	        )
 	);
-
-
-	private $token;
-	private $encodingAesKey;
-	private $encrypt_type;
-	private $appid;
-	private $appsecret;
-	private $access_token;
-	private $jsapi_ticket;
-	private $user_token;
-	private $partnerid;
-	private $partnerkey;
-	private $paysignkey;
-	private $postxml;
-	private $_msg;
-	private $_funcflag = false;
-	private $_receive;
-	private $_text_filter = true;
+        
+        
+	protected $token;
+	protected $encodingAesKey;
+	protected $encrypt_type;
+	protected $appid;
+	protected $appsecret;
+	protected $access_token;
+	protected $jsapi_ticket;
+	protected $user_token;
+	protected $partnerid;
+	protected $partnerkey;
+	protected $paysignkey;
+	protected $postxml;
+	protected $_msg;
+	protected $_funcflag = false;
+	protected $_receive;
+	protected $_text_filter = true;
 	public $debug =  false;
 	public $errCode = 40001;
 	public $errMsg = "no access";
