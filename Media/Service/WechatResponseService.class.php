@@ -187,7 +187,8 @@ class WechatResponseService
 //                        $posterService = new \Media\Service\CreatePosterService();
 //                        $posterService->getPoster($this->userInfo['user_id']);
 //                    }
-                    $replyContent = "拇指微课测试期加大奖励力度，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n<a href=\"".C('MEDIA_SITE_URL')."/my/poster\">点击领取专属听课证</a>";
+                    $replyContent = "拇指微课测试期加大奖励力度，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n"
+                            . "<a href=\"".C('MEDIA_SITE_URL')."/my/poster\">点击领取专属听课证</a>";
                     $this->wechat->text($replyContent)->reply();
                 } else {
                     $this->wechat->text('暂时无法获取海报')->reply();
@@ -373,7 +374,7 @@ class WechatResponseService
         ];
         
         $replyContent = "Hi，欢迎来拇指微课学习！\r\n"
-                ."您将获得一张专属的听课证，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n" 
+                ."您将获得一张专属的听课证，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n" 
                 .'<a href="'.C('MEDIA_SITE_URL').'/my/poster">点击生成专属听课证</a>';
         
         //$this->wechat->news($data)->reply();
