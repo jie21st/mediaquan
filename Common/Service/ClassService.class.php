@@ -181,24 +181,51 @@ class ClassService
                 . '<a href="'.C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html?share=1">点击推荐</a>'
             ]
         ]);
-        // 通知粉丝
-        $fansList = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
-        if (! empty($fansList)) {
-            foreach ($fansList as $fansInfo) {
-                $wechatService->sendCustomMessage([
-                    'touser' => $fansInfo['user_wechatopenid'],
-                    'msgtype' => 'text',
-                    'text' => [
-                        'content' => sprintf(
-                                        '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
-                                        $buyerInfo['user_nickname'],
-                                        $classOrder['class_title'],
-                                        C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html'
-                                    )
-                    ]
-                ]);
+        
+        // 通知粉丝 3级
+        function notifyFans($openid, $buyerInfo, $orderInfo) {
+            //$wechatService->sendCustomMessage([
+            print_r([
+                'touser' => $openid,
+                'msgtype' => 'text',
+                'text' => [
+                    'content' => sprintf(
+                                    '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+                                    $buyerInfo['user_nickname'],
+                                    $orderInfo['class_title'],
+                                    C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
+                                )
+                ]
+            ]);
+        }
+        $users = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
+        foreach ($users as $user) {
+            notifyFans($user['user_wechatopenid'], $buyerInfo, $classOrder);
+            $result = $userModel->where(['parent_id' => $user['user_id']])->select();
+            foreach ($result as $value) {
+                notifyFans($value['user_wechatopenid'], $buyerInfo, $classOrder);
+                $result3 = $userModel->where(['parent_id' => $value['user_id']])->select();
+                foreach ($result3 as $value3) {
+                    notifyFans($value3['user_wechatopenid'], $buyerInfo, $classOrder);
+                }
             }
         }
+//        if (! empty($fansList)) {
+//            foreach ($fansList as $fansInfo) {
+//                $wechatService->sendCustomMessage([
+//                    'touser' => $fansInfo['user_wechatopenid'],
+//                    'msgtype' => 'text',
+//                    'text' => [
+//                        'content' => sprintf(
+//                                        '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+//                                        $buyerInfo['user_nickname'],
+//                                        $classOrder['class_title'],
+//                                        C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html'
+//                                    )
+//                    ]
+//                ]);
+//            }
+//        }
     }
     
     /**
@@ -283,7 +310,7 @@ class ClassService
         }
     }
     
-    private function getUserParents($userId, $level = 3) {
+    public function getUserParents($userId, $level = 3) {
         static $list=array();
         if ($level-- > 0) {
             $userModel = new \Common\Model\UserModel;
