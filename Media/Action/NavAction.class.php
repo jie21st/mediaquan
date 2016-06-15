@@ -52,20 +52,20 @@ class NavAction extends CommonAction
                 array(
                     "name" => "服务中心",
                     "sub_button" => array(
-//                        array(
-//                            "type" => "click",
-//                            "name" => "新手指南",
-//                            "key"  => "WECHAT_XSZN"
-//                        ),
-//                        array(
-//                            "type" => "view",
-//                            "name" => "模式说明",
-//                            "url"  => C('MEDIA_SITE_URL') . '/article/1.html'
-//                        ),
                         array(
                             "type" => "view",
                             "name" => "会员中心",
                             "url"  => C('MEDIA_SITE_URL') . "/my/"
+                        ),
+                        array(
+                            "type" => "click",
+                            "name" => "新手指南",
+                            "key"  => "WECHAT_XSZN"
+                        ),
+                        array(
+                            "type" => "view",
+                            "name" => "模式说明",
+                            "url"  => C('MEDIA_SITE_URL') . '/article/1.html'
                         ),
                         array(
                             "type" => "click",
