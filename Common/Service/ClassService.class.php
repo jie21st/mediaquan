@@ -183,8 +183,8 @@ class ClassService
         ]);
         
         // 通知粉丝 3级
-        function notifyFans($openid, $buyerInfo, $orderInfo) {
-            $wechatService->sendCustomMessage([
+        function notifyFans($obj, $openid, $buyerInfo, $orderInfo) {
+            $obj->sendCustomMessage([
                 'touser' => $openid,
                 'msgtype' => 'text',
                 'text' => [
@@ -199,13 +199,13 @@ class ClassService
         }
         $users = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
         foreach ($users as $user) {
-            notifyFans($user['user_wechatopenid'], $buyerInfo, $classOrder);
+            notifyFans($wechatService, $user['user_wechatopenid'], $buyerInfo, $classOrder);
             $result = $userModel->where(['parent_id' => $user['user_id']])->select();
             foreach ($result as $value) {
-                notifyFans($value['user_wechatopenid'], $buyerInfo, $classOrder);
+                notifyFans($wechatService, $value['user_wechatopenid'], $buyerInfo, $classOrder);
                 $result3 = $userModel->where(['parent_id' => $value['user_id']])->select();
                 foreach ($result3 as $value3) {
-                    notifyFans($value3['user_wechatopenid'], $buyerInfo, $classOrder);
+                    notifyFans($wechatService, $value3['user_wechatopenid'], $buyerInfo, $classOrder);
                 }
             }
         }
