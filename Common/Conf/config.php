@@ -63,7 +63,7 @@ return array(
     'SPREAD_POSTER_USE'                 => true,                 // 推广海报是否启用
     'SPREAD_POSTER_EXPIRE'              => 2592000,              // 推广海报有效期 单位秒）
     'SPERAD_POSTER_GENERATE_NEEDBUY'    => false,                 // 推广生成海报是否需要购买
-    'SPERAD_SELLER_GAINS_AMOUNT'        => 0.05,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
+    'SPERAD_SELLER_GAINS_AMOUNT'        => 0.18,                    // 推广推荐人获得金额   大于0则对推荐人奖励相应金额，否则不奖励
     'SPERAD_POSTER_CHECK_SCAN_TIME'     => 43200,                // 推广海报生成后多少时间后进行未扫码检测
     
     // 其他配置

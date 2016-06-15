@@ -271,11 +271,11 @@ class ClassService
                     'msgtype' => 'text',
                     'text' => [
                         'content' => sprintf(
-                                        '%s购买了《%s》，您获得收益%s元，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+                                        '%s购买了《%s》，您获得收益%s元，课程很受欢迎，快去介绍给你的好友吧，<a href="%s">点击分享这门课程</a>',
                                         $buyerInfo['user_nickname'],
                                         $orderInfo['class_title'],
                                         glzh_price_format($commisAmount),
-                                        C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
+                                        C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html?share=1'
                                     )
                     ]
                 ]);
