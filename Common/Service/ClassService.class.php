@@ -184,13 +184,12 @@ class ClassService
         
         // 通知粉丝 3级
         function notifyFans($openid, $buyerInfo, $orderInfo) {
-            //$wechatService->sendCustomMessage([
-            print_r([
+            $wechatService->sendCustomMessage([
                 'touser' => $openid,
                 'msgtype' => 'text',
                 'text' => [
                     'content' => sprintf(
-                                    '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+                                    '%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
                                     $buyerInfo['user_nickname'],
                                     $orderInfo['class_title'],
                                     C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
