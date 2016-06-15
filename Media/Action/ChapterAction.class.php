@@ -73,7 +73,18 @@ class ChapterAction extends CommonAction
 
             // 上次播放时间
             $redis = \Think\Cache::getInstance('Redis');
-            $time= $redis->hGet('courses:histoty:'.$userId, 'time');
+            //echo $userId;
+            $timeData = $redis->hGetAll('courses:histoty:'.$userId);
+
+            $time = 0;
+            if(! empty($timeData) 
+                    and $timeData['time'] > 0 
+                    and $classId == $timeData['class_id'] 
+                    and $chapterId == $timeData['chapter_id']
+            ) {
+                $time = $timeData['time'];
+            }
+            //dump($time);
             //$time = D('ChapterUser')->getCoursesClientTime(['class_id' => $classId, 'chapter_id' => $chapterId, 'user_id'=>$userId]);
 
             $this->assign('ext', 'jpg');
@@ -82,7 +93,7 @@ class ChapterAction extends CommonAction
             $this->assign('chapterId', $chapterId);
             $this->assign('user_id', $userId);
             $this->assign('info', $chapterInfo);
-            $this->assign('time', (! empty($time) and $time > 0) ? $time : 0);
+            $this->assign('time', $time);
             $this->display();
 
         } else {
