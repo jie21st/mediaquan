@@ -227,3 +227,17 @@ a{display:block; text-decoration:none; color: #666}
 .nav a:active{background-color: #ededed;}
 .nav a:after{content: " "; position: absolute; right: 0; top: 0; width: 1px; height: 100%; border-right: 1px solid #bebebe; color: #bebebe; -webkit-transform-origin: 100% 0; transform-origin: 100% 0; -webkit-transform: scaleX(0.5); transform: scaleX(0.5);}
 .nav a:last-child:after{display: none;}
+
+
+/*我要合作*/
+.hezuo{width:94%; margin:3%;}
+.hezuo li{margin-bottom:2%;}
+.wsjs{background:#f77b55;}
+.wsjs .bt{margin:48px auto 75px; width:90%; padding:0 5%;}
+.wsjs .tsy{font-size:15px; color:#fff; margin:10px auto 0; width:240px; text-align:center;}
+.wsjs .lxfs{margin:0 auto; height:215px; width:215px;}
+.lianjie{margin-top:35px; width:94%; margin:0 3%;;}
+.lianjie .p2{font-size:16px; color:#f77b55; margin-top:35px; margin-bottom:8px; padding-left:7px;}
+.lianjie .p3{width:92%; border:1px solid #c3c3c3; background:#f6f6f6; padding:4%; border-radius:3px; font-size:15px; color:#333333;}
+.lianjie .p3 p{margin-bottom:8px; line-height:24px;}
+.bgg{background:#fff;}
