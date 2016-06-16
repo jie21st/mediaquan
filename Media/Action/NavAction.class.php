@@ -54,7 +54,7 @@ class NavAction extends CommonAction
                     "sub_button" => array(
                         array(
                             "type" => "view",
-                            "name" => "会员中心",
+                            "name" => "个人中心",
                             "url"  => C('MEDIA_SITE_URL') . "/my/"
                         ),
                         array(
@@ -63,14 +63,14 @@ class NavAction extends CommonAction
                             "key"  => "WECHAT_XSZN"
                         ),
                         array(
-                            "type" => "view",
-                            "name" => "模式说明",
-                            "url"  => C('MEDIA_SITE_URL') . '/article/1.html'
-                        ),
-                        array(
                             "type" => "click",
                             "name" => "在线客服",
                             "key"  => "WECHAT_ZXKF"
+                        ),
+                        array(
+                            "type" => "view",
+                            "name" => "合作交流",
+                            "url"  => C('MEDIA_SITE_URL') . '/coopera/'
                         )
                     )
                 )
