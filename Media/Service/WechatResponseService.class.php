@@ -373,11 +373,13 @@ class WechatResponseService
             **/
         ];
         
-        $replyContent = "Hi，欢迎来拇指微课学习！\r\n"
-                ."您将获得一张专属的听课证，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n" 
-                .'<a href="'.C('MEDIA_SITE_URL').'/my/poster">点击生成专属听课证</a>';
-        
-        //$this->wechat->news($data)->reply();
+        $replyContent = "Hi，欢迎来拇指微课学习！\r\n
+            领取专属的二维码海报后，您将成为拇指微课学习代言人，可以与同学分享知识财富。\r\n
+            更多详情戳链接\r\n
+            <a href=\"".C('MEDIA_SITE_URL')."/article/1.html\">了解拇指微课模式点这里</a>\r\n
+            <a href=\"".C('MEDIA_SITE_URL')."/article/2.html\">如何获取专属二维码海报</a>\r\n
+            <a href=\"".C('MEDIA_SITE_URL')."/article/4.html\">如何推广二维码海报</a>\r\n
+            <a href=\"".C('MEDIA_SITE_URL')."/article/7.html\">如何直接推广课程？";
         $this->wechat->text($replyContent)->reply();
     }
     
