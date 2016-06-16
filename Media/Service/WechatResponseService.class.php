@@ -173,23 +173,23 @@ class WechatResponseService
         switch ($key) {
             case 'WECHAT_QRCODE':
                 if (C('SPREAD_POSTER_USE')) {
-//                    if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
-//                        if ($this->userInfo['buy_num'] == 0) {
-//                            $url = C('MEDIA_SITE_URL');
-//                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
-//                        } else {
-//                            echo '';
-//                            $posterService = new \Media\Service\CreatePosterService();
-//                            $posterService->getPoster($this->userInfo['user_id']);
-//                        }
-//                    } else {
-//                        echo '';
-//                        $posterService = new \Media\Service\CreatePosterService();
-//                        $posterService->getPoster($this->userInfo['user_id']);
-//                    }
-                    $replyContent = "拇指微课测试期加大奖励力度，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n"
-                            . "<a href=\"".C('MEDIA_SITE_URL')."/my/poster\">点击领取专属听课证</a>";
-                    $this->wechat->text($replyContent)->reply();
+                    if (C('SPERAD_POSTER_GENERATE_NEEDBUY')) {
+                        if ($this->userInfo['buy_num'] == 0) {
+                            $url = C('MEDIA_SITE_URL');
+                            $this->wechat->text('你还不是东家，不能为您生成二维码海报。只有购买了任意课程，才能成为东家。<a href="' . $url . '">立即点击“成为东家”</a>')->reply();
+                        } else {
+                            echo '';
+                            $posterService = new \Media\Service\CreatePosterService();
+                            $posterService->getPoster($this->userInfo['user_id']);
+                        }
+                    } else {
+                        echo '';
+                        $posterService = new \Media\Service\CreatePosterService();
+                        $posterService->getPoster($this->userInfo['user_id']);
+                    }
+//                    $replyContent = "拇指微课测试期加大奖励力度，通过听课证邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。\r\n\r\n"
+//                            . "<a href=\"".C('MEDIA_SITE_URL')."/my/poster\">点击领取专属听课证</a>";
+//                    $this->wechat->text($replyContent)->reply();
                 } else {
                     $this->wechat->text('暂时无法获取海报')->reply();
                 }
@@ -393,7 +393,7 @@ class WechatResponseService
         $articleList = $arcModel->getArticleList(['article_show' => 1], 'article_id, article_title');
         $domain = C('MEDIA_SITE_URL');
         
-        $str = "拇指微课测试期加大奖励力度，邀请粉丝、粉丝购买课程或者直接把课程推荐给朋友，均会获得奖励。戳链接了解详情。\r\n\r\n";
+        $str = "戳链接了解详情。\r\n\r\n";
         $i = 1;
         foreach ($articleList as $article) {
             $str.= "{$i}、<a href=\"{$domain}/article/{$article['article_id']}.html\">{$article['article_title']}</a>\r\n\r\n";
