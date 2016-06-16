@@ -46,7 +46,7 @@ class NavAction extends CommonAction
                 ),
                 array(
                     "type" => "click",
-                    "name" => "我要推广",
+                    "name" => "我的二维码",
                     "key"  => "WECHAT_QRCODE"
                 ),
                 array(
