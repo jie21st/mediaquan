@@ -373,12 +373,12 @@ class WechatResponseService
             **/
         ];
         
-        $replyContent = "Hi，欢迎来拇指微课学习！\r\n领取专属的二维码海报后，您将成为拇指微课学习代言人，可以与同学分享知识财富。\r\n"
+        $replyContent = "Hi，欢迎来拇指微课学习！\r\n领取专属的二维码海报后，您将成为拇指微课学习代言人，可以与同学分享知识财富。\r\n\r\n"
             ."更多详情戳链接\r\n"
-            ."<a href=\"".C('MEDIA_SITE_URL')."/article/1.html\">了解拇指微课模式点这里</a>\r\n"
-            ."<a href=\"".C('MEDIA_SITE_URL')."/article/2.html\">如何获取专属二维码海报</a>\r\n"
-            ."<a href=\"".C('MEDIA_SITE_URL')."/article/4.html\">如何推广二维码海报</a>\r\n"
-            ."<a href=\"".C('MEDIA_SITE_URL')."/article/7.html\">如何直接推广课程？";
+            ."<a href=\"".C('MEDIA_SITE_URL')."/article/1.html\">了解拇指微课模式点这里</a>\r\n\r\n"
+            ."<a href=\"".C('MEDIA_SITE_URL')."/article/2.html\">如何获取专属二维码海报</a>\r\n\r\n"
+            ."<a href=\"".C('MEDIA_SITE_URL')."/article/4.html\">如何推广二维码海报</a>\r\n\r\n"
+            ."<a href=\"".C('MEDIA_SITE_URL')."/article/7.html\">如何直接推广课程？</a>";
         $this->wechat->text($replyContent)->reply();
     }
     
