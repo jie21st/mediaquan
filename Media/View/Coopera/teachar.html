@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>我是讲师</title>
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/mobile/css/index.css" />
+    </head>
+    <body class="wsjs">
+        <div class="bt"><img src="RESOURCE_SITE_URL/coopera/image/wsjs-bg.jpg" width="100%" /></div>
+        <div class="lxfs"><img src="RESOURCE_SITE_URL/coopera/image/jiangshiewm.jpg" width="215" /></div>
+        <div class="tsy">请长摁扫描二维码与负责人沟通</div>
+
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
+        <script>
+            $(function(){
+                $.wechat.init(function(){
+                    wx.hideOptionMenu();
+                });
+            })
+        </script>
+    </body>
+</html>
