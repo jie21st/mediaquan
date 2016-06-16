@@ -13,5 +13,14 @@
             <li><a href="javascript:void(0);" onclick="window.location.href='/coopera/wechat'"><img src="RESOURCE_SITE_URL/coopera/image/wygzh.jpg" width="100%"/></a></li>
         </ul>
         <include file="Public/footer" />
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
+        <script>
+            $(function(){
+                $.wechat.init(function(){
+                    wx.hideOptionMenu();
+                });
+            })
+        </script>
     </body>
 </html>
