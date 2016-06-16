@@ -73,6 +73,8 @@ class IndexAction extends CommonAction
 
     public function posterForeverOp()
     {
+        //停止永久海报生成
+        exit();
         $forever = 1;
         $posterService = new \Media\Service\CreatePosterService();
         $imagePath = $posterService->getPoster(session('user_id'), true, $forever);
