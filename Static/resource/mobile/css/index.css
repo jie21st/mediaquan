@@ -236,11 +236,11 @@ a{display:block; text-decoration:none; color: #666}
 .wsjs .tsy{font-size:15px; color:#fff; margin:10px auto 0; width:240px; text-align:center;}
 .wsjs .lxfs{margin:0 auto; height:215px; width:215px;}
 .lianjie{margin-top:35px; width:94%; margin:0 3%;;}
-.lianjie .p2{font-size:16px; color:#f77b55; margin-top:35px; margin-bottom:8px; padding-left:7px;}
-.lianjie .p3{width:92%; border:1px solid #c3c3c3; background:#f6f6f6; padding:4%; border-radius:3px; font-size:15px; color:#333333;}
+.lianjie .p2{font-size:16px; color:#f77b55; margin-top:20px; margin-bottom:3px; padding-left:3px;}
+.lianjie .p3{width:94%; border:1px solid #c3c3c3; background:#f6f6f6; padding:3%; border-radius:3px; font-size:15px; color:#333333;}
 .lianjie .p3 p{margin-bottom:8px; line-height:24px;}
 .lianjie .p3 .p4{float:left;}
 .lianjie .p5{height:160px;}
 .lianjie .tishi{width:93px; text-align:center; float:left; margin-left:25px; margin-top:46px;}
+.lianjie2{margin-bottom:20px;}
 .bgg{background:#fff;}
-
