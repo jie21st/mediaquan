@@ -22,6 +22,9 @@ $config = array(
         // 单页面
         'contact'           => 'index/contact',
         'poster'            => 'index/poster',
+        'muzhiweike'        => 'index/muzhiweike',
+        // 测试
+        'test/:appid'       => 'test2/receive',
     ),
     
     // 海报时效
