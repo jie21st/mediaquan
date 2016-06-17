@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+        <title>拇指微课</title>
+        <style>
+        * {
+            margin:0;
+            padding:0;
+        } 
+        img {
+            display:block;
+            border:none;
+        }
+        </style>
+    </head>
+
+    <body>
+        <img src="RESOURCE_SITE_URL/image/mozhiweike.jpg" style="width:100%;height:100;" />
+        <script type="text/javascript" src="RESOURCE_SITE_URL/vendor/jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/mobile/js/wechat.js"></script>
+        <script type="text/javascript">
+            $.wechat.init(function () {
+                var shareData = {
+                    title: '拇指微课',
+                    imgUrl: 'RESOURCE_SITE_URL/image/muzhiweike_fx.jpg',
+                    link: '<{$Think.config.MEDIA_SITE_URL}>/muzhiweike.html',
+                    desc: '拇指微课，一个让更多人为之点赞的微课平台'
+                };
+                wx.showOptionMenu();
+                wx.hideMenuItems([
+                    'menuItem:share:qq',
+                    'menuItem:share:weiboApp',
+                    'menuItem:share:QZone',
+                    'menuItem:copyUrl',
+                    'menuItem:openWithSafari',
+                    'menuItem:openWithQQBrowser'
+                ]);
+                wx.onMenuShareAppMessage(shareData);
+                wx.onMenuShareTimeline(shareData);
+            });
+        </script>
+    </body>
+</html>
