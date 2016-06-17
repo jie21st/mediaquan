@@ -80,4 +80,9 @@ class IndexAction extends CommonAction
         $imagePath = $posterService->getPoster(session('user_id'), true, $forever);
     } 
 
+    public function muzhiweikeOp()
+    {
+        $this->display();
+    }
+
 }
