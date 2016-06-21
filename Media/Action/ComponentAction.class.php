@@ -40,7 +40,7 @@ class ComponentAction extends CommonAction
                             'app_id' => $appid,
                             'access_token' => $authorizationInfo['authorizer_access_token'],
                             'refresh_token' => $authorizationInfo['authorizer_refresh_token'],
-                            'expire_time' => $authorizationInfo['expires_in']
+                            'expire_time' => time() + intval($authorizationInfo['expires_in']) - 100
                         ]);
                         if (! $result) {
                             throw new \Exception('token保存失败');
