@@ -11,6 +11,7 @@ class Component extends \Org\Util\Wechat
     const COMPONENT_PREAUTHCODE_URL = '/component/api_create_preauthcode';
     const COMPONENT_AUTHORIZE_URL = 'https://mp.weixin.qq.com/cgi-bin/componentloginpage';
     const COMPONENT_QUERY_AUTH_URL = '/component/api_query_auth';
+    const COMPONENT_AUTHORIZER_TOKEN_URL = '/component/api_authorizer_token';
     const COMPONENT_AUTHORIZER_INFO = '/component/api_get_authorizer_info';
     const COMPONENT_OAUTH_TOKEN_URL = '/sns/oauth2/component/access_token';
 
@@ -144,6 +145,22 @@ class Component extends \Org\Util\Wechat
 
         if ($result) {
             $json = json_decode($result, true); 
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            }
+            return $json;
+        }
+        return false;
+    }
+    
+    public function getAuthorizeRefreshToken($appid, $refresh_token)
+    {
+        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTHORIZER_TOKEN_URL.'?component_access_token='.$this->component_access_token, self::json_encode(['component_appid' => $this->appid, 'authorizer_appid' => $appid, 'authorizer_refresh_token' => $refresh_token]));
+        if ($result) {
+            $json = json_decode($result, true);
             if (!$json || !empty($json['errcode'])) {
                 $this->errCode = $json['errcode'];
                 $this->errMsg = $json['errmsg'];
