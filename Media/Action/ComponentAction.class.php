@@ -24,34 +24,47 @@ class ComponentAction extends CommonAction
                     $authorizerInfo = $result['authorizer_info'];
                     $authorizationInfo = $auth['authorization_info'];
                     $appid = $authorizationInfo['authorizer_appid'];
-                    // 保存令牌
-                    $redis = \Think\Cache::getInstance('redis');
-                    $cachekey = 'authorizer:'.$appid;
-                    $expire = $authorizationInfo['expires_in'] ? intval($authorizationInfo['expires_in']-100) : 6000;
-                    $redis->set($cachekey, [
-                        'access_token' => $authorizationInfo['authorizer_access_token'],
-                        'refresh_token' => $authorizationInfo['authorizer_refresh_token']
-                    ], $expire);
-
-                    // 绑定
-                    $data = array();
-                    $data['store_id']           = session('store_id');
-                    $data['appid']              = $appid;
-                    $data['mp_nickname']        = $authorizerInfo['nick_name'];
-                    $data['mp_headimg']         = $authorizerInfo['head_img'];
-                    $data['mp_wechatid']        = $authorizerInfo['alias'];
-                    $data['mp_username']        = $authorizerInfo['user_name'];
-                    $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
-                    $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
-                    $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
-
+//                    $redis = \Think\Cache::getInstance('redis');
+//                    $cachekey = 'authorizer:'.$appid;
+//                    $expire = $authorizationInfo['expires_in'] ? intval($authorizationInfo['expires_in']-100) : 6000;
+//                    $redis->set($cachekey, [
+//                        'access_token' => $authorizationInfo['authorizer_access_token'],
+//                        'refresh_token' => $authorizationInfo['authorizer_refresh_token']
+//                    ], $expire);
                     $model = M('wechat');
-                    $update = $model->add($data);
-                    if (false === $update) {
-                        exit('授权失败'.$model->_sql());
-                    } else {
-                        exit('授权成功'); 
+                    try {
+                        $model->startTrans();
+                        // 保存token
+                        $tokenModel = M('wechat_token');
+                        $result = $tokenModel->add([
+                            'app_id' => $appid,
+                            'access_token' => $authorizationInfo['authorizer_access_token'],
+                            'refresh_token' => $authorizationInfo['authorizer_refresh_token'],
+                            'expire_time' => $authorizationInfo['expires_in']
+                        ]);
+                        if (! $result) {
+                            throw new \Exception('token保存失败');
+                        }
+                        // 绑定
+                        $data = array();
+                        $data['store_id']           = session('store_id');
+                        $data['appid']              = $appid;
+                        $data['mp_nickname']        = $authorizerInfo['nick_name'];
+                        $data['mp_headimg']         = $authorizerInfo['head_img'];
+                        $data['mp_wechatid']        = $authorizerInfo['alias'];
+                        $data['mp_username']        = $authorizerInfo['user_name'];
+                        $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
+                        $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
+                        $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
+                        $update = $model->add($data);
+                        
+                        $model->commit();
+                    } catch (\Exception $e) {
+                        $model->rollback();
+                        exit('授权失败:'.$e->getMessage());
                     }
+                    
+                    exit('授权成功');
                 } else {
                     exit('授权失败'.$cp->errMsg);
                 }
