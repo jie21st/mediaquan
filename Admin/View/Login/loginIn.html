@@ -1,0 +1,72 @@
+
+
+
+<!DOCTYPE html>
+
+<html class=" js no-touch no-android no-chrome firefox no-iemobile no-ie no-ie8 no-ie10 no-ie11 no-ios no-ios7 ipad">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>用户登录- 管理智慧</title>
+        <meta charset="utf-8">
+        <meta name="renderer" content="webkit">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link rel="stylesheet" href="RESOURCE_SITE_URL/admin/css/cacfa831.css">
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/login.js"></script>
+    </head>
+
+    <body id="user">
+
+    <div class="navbar bg-black navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand hidden-sm" href=""><img src="RESOURCE_SITE_URL/admin/images/8742a003.png" width="40" height="40">&nbsp; 管理智慧</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="fade in" id="page-container">
+
+        <div class="login-cover">
+            <div style="background-image: url(https://ss1.bdstatic.com/kvoZeXSm1A5BphGlnYG/skin/44.jpg); background-color: rgb(64, 64, 64);" class="s-skin-container s-isindex-wrap"></div>
+            <div class="login-cover-bg"></div>
+
+        </div>
+        <div data-pageload-addclass="animated flipInX" class="login login-v2 animated flipInX">
+            <div class="login-content">
+                <form id="login-form" method="post">
+                    <input name="_csrf" value="LrWtzOjQ-PZp5TtBNtDKxDzYl32CzSbIaKnM" type="hidden"><input name="refer" value="/user/plat/add" type="hidden">
+                    <div class="form-group m-b-20">
+                        <input autocomplete="on" datatype="*" nullmsg="请输入邮箱/手机" placeholder="邮箱/手机号" class="form-control input-lg" name="user" type="text" id="str">
+                    </div>
+
+                <div class="form-group m-b-20">
+
+                    <input autocomplete="on" datatype="*" nullmsg="请输入密码" placeholder="密码" class="form-control input-lg" name="pwd" type="password" id="pwd">
+
+                </div>
+
+                <div class="login-buttons">
+
+                    <button id="submit-btn" class="btn btn-success btn-block btn-lg" type="button" onclick="login()">登录</button>
+
+                </div>
+
+                <div class="m-t-20">
+
+                    <span id="err-tiper" class="err-tiper"></span>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
