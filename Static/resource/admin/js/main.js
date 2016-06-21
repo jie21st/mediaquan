@@ -4,32 +4,32 @@ var _menus = {
        {
            "menuid":"3","icon": "icon-course", "menuname": "课程管理",
            "menus":[
-     	         {"menuid": "21", "menuname": "VIP在线课程管理", "icon": "icon-course_1", "url": "/course/baseCourseList.html"},
-     	         {"menuid": "22", "menuname": "线上课程管理", "icon": "icon-course_2", "url": "http://adminbkp1.guanlizhihui.com/class/list"},
-     	         {"menuid": "23", "menuname": "线上课程章节管理", "icon": "icon-course_3", "url": "/course/customCourseList.html"},
-     	         {"menuid": "24", "menuname": "线下训练营管理", "icon": "icon-course_4", "url": "http://adminbkp1.guanlizhihui.com/camp/list"}
+     	         {"menuid": "21", "menuname": "VIP在线课程管理", "icon": "icon-course_1", "url": "#"},
+     	         {"menuid": "22", "menuname": "线上课程管理", "icon": "icon-course_2", "url": "/class/list"},
+     	         {"menuid": "23", "menuname": "线上课程章节管理", "icon": "icon-course_3", "url": "#"},
+     	         {"menuid": "24", "menuname": "线下训练营管理", "icon": "icon-course_4", "url": "/camp/list"}
             ]
        },
        {
            "menuid":"4","icon": "icon-order", "menuname": "订单管理",
            "menus":[
-     	         {"menuid": "31", "menuname": "VIP订单管理", "icon": "icon-order_1", "url": "http://adminbkp1.guanlizhihui.com/order/vip"},
-     	         {"menuid": "32", "menuname": "线上课程订单管理", "icon": "icon-order_2", "url": "http://adminbkp1.guanlizhihui.com/order/class"},
-     	         {"menuid": "33", "menuname": "线下课程订单管理", "icon": "icon-order_3", "url": "http://adminbkp1.guanlizhihui.com/order/camp"},
+     	         {"menuid": "31", "menuname": "VIP订单管理", "icon": "icon-order_1", "url": "/order/vip"},
+     	         {"menuid": "32", "menuname": "线上课程订单管理", "icon": "icon-order_2", "url": "/order/class"},
+     	         {"menuid": "33", "menuname": "线下课程订单管理", "icon": "icon-order_3", "url": "/order/camp"},
      	         //{"menuid": "94", "menuname": "线下训练营管理", "icon": "icon-course_4", "url": "http://adminbkp1.guanlizhihui.com/camp/list"}
             ]
        },
        {
             "menuid": "10", "icon": "icon-user", "menuname": "用户管理",
             "menus": [
-                 { "menuid": "91", "menuname": "用户管理", "icon": "icon-user_1", "url": "/baseuser/userList.html" },
-                 { "menuid": "92", "menuname": "个人设置", "icon": "icon-user_2", "url": "/baseuser/userPwdUpd.html" },
+                 { "menuid": "91", "menuname": "用户管理", "icon": "icon-user_1", "url": "#" },
+                 { "menuid": "92", "menuname": "个人设置", "icon": "icon-user_2", "url": "#" },
              ]
         },
         {
             "menuid": "11", "icon": "icon-user", "menuname": "功能管理",
             "menus": [
-                 { "menuid": "101", "menuname": "功能管理", "icon": "icon-user_1", "url": "/portalfunc/portalFuncTree.html" },
+                 { "menuid": "101", "menuname": "功能管理", "icon": "icon-user_1", "url": "#" },
               
              ]
         }
@@ -69,8 +69,8 @@ $(function() {
       function addNav(data) {
 
           $.each(data, function(i, sm) {
-        	  //var paricon = "background:url('ADMIN_SITE_URL"+sm.icon+"') no-repeat;width:18px;line-height:18px; height:18px;display:inline-block;";
-        	  var paricon = ";width:18px;line-height:18px; height:18px;display:inline-block;";
+        	  //var paricon = "background:url('"+sm.icon+"') no-repeat;width:18px;line-height:18px; height:18px;display:inline-block;";
+        	  var paricon = "width:18px;line-height:18px; height:18px;display:inline-block;";
               var menulist = "";
               menulist += '<ul>';
 			 	$.each(sm.menus, function(j, o) {

@@ -1,0 +1,20 @@
+@charset "utf-8";
+/* CSS Document */
+*{ margin:0; padding:0; border:0; list-style:none;}
+body{margin:0 auto; font-family:"微软雅黑"; }
+
+/*head*/
+.head{width:98%; height:70px; background:#385168; padding:0 1%; line-height:70px;position:relative;font-size:14px;}
+.head .logo{padding-top:21px; float:left;}
+.head ul{float:right; height:70px; line-height:70px; overflow:hidden; color:#a6b8c6;}
+.head ul li{float:left; margin-right:44px;}
+.head ul li span{wdith:33px; height:33px; border-radius:33px; display:inline-block; padding-top:18px; margin-right:10px;}
+.head ul li p{float:right;}
+.head ul .ld{—padding-top:19px;}
+.head ul li a{color:#a6b8c6; text-decoration:none;}
+.head ul li a:link,.head ul li a:vidited{color:#a6b8c6; text-decoration:none;}
+.head ul li a:hover{color:#fff; text-decoration:underline;}
+.ts{width:18px; height:18px; border-radius:18px; background:#ff0000; position:absolute; top:16px; right:85px; overflow:hidden; color:#fff; text-align:center; line-height:18px; font-size:12px;}
+
+/*footer*/
+.footer{width:100%; height:45px; background:#385168; text-align:center; color:#fff; font-size:12px; padding-top:10px; color:#a6b8c6;}
