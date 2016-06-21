@@ -10,7 +10,7 @@ class ComponentAction extends CommonAction
         if (isset($_GET['store_id'])) {
             session('store_id', $_GET['store_id']);
         }
-        if (session('?store_id')) {
+        if (! session('?store_id')) {
             exit('请指定store_id');
         }
         $cp = new \Org\Util\Component();
