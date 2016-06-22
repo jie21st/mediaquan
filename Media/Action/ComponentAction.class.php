@@ -4,7 +4,50 @@ namespace Media\Action;
 class ComponentAction extends CommonAction
 {
     protected $needAuth = false;
+    
+    /**
+     * 授权事件接收
+     */
+    public function receiveOp()
+    {
+        $cp = new \Org\Util\Component();
+        $cp->valid();
+        $type = $cp->getRev()->getRevInfoType();
+        switch($type) {
+            case Component::INFOTYPE_VERIFY_TICKET:
+                $ticket = $cp->getRev()->getRevVerifyTicket();
+                \Think\Log::write($ticket);
+                $redis = \Think\Cache::getInstance('redis');
+                $redis->set('component:verify_ticket', $ticket);
+                exit('success');
+                break;
+            case Component::INFOTYPE_AUTHORIZED:
+                // TODO 授权处理
+                break;
+            case Component::INFOTYPE_UPDATEAUTHORIZED:
+                $data = $cp->getRevData();
+                $authorizerAppid = $data['AuthorizerAppid'];
+                $authorizationCode = $data['AuthorizationCode'];
+                $authorizationCodeExpiredTime = $data['AuthorizationCodeExpiredTime'];
 
+                $key = 'component:authorization:'.$authorizerAppid;
+                $redis = \Think\Cache::getInstance('redis');
+                $redis->set($key, $authorizationCode, $authorizationCodeExpiredTime-time());
+                break;
+            case Component::INFOTYPE_UNAUTHORIZED:
+                // TODO 取消授权处理
+                $authorizerAppid = $cp->getRevAuthorizerAppid();
+                \Think\Log::write('微信第三方推送取消授权 appid='.$authorizerAppid);
+                break;
+            default:
+                \Think\Log::write('微信第三方推送类型未定义'.$type);
+        }
+    }
+
+    /**
+     * 公众号授权
+     * @throws \Exception
+     */
     public function authOp()
     {
         if (isset($_GET['store_id'])) {
@@ -24,13 +67,6 @@ class ComponentAction extends CommonAction
                     $authorizerInfo = $result['authorizer_info'];
                     $authorizationInfo = $auth['authorization_info'];
                     $appid = $authorizationInfo['authorizer_appid'];
-//                    $redis = \Think\Cache::getInstance('redis');
-//                    $cachekey = 'authorizer:'.$appid;
-//                    $expire = $authorizationInfo['expires_in'] ? intval($authorizationInfo['expires_in']-100) : 6000;
-//                    $redis->set($cachekey, [
-//                        'access_token' => $authorizationInfo['authorizer_access_token'],
-//                        'refresh_token' => $authorizationInfo['authorizer_refresh_token']
-//                    ], $expire);
                     $model = M('wechat');
                     try {
                         $model->startTrans();
