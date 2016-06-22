@@ -19,4 +19,9 @@ class CommonAction extends Action
             $this->redirect('Login/loginIn');
         }
     }
+
+    public function returnData($data, $total, $code = 1, $msg = 'success', $type = 'json')
+    {
+        $this->ajaxReturn(['code'=>$code, 'msg' => $msg, 'rows'=>$data, 'total'=>$total], $type);
+    }
 }
