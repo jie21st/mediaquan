@@ -22,8 +22,8 @@ var _menus = {
        {
             "menuid": "10", "icon": "icon-user", "menuname": "用户管理",
             "menus": [
-                 { "menuid": "91", "menuname": "用户管理", "icon": "icon-user_1", "url": "#" },
-                 { "menuid": "92", "menuname": "个人设置", "icon": "icon-user_2", "url": "#" },
+                 { "menuid": "91", "menuname": "用户管理", "icon": "icon-user_1", "url": "/user/list" },
+                 { "menuid": "92", "menuname": "个人设置", "icon": "icon-user_2", "url": "/user/people" },
              ]
         },
         {
