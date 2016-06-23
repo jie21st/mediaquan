@@ -86,7 +86,7 @@ class WechatAction extends CommonAction
                             $update['subscribe_state'] = 1;
                             $update['subscribe_time'] = $userInfo['subscribe_time'];
                             $update['fans_remark'] = $userInfo['remark'];
-                            $fansModel->where(['openid' => $openid])->save();
+                            $fansModel->where(['openid' => $openid])->save($update);
                         }
                         break;
                     case 'unsubscribe':
