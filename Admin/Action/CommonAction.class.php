@@ -24,4 +24,9 @@ class CommonAction extends Action
     {
         $this->ajaxReturn(['code'=>$code, 'msg' => $msg, 'rows'=>$data, 'total'=>$total], $type);
     }
+
+    public function _empty()
+    {
+        exit('404 Not Found');
+    }
 }
