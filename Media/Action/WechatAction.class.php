@@ -89,6 +89,14 @@ class WechatAction extends CommonAction
                             $fansModel->where(['openid' => $openid])->save();
                         }
                         break;
+                    case 'unsubscribe':
+                        if ($appInfo['mp_verify_type'] != 0) {
+                            \Think\Log::write('该公众号未认证，不支持用户管理');
+                            break;
+                        }
+                        $openid = $wechat->getRevFrom();
+                        $fansModel->where(['openid' => $openid])->setField('subscribe_state', 0);
+                        break;
                 }
                 
                 break;
@@ -96,7 +104,7 @@ class WechatAction extends CommonAction
             case Wechat::MSGTYPE_IMAGE:
             case Wechat::MSGTYPE_VOICE:
             case Wechat::MSGTYPE_SHORTVIDEO:
-                $this->wechat->transfer_customer_service()->reply();
+                $wechat->transfer_customer_service()->reply();
                 break;
             default:
                 $data = $wechat->getRevData();
