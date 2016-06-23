@@ -48,17 +48,17 @@ class WechatAction extends CommonAction
         switch($type) {
             case Component::MSGTYPE_EVENT:
                 $event = $wechat->getRev()->getRevEvent();
+                $openid = $wechat->getRevFrom();
+                $fansModel = M('wechatFans');
                 switch ($event['event']) {
                     case 'subscribe':
                         if ($appInfo['mp_verify_type'] != 0) {
                             \Think\Log::write('该公众号未认证，不支持用户管理');
                             break;
                         }
-                        $openid = $wechat->getRevFrom();
                         \Think\Log::write('关注人openid: '.$openid);
                         $userInfo = $wechat->getUserInfo($token, $openid);
                         \Think\Log::write('关注人信息: '.json_encode($userInfo) . $wechat->errMsg);
-                        $fansModel = M('wechatFans');
                         $fansInfo = $fansModel->where(['openid' => $openid])->find();
                         if (empty($fansInfo)) {
                             $insert = array();
@@ -90,11 +90,11 @@ class WechatAction extends CommonAction
                         }
                         break;
                     case 'unsubscribe':
+                        \Think\Log::write('取消关注openid: '.$openid);
                         if ($appInfo['mp_verify_type'] != 0) {
                             \Think\Log::write('该公众号未认证，不支持用户管理');
                             break;
                         }
-                        $openid = $wechat->getRevFrom();
                         $fansModel->where(['openid' => $openid])->setField('subscribe_state', 0);
                         break;
                 }
