@@ -1,6 +1,8 @@
 <?php
 namespace Media\Action;
 
+use \Org\Util\Component;
+
 class ComponentAction extends CommonAction
 {
     protected $needAuth = false;
@@ -10,7 +12,7 @@ class ComponentAction extends CommonAction
      */
     public function receiveOp()
     {
-        $cp = new \Org\Util\Component();
+        $cp = new Component();
         $cp->valid();
         $type = $cp->getRev()->getRevInfoType();
         switch($type) {
@@ -24,6 +26,7 @@ class ComponentAction extends CommonAction
             case Component::INFOTYPE_AUTHORIZED:
                 // TODO 授权处理
                 break;
+            // 更新授权
             case Component::INFOTYPE_UPDATEAUTHORIZED:
                 $data = $cp->getRevData();
                 $authorizerAppid = $data['AuthorizerAppid'];
