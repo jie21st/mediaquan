@@ -5,9 +5,11 @@ function formUserOperation(value, row, index) {
     var userState = (row.admin_state==1)?'禁用':'启用';
     var state = (row.admin_state==1)?0:1;
     var DS = ' | '
-    string += '<a href="/user/edit?id='+userId+'">编辑</a> | ' ;
+    string += '<a href="/user/edit?admin_id='+userId+'">编辑</a> | ' ;
     string += '<a href="javascript:void(0);" id='+userId+' state="'+state+'" class="deleteBtn">'+userState+'</a> | ';
-    string += '<a href="javascript:void(0)" id='+userId+'>权限管理</a>';
+    string += '<a href="javascript:void(0)" id='+userId+'   class="power">权限管理</a> | ';
+    string += '<a href="/user/resetPasswd?id='+userId+'"    class="reset">重置密码</a> | ';
+    string += '<a href="javascript:void(0)" id='+userId+'   class="del">删除</a>';
     return string;
 }
 
@@ -25,7 +27,7 @@ function formUserState(value, row, index) {
 }
 
 function formDatetime(value, row, index){
-	if(undefined == value) {
+	if(0 == value) {
 		return '';
 	}
 	return datetimeUtil.formatDatetime("yyyy-MM-dd hh:mm:ss", value);

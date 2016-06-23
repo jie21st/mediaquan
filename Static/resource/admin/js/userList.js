@@ -41,10 +41,18 @@ $(function(){
                 //userPower(function(){
                     confirmDelete(message, function(){
                         getListAndReload('/user/del', data);
-                        //$obj.easySubmitAjax(config); // 获取数据
                     });
                 //}, '106009009');
 			});
+
+            $('.del').click(function(){
+                var admin_id    = $(this).attr('id');
+            	var data        = {'admin_id':admin_id};
+                confirmDelete('确定永久删除给用户?', function(){
+                    getListAndReload('/user/trueDel', data);
+                })
+            })
+            
         },
     };
 
