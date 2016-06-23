@@ -29,7 +29,7 @@
                             <label>账号: </label>  
                         </td>
                         <td class="tooltdgray_mine"> 
-                            <input class="easyui-validatebox" type="text" name="admin_name" style="width:25%;" name="name"/>
+                            <input class="easyui-validatebox" type="text" name="admin_name" style="width:25%;" />
                         </td>
                     </tr>
                     <tr >
@@ -89,7 +89,7 @@
             </form>
         </div>
         <script>
-//            $().fromSubmit(url, data, success, error, dataType);
+        $(function(){
             $('#saveBtn').click(function(){
                 var data = $('#userForm').serialize();
                 $.ajax({
@@ -98,17 +98,20 @@
                     data : data,
                     dataType:"json",
                     success : function(data, textStatus){
-                         console.log(data);                    
-                         console.log(textStatus);                    
+                        if(data.code == 0) {
+                            $.messager.alert('提示', data.msg, 'warning');
+                        } else {
+                            $.messager.alert('提示', '添加成功', 'info', function(){
+                                window.location.href="/user/list";
+                            });
+                        }
                     },
                     error : function (XMLHttpRequest, textStatus, errorThrown) {
-                        console.log(XMLHttpRequest.status + XMLHttpRequest.statusText)
-                        console.log(XMLHttpRequest);
-                        console.log(textStatus);
-                        console.log(errorThrown);
+                        $.messager.alert('提示', '数据更新失败,请重新提交或者寻求管理员帮助', 'error');
                     }
                 })
             })
+        })
         </script>
     </body>
 </html>

@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 <html>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <head>
         <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/default/easyui.css">
-       <!-- <link rel="stylesheet" href="/css/tooltip-form-style.css"></link> -->
+        <!-- <link rel="stylesheet" href="/css/tooltip-form-style.css"></link> -->
         <link rel="stylesheet" href="RESOURCE_SITE_URL/admin/css/css.css"></link>
         <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/icon.css"> 
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery-1.8.0.min.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.minold.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.form.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui-lang-zh_CN.js"></script>
-        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/datetimeUtil.js"></script> -->
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/datetimeUtil.js"></script>
         
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/formatter.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
@@ -56,7 +55,7 @@
                             <th data-options="field:'admin_email'">邮件地址</th>
                             <th data-options="field:'admin_state'" formatter="formUserState" align="center">状态</th>
                             <th data-options="field:'admin_create_time'" formatter="formDatetime" align="center">创建时间</th>
-                            <!-- <th data-options="field:'login_time'"  align="center">登录时间</th> -->
+                            <th data-options="field:'admin_login_time'" formatter="formDatetime" align="center">登录时间</th>
                             <th data-options="field:'operation'" formatter="formUserOperation" >操作</th>
                         </tr>
                     </thead>
