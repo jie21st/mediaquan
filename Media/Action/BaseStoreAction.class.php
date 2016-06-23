@@ -5,7 +5,7 @@ class BaseStoreAction extends CommonAction
 {
     protected $storeInfo;
     
-    protected $needAuth = false;
+    protected $needAuth = true;
     
     public function __construct()
     {
