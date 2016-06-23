@@ -34,10 +34,12 @@ $(function(){
         onLoadSuccess : function() {
             
             $(".deleteBtn").click(function() {
-                var user_id = $(this).attr('id');
+                var admin_id    = $(this).attr('id');
+                var state       = $(this).attr('state');
+                var message     = (state==1)?'确定要启用该用户?':'确定要禁用该用户?';
+            	var data        = {'admin_id':admin_id, 'admin_state':state};
                 //userPower(function(){
-            	    var data = {'user_id':user_id};
-                    confirmDelete("确认禁用该用户吗?", function(){
+                    confirmDelete(message, function(){
                         getListAndReload('/user/del', data);
                         //$obj.easySubmitAjax(config); // 获取数据
                     });

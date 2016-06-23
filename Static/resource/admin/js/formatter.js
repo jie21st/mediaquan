@@ -1,17 +1,42 @@
 
 function formUserOperation(value, row, index) {
     var string  = '';
-
-    console.log(row.user_id);
-    
-    var userId  = row.user_id;
+    var userId  = row.admin_id;
+    var userState = (row.admin_state==1)?'禁用':'启用';
+    var state = (row.admin_state==1)?0:1;
     var DS = ' | '
     string += '<a href="/user/edit?id='+userId+'">编辑</a> | ' ;
-    string += '<a href="javascript:void(0);" id='+userId+' class="deleteBtn">禁用</a> | ';
+    string += '<a href="javascript:void(0);" id='+userId+' state="'+state+'" class="deleteBtn">'+userState+'</a> | ';
     string += '<a href="javascript:void(0)" id='+userId+'>权限管理</a>';
     return string;
 }
 
+function formUserState(value, row, index) {
+    var str = ''; 
+    switch(value) {
+        case '0':
+            str += '禁用';
+            break;
+        case '1':
+            str += '启用'
+            break;
+    } 
+    return str;
+}
+
+function formDatetime(value, row, index){
+	if(undefined == value) {
+		return '';
+	}
+	return datetimeUtil.formatDatetime("yyyy-MM-dd hh:mm:ss", value);
+}
+
+function formSetUserState(value, row, index) {
+    switch(value) {
+        case '0':
+            str += ''
+    }
+}
 
 
 
@@ -93,12 +118,6 @@ function formatCourseType(value,row,index){
 	return type;
 }
 
-function formatDatetime(value,row,index){
-	if(undefined == value) {
-		return '';
-	}
-	return datetimeUtil.formatDatetime("yyyy-MM-dd hh:mm:ss",value);
-}
 
 function formatCourseOperation(value,row,index){
 	var id = row.id;
