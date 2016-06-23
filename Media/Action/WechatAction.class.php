@@ -90,17 +90,17 @@ class WechatAction extends CommonAction
                         }
                         break;
                 }
+                
                 break;
             case Wechat::MSGTYPE_TEXT:
-                $this->wechat->text("hello")->reply();
+            case Wechat::MSGTYPE_IMAGE:
+            case Wechat::MSGTYPE_VOICE:
+            case Wechat::MSGTYPE_SHORTVIDEO:
+                $this->wechat->transfer_customer_service()->reply();
                 break;
-                //case Wechat::MSGTYPE_IMAGE:
-                //    break;
             default:
                 $data = $wechat->getRevData();
                 \Think\Log::write('其他接收'.print_r($data, true));
-                //$this->wechat->text("help info")->reply();
-                //$this->wechat->transfer_customer_service()->reply();
         }
     }
     
