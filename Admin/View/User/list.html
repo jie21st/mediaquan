@@ -11,12 +11,12 @@
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.minold.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.form.js"></script>
         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui-lang-zh_CN.js"></script>
-        <!-- <script src="RESOURCE_SITE_URL/admin/js/datetimeUtil.js"></script> -->
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/datetimeUtil.js"></script> -->
         
-        <script src="RESOURCE_SITE_URL/admin/js/formatter.js"></script>
-        <script src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
-        <script src="RESOURCE_SITE_URL/admin/js/easyui.getdata.js"></script>
-        <script src="RESOURCE_SITE_URL/admin/js/userList.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/formatter.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui.getdata.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/userList.js"></script>
     </head>
     <body> 
         <div class="easyui-layout" data-options="fit:true" id="td">
@@ -49,13 +49,13 @@
                     <thead>
                         <tr align="center">
                             <th data-options="field:'ck'" checkbox="false" width="20"></th>
-                            <th data-options="field:'user_id'">序号</th>
-                            <th data-options="field:'account'" >账号</th>
-                            <th data-options="field:'user_name'">用户名</th>
-                            <th data-options="field:'mobile'">手机号码</th>
-                            <th data-options="field:'email'">邮件地址</th>
-                            <th data-options="field:'state'" align="center">状态</th>
-                            <th data-options="field:'create_time'" align="center">创建时间</th>
+                            <th data-options="field:'admin_id'">序号</th>
+                            <th data-options="field:'admin_name'" >账号</th>
+                            <th data-options="field:'admin_truename'">用户名</th>
+                            <th data-options="field:'admin_mobile'">手机号码</th>
+                            <th data-options="field:'admin_email'">邮件地址</th>
+                            <th data-options="field:'admin_state'" formatter="formUserState" align="center">状态</th>
+                            <th data-options="field:'admin_create_time'" formatter="formDatetime" align="center">创建时间</th>
                             <!-- <th data-options="field:'login_time'"  align="center">登录时间</th> -->
                             <th data-options="field:'operation'" formatter="formUserOperation" >操作</th>
                         </tr>

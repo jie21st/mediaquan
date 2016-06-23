@@ -15,7 +15,7 @@ class CommonAction extends Action
 
     public function _initialize()
     {
-        if (empty(session('admin_user')) or session('admin_user.user_id') == '') {
+        if (empty(session('admin_user')) or session('admin_user.admin_id') == '') {
             $this->redirect('Login/loginIn');
         }
     }

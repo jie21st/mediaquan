@@ -19,7 +19,7 @@ class LoginAction extends \Think\Action
             $passwd = I('post.passwd', '');
 
             if(! empty($userName) and ! empty($passwd)) {
-                $condition = ['account' => $userName];
+                $condition = ['admin_name' => $userName];
                 $userInfo = D('UserAdmin')->getUserInfo($condition); 
 
                 if(empty($userInfo)) {
@@ -27,21 +27,30 @@ class LoginAction extends \Think\Action
                     exit();
                 } 
             
-                if($userInfo['state'] == 0) {
+                if($userInfo['admin_state'] == 0) {
                     $this->ajaxReturn(array('code'=>'0', 'flag'=>'2'));
                     exit();
                 }
 
                 $userPasswd = md5(C('ADMIN_LOGIN_KEY') . $passwd);
-                if($userPasswd === $userInfo['password']) {
+                if($userPasswd === $userInfo['admin_password']) {
                     $sessionData = array( 
-                                    'user_id'   => $userInfo['user_id'],
-                                    'account'   => $userInfo['account'],
-                                    'user_name' => $userInfo['user_name'],
-                                    'mobile'    => $userInfo['mobile'],
-                                    'state'     => $userInfo['state'],
+                                    'admin_id'      => $userInfo['admin_id'],
+                                    'admin_name'    => $userInfo['admin_name'],
+                                    'admin_truename'    => $userInfo['admin_truename'],
+                                    'admin_mobile'      => $userInfo['admin_mobile'],
+                                    'admin_state'       => $userInfo['admin_state'],
                                );
                     session('admin_user', $sessionData);
+
+                    // 更新登陆状态
+                    $data = array();
+                    $condition['admin_id'] = $userInfo['admin_id'];
+                    $data['admin_login_time'] = time();
+                    $data['admin_login_num'] = ['exp', 'admin_login_num+1'];
+                    $field = ['admin_login_time', 'admin_login_num'];
+
+                    D('UserAdmin')->setUserMessage($condition, $data, $field);
                     $this->ajaxReturn(array('code'=>'1'));
                 } else {
                     $this->ajaxReturn(array('code'=>''));
