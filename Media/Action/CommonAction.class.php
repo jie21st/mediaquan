@@ -32,7 +32,9 @@ class CommonAction extends Action
             
             exit('登录成功'); 
         }
-        if (I('get.store_id', 0, 'intval')) {
+        
+        $storeId = I('get.store_id', 0, 'intval');
+        if ($storeId) {
             session('current_store_id', I('get.store_id'));
         }
         
@@ -45,17 +47,17 @@ class CommonAction extends Action
             $this->checkLogin();
         }
         
-        $this->checkStoreUserBind();
-        
+        if ($storeId) {
+            $this->checkStoreUserBind($storeId);
+        }
     }
     
-    protected function checkStoreUserBind()
+    protected function checkStoreUserBind($storeId)
     {
-        if (session('?current_store_id') && !session('?current_store_fans_id')) {
+        if (session('?current_store_id') && (session('current_store_id') != $storeId)) {
             $model = M('wechatFans');
-            $storeId = session('current_store_id');
             $condition = array();
-            $condition['store_id'] = session('current_store_id');
+            $condition['store_id'] = $storeId;
             $condition['user_id'] = session('user_id');
             $fansInfo = $model->where($condition)->find();
             if (is_array($fansInfo) && !empty($fansInfo)) {
