@@ -1,6 +1,14 @@
 // var ADMIN_SITE_URL = '';
 var _menus = {
    "default": [
+        {
+            "menuid":"1","icon": "icon-course", "menuname": "企业",
+            "menus":[
+     	         {"menuid": "11", "menuname": "企业管理", "icon": "icon-course_1", "url": "#"},
+     	         {"menuid": "12", "menuname": "店铺管理", "icon": "icon-course_1", "url": "#"},
+     	         {"menuid": "12", "menuname": "店铺海报", "icon": "icon-course_1", "url": "/poster/list"},
+            ]
+        },
        {
            "menuid":"3","icon": "icon-course", "menuname": "课程管理",
            "menus":[
