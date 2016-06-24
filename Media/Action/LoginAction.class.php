@@ -92,21 +92,17 @@ class LoginAction extends \Think\Action
         if (isset($_GET['state'])) {
             $result = $component->getOauthAccessToken($appInfo['appid']);
             if ($result) {
-                dump($result);
                 $fansModel = M('wechatFans');
                 $fansInfo = $fansModel->where(['openid' => $result['openid']])->find();
-                if ($fansInfo && !$fansInfo['user_id']) {
+                if ($fansInfo) {
                     $fansModel->where(['openid' => $result['openid']])->setField('user_id', session('user_id'));
+                    session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
+                } else {
+                    session('store_fans_'.session('current_store_id'), -1);
                 }
-                //echo $result['access_token'].'<br/>';
-                echo $result['openid'];
-                echo '绑定成功';
-                //$userInfo = $component->getOauthUserinfo($result['access_token'], $result['openid']); 
-                //echo $component->errMsg;
-                //dump($userInfo);
                 redirect(cookie('returnUrl'));
             } else {
-                echo '绑定失败';
+                echo '系统错误';
             }
         } else {
             cookie('returnUrl', $_GET['returnUrl']);

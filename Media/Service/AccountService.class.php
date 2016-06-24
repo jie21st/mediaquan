@@ -17,7 +17,11 @@ class AccountService
      */
     public function isLogin()
     {
-        
+        if (session('is_login') !== '1') {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function createSession($userInfo)

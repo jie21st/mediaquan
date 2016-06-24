@@ -45,32 +45,39 @@ class CommonAction extends Action
             $this->checkLogin();
         }
         
-        $storeId = I('get.store_id', 0, 'intval');
-        if ($storeId) {
-            session('current_store_id', I('get.store_id'));
-            $this->checkStoreUserBind($storeId);
+        if ((new \Media\Service\AccountService())->isLogin()) {
+            $storeId = I('get.store_id', 0, 'intval');
+            if ($storeId) {
+                session('current_store_id', I('get.store_id'));
+                $this->checkStoreUserBind($storeId);
+            }
         }
     }
     
     protected function checkStoreUserBind($storeId)
     {
-        if (session('?current_store_id') && empty(session('history_store_'.$storeId))) {
-            $model = M('wechatFans');
-            $condition = array();
-            $condition['store_id'] = $storeId;
-            $condition['user_id'] = session('user_id');
-            $fansInfo = $model->where($condition)->find();
-            if (is_array($fansInfo) && !empty($fansInfo)) {
-                session('history_store_'.$storeId.'.fans_id', $fansInfo['fans_id']);
-                session('history_store_'.$storeId.'.fans_openid', $fansInfo['openid']);
-            } else {
-                $wechatModel = M('wechat');
-                $appInfo = $wechatModel->where(['store_id'=>$storeId])->find();
-                if ($appInfo) {
-                    $returnUrl = C('MEDIA_SITE_URL') . $_SERVER['REQUEST_URI'];
-                    redirect('/login/bindStoreUser?returnUrl='.$returnUrl);
-                }
-            }
+        $storeService = new \Common\Service\StoreService();
+        if (session('?store_fans_'.$storeId)) {
+            return;
+        }
+        $wechatModel = M('wechat');
+        $appInfo = $wechatModel->where(['store_id'=> $storeId])->find();
+        if (empty($appInfo) || $appInfo['mp_verify_type'] == '-1') {
+            session('store_fans_'.$storeId, -1); // -1表示无法绑定
+            return;
+        }
+        $model = M('wechatFans');
+        $condition = array();
+        $condition['store_id'] = $storeId;
+        $condition['user_id'] = session('user_id');
+        $fansInfo = $model->where($condition)->find();
+        if (is_array($fansInfo) && !empty($fansInfo)) {
+            session('store_fans_'.$storeId, $fansInfo['fans_id']);
+            //session('history_store_'.$storeId.'.fans_id', $fansInfo['fans_id']);
+            //session('history_store_'.$storeId.'.fans_openid', $fansInfo['openid']);
+        } else {
+            $returnUrl = C('MEDIA_SITE_URL') . $_SERVER['REQUEST_URI'];
+            redirect('/login/bindStoreUser?returnUrl='.$returnUrl);
         }
     }
 
