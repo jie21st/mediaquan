@@ -18,7 +18,7 @@ class ClassService
     public function buy($post, $userId)
     {
         $classModel = new \Common\Model\ClassModel();
-        $classInfo = $classModel->getClassInfo(['class_id' => $post['id']], 'class_id,class_title,class_image,teacher_id,teacher_name,class_price,commis_rate');
+        $classInfo = $classModel->getClassInfo(['class_id' => $post['id']], 'class_id,class_title,store_id,store_name,class_image,teacher_id,teacher_name,class_price,commis_rate');
         
         try {
             // 开始事务
