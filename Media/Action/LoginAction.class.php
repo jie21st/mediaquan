@@ -1,7 +1,7 @@
 <?php
 namespace Media\Action;
 
-class LoginAction extends CommonAction
+class LoginAction extends \Think\Action
 {
     public function indexOp()
     {
@@ -80,5 +80,40 @@ class LoginAction extends CommonAction
         $accountService = new \Media\Service\AccountService();
         $accountService->createSession($userInfo);
         redirect(cookie('returnUrl'));
+    }
+    
+    public function bindStoreUserOp(){
+        $wechatModel = M('wechat');
+        $appInfo = $wechatModel->where(['store_id' => session('current_store_id')])->find();
+        if (empty($appInfo)) {
+            exit('app not exists');
+        }
+        $component = new \Org\Util\Component;
+        if (isset($_GET['state'])) {
+            $result = $component->getOauthAccessToken($appInfo['appid']);
+            //dump($result);
+            if ($result) {
+                dump($result);
+//                $fansModel = M('wechatFans');
+//                $fansInfo = $fansModel->where(['openid' => $result['openid']])->find();
+//                if ($fansInfo && !$fansInfo['user_id']) {
+//                    $fansModel->where(['openid' => $result['openid']])->setField('user_id', session('user_id'));
+//
+//                }
+                //echo $result['access_token'].'<br/>';
+                echo $result['openid'];
+                //$userInfo = $component->getOauthUserinfo($result['access_token'], $result['openid']); 
+                //echo $component->errMsg;
+                //dump($userInfo);
+            } else {
+                echo '绑定失败';
+            }
+        } else {
+            cookie('returnUrl', $_GET['returnUrl']);
+            $state = md5(uniqid(rand(), TRUE));
+            session('state', $state);
+            $loginUrl = $component->getOauthRedirect($appInfo['appid'], C('MEDIA_SITE_URL').'/login/bindStoreUser', $state, 'snsapi_base');
+            redirect($loginUrl);
+        }
     }
 }

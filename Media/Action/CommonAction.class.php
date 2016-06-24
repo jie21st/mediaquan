@@ -30,8 +30,12 @@ class CommonAction extends Action
             $accountService = new \Media\Service\AccountService();
             $accountService->createSession($userInfo);
             
-            exit('登录成功');
+            exit('登录成功'); 
         }
+        if (I('get.store_id', 0, 'intval')) {
+            session('current_store_id', I('get.store_id'));
+        }
+        
         
         // 用户分享
         $this->checkSeller();
@@ -40,8 +44,35 @@ class CommonAction extends Action
         if ($this->needAuth) {
             $this->checkLogin();
         }
+        
+        $this->checkStoreUserBind();
+        
     }
     
+    protected function checkStoreUserBind()
+    {
+        if (session('?current_store_id') && !session('?current_store_fans_id')) {
+            $model = M('wechatFans');
+            $storeId = session('current_store_id');
+            $condition = array();
+            $condition['store_id'] = session('current_store_id');
+            $condition['user_id'] = session('user_id');
+            $fansInfo = $model->where($condition)->find();
+            if (is_array($fansInfo) && !empty($fansInfo)) {
+                session('current_store_fans_id', $fansInfo['fans_id']);
+                session('current_store_fans_openid', $fansInfo['openid']);
+            } else {
+                $wechatModel = M('wechat');
+                $appInfo = $wechatModel->where(['store_id'=>$storeId])->find();
+                if ($appInfo) {
+                    $returnUrl = C('MEDIA_SITE_URL') . $_SERVER['REQUEST_URI'];
+                    redirect('/login/bindStoreUser?returnUrl='.$returnUrl);
+                }
+            }
+        }
+    }
+
+
     /**
      * 验证会员是否登录
      * @access protected
