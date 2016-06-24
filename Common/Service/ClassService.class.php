@@ -56,6 +56,8 @@ class ClassService
         $order = [
             'buyer_id'      => $userId,
             'order_sn'      => $orderSn,
+            'store_id'      => $input['store_id'],
+            'store_name'    => $input['store_name'],
             'class_id'      => $input['class_id'],
             'class_title'   => $input['class_title'],
             'class_image'   => $input['class_image'],
