@@ -116,4 +116,9 @@ class LoginAction extends \Think\Action
             redirect($loginUrl);
         }
     }
+    
+    public function logoutOp()
+    {
+        session('[destroy]');
+    }
 }
