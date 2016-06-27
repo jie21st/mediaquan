@@ -146,6 +146,8 @@ class ClassService
         // 插入课程报名表
         $data               = array();
         $data['class_id']   = $classOrder['class_id'];
+        $data['store_id']   = $classOrder['store_id'];
+        $data['store_name'] = $classOrder['store_name'];
         $data['user_id']    = $classOrder['buyer_id'];
         $data['order_id']   = $classOrder['order_id'];
         $data['apply_amount'] = $classOrder['order_amount'];
