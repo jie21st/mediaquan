@@ -18,29 +18,29 @@ class WechatAction extends \Think\Action
      */
     public function refreshTokenOp()
     {
-        $tokenModel = D('wechatToken');
-        
-        $condition = array();
-        $condition['expire_time'] = ['lt', time() + 300];  //$item['expire_time'] <= time()+300
-        $list = $tokenModel->where($condition)->select();
+        $model = M('wechat');
         $component = new \Org\Util\Component();
         
+        $condition = array();
+        $condition['auth_state'] = 1;
+        $condition['token_expiretime'] = ['lt', time() + 300];
+        $list = $model->field('appid,refresh_token')->where($condition)->select();
+        
         foreach ($list as $item) {
-            $result = $component->getAuthorizeRefreshToken($item['app_id'], $item['refresh_token']);
+            $result = $component->getAuthorizeRefreshToken($item['appid'], $item['refresh_token']);
             if ($result) {
-                $data = [];
+                $data = array();
                 $data['access_token'] = $result['authorizer_access_token'];
                 $data['refresh_token'] = $result['authorizer_refresh_token'];
-                $data['expire_time'] = time() + intval($result['expires_in']) - 100;
+                $data['token_expiretime'] = time() + intval($result['expires_in']) - 100;
                 
-                $update = $tokenModel->where(['app_id' => $item['app_id']])->save($data);
+                $update = $model->where(['appid' => $item['appid']])->save($data);
                 if (!$update) {
-                    echo $item['app_id'].'更新token失败: '.$component->errMsg;
+                    echo $item['appid'].'写入token失败: '.$component->errMsg;
                 }
             } else {
-                echo $item['app_id'].'获取token失败: '.$component->errMsg;
+                echo $item['appid'].'获取token失败: '.$component->errMsg;
             }
-            $this->counter['total']++;
         }
     }
 
