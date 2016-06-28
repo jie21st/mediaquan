@@ -406,13 +406,12 @@ function total_file($path = null, $type = 0)
  * @param array $param 内容参数数组
  * @return string 通知内容
  */
-function glzhReplaceText($message,$param){
+function notifyReplaceText($message,$param){
     if(! is_array($param)) {
         return false;
     }
-    $param['send_time']	= date('Y-m-d H:i');
     foreach ($param as $k=>$v){
-        $message = str_replace('{$'.$k.'}', $v, $message);
+        $message = str_replace('{'.$k.'}', $v, $message);
     }
 
     return $message;
