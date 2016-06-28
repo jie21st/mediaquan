@@ -2,7 +2,7 @@
 namespace Common\Service;
 
 /**
- * 微信服务类
+ * 平台微信服务类
  */
 class WechatService
 {
@@ -30,23 +30,6 @@ class WechatService
         if ($result) {
             $ticket = $result['ticket'];
             return $this->wechat->getQRUrl($ticket);
-        } else {
-            return false;
-        }
-    }
-    
-    /**
-     * 公众平台权限
-     * 获取公众平台TOKEN
-     *
-     * @access public
-     * @return 
-     */
-    public function getAccessTokenOp()
-    {
-        $result = $this->wechat->checkAuth();
-        if ($result) {
-            return $result;
         } else {
             return false;
         }
