@@ -29,10 +29,8 @@ class StoreWechatService
         
         // 获取店铺公众号信息
         $appInfo = M('wechat')->where(['store_id' => $storeId])->find();
-        // 获取公众号token
-        $tokenInfo = M('wechatToken')->where(['app_id' => $appInfo['appid']])->find();
         $wechat = new \Org\Util\Wechat;
-        $wechat->checkAuth($appInfo['appid'], '', $tokenInfo['access_token']);
+        $wechat->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
         $this->wechat = $wechat;
         
         return true;
