@@ -173,60 +173,40 @@ class ClassService
         if (! $result) {
             throw new \Exception('更新用户购买次数失败');
         }
-        
         // 通知购买人
-        $buyerInfo = $userModel->getUserInfo(['user_id' => $classOrder['buyer_id']]);
-        $wechatService = new \Common\Service\WechatService;
-        $wechatService->sendCustomMessage([
-            'touser' => $buyerInfo['user_wechatopenid'],
-            'msgtype' => 'text',
-            'text' => [
-                'content' => '感谢您购买《'.$classOrder['class_title'].'》，推荐朋友购买课程可获得收益分成，'
-                . '<a href="'.C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html?share=1">点击推荐</a>'
-            ]
+        $storeService = new StoreService();
+        $storeService->sendMessage($classOrder['store_id'], $classOrder['buyer_id'], 'user_buy', [
+            'class_name' => $classOrder['class_title'],
+            'recom_url' => C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html?share=1',
         ]);
         
         // 通知粉丝 3级
-        function notifyFans($obj, $openid, $buyerInfo, $orderInfo) {
-            $obj->sendCustomMessage([
-                'touser' => $openid,
-                'msgtype' => 'text',
-                'text' => [
-                    'content' => sprintf(
-                                    '%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
-                                    $buyerInfo['user_nickname'],
-                                    $orderInfo['class_title'],
-                                    C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
-                                )
-                ]
-            ]);
-        }
-        $users = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
-        foreach ($users as $user) {
-            notifyFans($wechatService, $user['user_wechatopenid'], $buyerInfo, $classOrder);
-            $result = $userModel->where(['parent_id' => $user['user_id']])->select();
-            foreach ($result as $value) {
-                notifyFans($wechatService, $value['user_wechatopenid'], $buyerInfo, $classOrder);
-                $result3 = $userModel->where(['parent_id' => $value['user_id']])->select();
-                foreach ($result3 as $value3) {
-                    notifyFans($wechatService, $value3['user_wechatopenid'], $buyerInfo, $classOrder);
-                }
-            }
-        }
-//        if (! empty($fansList)) {
-//            foreach ($fansList as $fansInfo) {
-//                $wechatService->sendCustomMessage([
-//                    'touser' => $fansInfo['user_wechatopenid'],
-//                    'msgtype' => 'text',
-//                    'text' => [
-//                        'content' => sprintf(
-//                                        '您的推荐人%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
-//                                        $buyerInfo['user_nickname'],
-//                                        $classOrder['class_title'],
-//                                        C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html'
-//                                    )
-//                    ]
-//                ]);
+//        function notifyFans($obj, $openid, $buyerInfo, $orderInfo) {
+//            $obj->sendCustomMessage([
+//                'touser' => $openid,
+//                'msgtype' => 'text',
+//                'text' => [
+//                    'content' => sprintf(
+//                                    '%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
+//                                    $buyerInfo['user_nickname'],
+//                                    $orderInfo['class_title'],
+//                                    C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
+//                                )
+//                ]
+//            ]);
+//        }
+//        $buyerInfo = $userModel->getUserInfo(['user_id' => $classOrder['buyer_id']]);
+//        $users = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
+//        $wechatService = new \Common\Service\WechatService;
+//        foreach ($users as $user) {
+//            notifyFans($wechatService, $user['user_wechatopenid'], $buyerInfo, $classOrder);
+//            $result = $userModel->where(['parent_id' => $user['user_id']])->select();
+//            foreach ($result as $value) {
+//                notifyFans($wechatService, $value['user_wechatopenid'], $buyerInfo, $classOrder);
+//                $result3 = $userModel->where(['parent_id' => $value['user_id']])->select();
+//                foreach ($result3 as $value3) {
+//                    notifyFans($wechatService, $value3['user_wechatopenid'], $buyerInfo, $classOrder);
+//                }
 //            }
 //        }
     }
@@ -238,6 +218,7 @@ class ClassService
      */
     public function orderBill($orderInfo)
     {
+        return false;
         if ($orderInfo['commis_rate'] == 0) {
             \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'该订单佣金比例为0');
             return;
