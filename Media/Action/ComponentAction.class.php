@@ -29,13 +29,25 @@ class ComponentAction extends CommonAction
             // 更新授权
             case Component::INFOTYPE_UPDATEAUTHORIZED:
                 $data = $cp->getRevData();
-                $authorizerAppid = $data['AuthorizerAppid'];
-                $authorizationCode = $data['AuthorizationCode'];
-                $authorizationCodeExpiredTime = $data['AuthorizationCodeExpiredTime'];
-
-                $key = 'component:authorization:'.$authorizerAppid;
-                $redis = \Think\Cache::getInstance('redis');
-                $redis->set($key, $authorizationCode, $authorizationCodeExpiredTime-time());
+                $appid = $data['AuthorizerAppid'];
+                $auth = $cp->queryAuth($data['AuthorizationCode']);
+                $authorizationInfo = $auth['authorization_info'];
+                // 更新权限
+                $funcInfo = array();
+                foreach ($authorizationInfo['func_info'] as $func) {
+                    $funcInfo[] = $func['funcscope_category']['id'];
+                }
+                
+                $update = array();
+                $update['func_info']        = implode(',', $funcInfo);
+                $update['access_token']     = $authorizationInfo['authorizer_access_token'];
+                $update['refresh_token']    = $authorizationInfo['authorizer_refresh_token'];
+                $update['token_expiretime'] = time() + intval($authorizationInfo['expires_in']) - 100;
+                $update['update_time']      = time();
+                $result = M('wechat')->where(['appid' => $appid])->save($update);
+                if ($result === false) {
+                    \Think\Log::write('微信第三方推送更新授权失败 appid='.$appid);
+                }
                 break;
             // 取消授权
             case Component::INFOTYPE_UNAUTHORIZED:
@@ -64,56 +76,56 @@ class ComponentAction extends CommonAction
         if (isset($_GET['auth_code'])) {
             // auth callback
             $auth = $cp->queryAuth($_GET['auth_code']);
-            if ($auth) {
-                //dump($auth);
-                $result = $cp->getAuthorizerInfo($auth['authorization_info']['authorizer_appid']);
-                if ($result) {
-                    $authorizerInfo = $result['authorizer_info'];
-                    $authorizationInfo = $auth['authorization_info'];
-                    $appid = $authorizationInfo['authorizer_appid'];
-                    $model = M('wechat');
-//                    try {
-//                        $model->startTrans();
-//                        // 保存token
-//                        $tokenModel = M('wechat_token');
-//                        $result = $tokenModel->add([
-//                            'app_id' => $appid,
-//                            'access_token' => $authorizationInfo['authorizer_access_token'],
-//                            'refresh_token' => $authorizationInfo['authorizer_refresh_token'],
-//                            'expire_time' => time() + intval($authorizationInfo['expires_in']) - 100
-//                        ]);
-//                        if (! $result) {
-//                            throw new \Exception('token保存失败');
-//                        }
-                        // 绑定
-                        $data = array();
-                        $data['store_id']           = session('store_id');
-                        $data['appid']              = $appid;
-                        $data['mp_nickname']        = $authorizerInfo['nick_name'];
-                        $data['mp_headimg']         = $authorizerInfo['head_img'];
-                        $data['mp_wechatid']        = $authorizerInfo['alias'];
-                        $data['mp_username']        = $authorizerInfo['user_name'];
-                        $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
-                        $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
-                        $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
-                        $data['access_token']       = $authorizationInfo['authorizer_access_token'];
-                        $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
-                        $data['expire_time']        = time() + intval($authorizationInfo['expires_in']) - 100;
-                        $update = $model->add($data);
-                        
-//                        $model->commit();
-//                    } catch (\Exception $e) {
-//                        $model->rollback();
-//                        exit('授权失败:'.$e->getMessage());
-//                    }
-                    
-                    exit('授权成功');
-                } else {
-                    exit('授权失败'.$cp->errMsg);
-                }
-            } else {
+            if (!$auth) {
                 exit('授权失败'.$cp->errMsg);
             }
+                //dump($auth);
+            $result = $cp->getAuthorizerInfo($auth['authorization_info']['authorizer_appid']);
+            if (!$result) {
+                exit('授权失败'.$cp->errMsg);
+            }
+                
+            $authorizerInfo = $result['authorizer_info'];
+            $authorizationInfo = $auth['authorization_info'];
+            $appid = $authorizationInfo['authorizer_appid'];
+
+            $model = M('wechat');
+            $appInfo = $model->where(['appid' => $appid])->find();
+            if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
+                exit('该公众号已绑定其他店铺');
+            }
+
+            $funcInfo = array();
+            foreach ($authorizationInfo['func_info'] as $func) {
+                $funcInfo[] = $func['funcscope_category']['id'];
+            }
+
+            // 绑定
+            $data = array();
+            $data['store_id']           = session('store_id');
+            $data['appid']              = $appid;
+            $data['func_info']          = implode(',', $funcInfo);
+            $data['mp_nickname']        = $authorizerInfo['nick_name'];
+            $data['mp_headimg']         = $authorizerInfo['head_img'];
+            $data['mp_wechatid']        = $authorizerInfo['alias'];
+            $data['mp_username']        = $authorizerInfo['user_name'];
+            $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
+            $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
+            $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
+            $data['access_token']       = $authorizationInfo['authorizer_access_token'];
+            $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
+            $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;
+
+            if ($appInfo) {
+                $data['update_time'] = time();
+                $update = $model->where(['rec_id' => $appInfo['rec_id']])->save($data);
+            } else {
+                $data['create_time'] = time();
+                $data['update_time'] = $data['create_time'];
+                $update = $model->add($data);
+            }
+            
+            exit('授权成功');
         } else {
             $authcode = $cp->getPreAuthCode();
             $url = $cp->getAuthorizeRedirect(C('MEDIA_SITE_URL').'/component/auth', $authcode);
