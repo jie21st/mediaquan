@@ -38,9 +38,6 @@ class WechatAction extends CommonAction
         if (empty($appInfo)){
             exit('app not exists');
         }
-        
-        $tokenModel = M('wechatToken');
-        $token = $tokenModel->where(['app_id' => $appid])->getField('access_token');
 
         $wechat = new Component;
         $wechat->valid();
@@ -57,7 +54,7 @@ class WechatAction extends CommonAction
                             break;
                         }
                         \Think\Log::write('关注人openid: '.$openid);
-                        $userInfo = $wechat->getUserInfo($token, $openid);
+                        $userInfo = $wechat->getUserInfo($appInfo['access_token'], $openid);
                         \Think\Log::write('关注人信息: '.json_encode($userInfo) . $wechat->errMsg);
                         $fansInfo = $fansModel->where(['openid' => $openid])->find();
                         if (empty($fansInfo)) {
