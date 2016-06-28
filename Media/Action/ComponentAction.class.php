@@ -8,7 +8,7 @@ class ComponentAction extends CommonAction
     protected $needAuth = false;
     
     /**
-     * 授权事件接收
+     * 授权推送事件接收
      */
     public function receiveOp()
     {
@@ -18,11 +18,11 @@ class ComponentAction extends CommonAction
         switch($type) {
             case Component::INFOTYPE_VERIFY_TICKET:
                 $ticket = $cp->getRev()->getRevVerifyTicket();
-                \Think\Log::write($ticket);
                 $redis = \Think\Cache::getInstance('redis');
                 $redis->set('component:verify_ticket', $ticket);
                 exit('success');
                 break;
+            // 授权
             case Component::INFOTYPE_AUTHORIZED:
                 // TODO 授权处理
                 break;
@@ -37,6 +37,7 @@ class ComponentAction extends CommonAction
                 $redis = \Think\Cache::getInstance('redis');
                 $redis->set($key, $authorizationCode, $authorizationCodeExpiredTime-time());
                 break;
+            // 取消授权
             case Component::INFOTYPE_UNAUTHORIZED:
                 // TODO 取消授权处理
                 $authorizerAppid = $cp->getRevAuthorizerAppid();
@@ -71,19 +72,19 @@ class ComponentAction extends CommonAction
                     $authorizationInfo = $auth['authorization_info'];
                     $appid = $authorizationInfo['authorizer_appid'];
                     $model = M('wechat');
-                    try {
-                        $model->startTrans();
-                        // 保存token
-                        $tokenModel = M('wechat_token');
-                        $result = $tokenModel->add([
-                            'app_id' => $appid,
-                            'access_token' => $authorizationInfo['authorizer_access_token'],
-                            'refresh_token' => $authorizationInfo['authorizer_refresh_token'],
-                            'expire_time' => time() + intval($authorizationInfo['expires_in']) - 100
-                        ]);
-                        if (! $result) {
-                            throw new \Exception('token保存失败');
-                        }
+//                    try {
+//                        $model->startTrans();
+//                        // 保存token
+//                        $tokenModel = M('wechat_token');
+//                        $result = $tokenModel->add([
+//                            'app_id' => $appid,
+//                            'access_token' => $authorizationInfo['authorizer_access_token'],
+//                            'refresh_token' => $authorizationInfo['authorizer_refresh_token'],
+//                            'expire_time' => time() + intval($authorizationInfo['expires_in']) - 100
+//                        ]);
+//                        if (! $result) {
+//                            throw new \Exception('token保存失败');
+//                        }
                         // 绑定
                         $data = array();
                         $data['store_id']           = session('store_id');
@@ -95,13 +96,16 @@ class ComponentAction extends CommonAction
                         $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
                         $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
                         $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
+                        $data['access_token']       = $authorizationInfo['authorizer_access_token'];
+                        $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
+                        $data['expire_time']        = time() + intval($authorizationInfo['expires_in']) - 100;
                         $update = $model->add($data);
                         
-                        $model->commit();
-                    } catch (\Exception $e) {
-                        $model->rollback();
-                        exit('授权失败:'.$e->getMessage());
-                    }
+//                        $model->commit();
+//                    } catch (\Exception $e) {
+//                        $model->rollback();
+//                        exit('授权失败:'.$e->getMessage());
+//                    }
                     
                     exit('授权成功');
                 } else {
