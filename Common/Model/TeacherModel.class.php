@@ -3,7 +3,7 @@ namespace Common\Model;
 
 class TeacherModel extends CommonModel
 {
-    protected $trueTableName = 'store_teacher';
+    protected $tableName = 'store_teacher';
     
     public function getTeacherInfo($condition)
     {
