@@ -83,7 +83,7 @@ class LoginAction extends \Think\Action
     }
     
     public function bindStoreUserOp(){
-        $wechatModel = M('wechat');
+        $wechatModel = M('store_wechat');
         $appInfo = $wechatModel->where(['store_id' => session('current_store_id')])->find();
         if (empty($appInfo)) {
             exit('app not exists');
