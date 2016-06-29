@@ -92,7 +92,7 @@ class ComponentAction extends CommonAction
             $authorizationInfo = $auth['authorization_info'];
             $appid = $authorizationInfo['authorizer_appid'];
 
-            $model = M('wechat');
+            $model = M('store_wechat');
             $appInfo = $model->where(['appid' => $appid])->find();
             if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
                 exit('该公众号已绑定其他店铺');
