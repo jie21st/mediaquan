@@ -28,7 +28,11 @@ class StoreWechatService
         }
         
         // 获取店铺公众号信息
-        $appInfo = M('wechat')->where(['store_id' => $storeId])->find();
+        $appInfo = M('store_wechat')->where(['store_id' => $storeId])->find();
+        if (empty($appInfo) || $appInfo['auth_state'] == '0') {
+            $this->errMsg = '店铺微信取消授权';
+            return false;
+        }
         $wechat = new \Org\Util\Wechat;
         $wechat->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
         $this->wechat = $wechat;

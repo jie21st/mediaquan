@@ -46,7 +46,7 @@ class WechatAction extends CommonAction
             case Component::MSGTYPE_EVENT:
                 $event = $wechat->getRev()->getRevEvent();
                 $openid = $wechat->getRevFrom();
-                $fansModel = M('wechatFans');
+                $fansModel = M('store_fans');
                 switch ($event['event']) {
                     case 'subscribe':
                         if ($appInfo['mp_verify_type'] != 0) {

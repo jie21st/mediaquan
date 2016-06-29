@@ -44,7 +44,7 @@ class ComponentAction extends CommonAction
                 $update['refresh_token']    = $authorizationInfo['authorizer_refresh_token'];
                 $update['token_expiretime'] = time() + intval($authorizationInfo['expires_in']) - 100;
                 $update['update_time']      = time();
-                $result = M('wechat')->where(['appid' => $appid])->save($update);
+                $result = M('store_wechat')->where(['appid' => $appid])->save($update);
                 if ($result === false) {
                     \Think\Log::write('微信第三方推送更新授权失败 appid='.$appid);
                 }
@@ -52,8 +52,11 @@ class ComponentAction extends CommonAction
             // 取消授权
             case Component::INFOTYPE_UNAUTHORIZED:
                 // TODO 取消授权处理
-                $authorizerAppid = $cp->getRevAuthorizerAppid();
-                \Think\Log::write('微信第三方推送取消授权 appid='.$authorizerAppid);
+                $data = $cp->getRevData();
+                $appid = $data['AuthorizerAppid'];
+                
+                M('store_wechat')->where(['appid' => $appid])->setField('auth_state', 0);
+                \Think\Log::write('微信第三方推送取消授权 appid='.$appid);
                 break;
             default:
                 \Think\Log::write('微信第三方推送类型未定义'.$type);
@@ -112,6 +115,7 @@ class ComponentAction extends CommonAction
             $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
             $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
             $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
+            $data['auth_state']         = 1;
             $data['access_token']       = $authorizationInfo['authorizer_access_token'];
             $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
             $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;

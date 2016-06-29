@@ -122,7 +122,7 @@ class WechatResponseService
                 ], [
             'user_id' => $this->userInfo['user_id'],
         ]);
-
+        
         // 回复
         $this->subscribeReply();
     }

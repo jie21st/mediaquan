@@ -50,13 +50,13 @@ class StoreService
         $tplModel = new \Common\Model\MessageTemplatesModel();
         $tplInfo = $tplModel->getOneTemplates($tplCode);
         if (empty($tplInfo) || $tplInfo['tpl_state'] == 0) {
-            return false;
+            return ['error' => '模板不存在'];
         }
         
         $fansModel = new \Common\Model\FansModel();
         $receiver = $fansModel->getFansInfo(['store_id' => $storeId, 'user_id' => $userId]);
 	if (empty($receiver)) {
-            return false;
+            return ['error' => '店铺用户不存在'];
         }
         $message = notifyReplaceText($tplInfo['tpl_content'], $params);
         

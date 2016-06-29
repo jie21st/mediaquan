@@ -18,7 +18,7 @@ class WechatAction extends \Think\Action
      */
     public function refreshTokenOp()
     {
-        $model = M('wechat');
+        $model = M('store_wechat');
         $component = new \Org\Util\Component();
         
         $condition = array();
