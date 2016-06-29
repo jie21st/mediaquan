@@ -33,7 +33,7 @@ class WechatAction extends CommonAction
             exit('invalid appid');
         }
         
-        $model = M('wechat');
+        $model = M('store_wechat');
         $appInfo = $model->where(['appid' => $appid])->find();
         if (empty($appInfo)){
             exit('app not exists');
@@ -46,7 +46,7 @@ class WechatAction extends CommonAction
             case Component::MSGTYPE_EVENT:
                 $event = $wechat->getRev()->getRevEvent();
                 $openid = $wechat->getRevFrom();
-                $fansModel = M('store_fans');
+                $fansModel = new \Common\Model\FansModel();
                 switch ($event['event']) {
                     case 'subscribe':
                         if ($appInfo['mp_verify_type'] != 0) {
