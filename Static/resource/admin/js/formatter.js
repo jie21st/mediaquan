@@ -41,6 +41,20 @@ function formSetUserState(value, row, index) {
 }
 
 
+/** 课程管理 删除 修改 **/
+
+function formatClassOperation(value,row,index){
+	var id = row.class_id;
+	 //'<a href="/classUser/list?class_id=' + id + '">用户</a>'
+		//+ ' | '
+	return	'<a href="/class/edit?class_id=' + id + '">编辑</a>'
+		//+ ' | '
+		//+ '<a href="javascript:void(0);" class_id="'+id+'" class="deleteBtn">禁用</a>'
+		//+ ' | '
+		//+ '<a href="http://wap.guanlizhihui.com/class/' + id + '.html" target="_blank">查看</a>';
+		//+ '<a href="'+app_url+'/class/' + id + '.html" target="_blank">查看</a>';
+}
+
 
 
 
@@ -133,22 +147,6 @@ function formatRadioOperation(value,row,index){
 
 function formatDuration(value,row,index){
 	return datetimeUtil.seconds2DurationStr(value);
-}
-
-/** 课程管理 删除 修改 **/
-
-function formatClassOperation(value,row,index){
-	var id = row.class_id;
-	return '<a href="/group/list?class_id=' + id + '">班级</a>' 
-	+ ' | '
-	+ '<a href="/classUser/list?class_id=' + id + '">用户</a>'
-	+ ' | '
-	+ '<a href="/class/edit?class_id=' + id + '">编辑</a>'
-	+ ' | '
-	+ '<a href="javascript:void(0);" class_id="'+id+'" class="deleteBtn">禁用</a>'
-        + ' | '
-        //+ '<a href="http://wap.guanlizhihui.com/class/' + id + '.html" target="_blank">查看</a>';
-        + '<a href="'+app_url+'/class/' + id + '.html" target="_blank">查看</a>';
 }
 
 function formatGroupOperation(value,row,index){

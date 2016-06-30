@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <head>
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/icon.css">
+
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/tooltip-form-style.css"></link> 
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/css.css"></link>
+        
+
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.form.js"></script> 
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui-lang-zh_CN.js"></script>
+
+        <!-- <script src="http://adminbk.guanlizhihui.com/js/datetimeUtil.js"></script> -->
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/formatter.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui.getdata.js"></script>
+        <script>
+        var app_url = "<{$Think.config.MOBILE_SITE_URL}>"; 
+        </script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/classList.js"></script>
+        <style type="text/css">
+            .icon-add{
+                background-position:0;
+            }
+        </style>
+    </head>
+    <body> 
+        <div class="easyui-layout" data-options="fit:true" id="td">
+            <div data-options="region:'north'" style="padding:5px;height:70px">
+                <fieldset style="border-width: 1px;">
+                    <legend>课程查询</legend>
+                    <div id="serchmsg"> 
+                        <label>课程名称:</label>
+                        <input type="text" name="class_title" id="class_title">
+                        &nbsp;
+                        <label>讲师:</label>
+                        <input type="text" name="class_teacher" id="class_teacher">
+                        &nbsp;
+                        <a href="javascript:void(0);" class="easyui-linkbutton" id="queryBtn" icon="icon-search">查询</a>
+                        &nbsp; 
+                    </div>
+                </fieldset>
+            </div>
+            
+           <div data-options="region:'center'">
+                <table id="classTable" 
+                    border="0" 
+                    cellspacing="0" 
+                    cellpadding="0" 
+                    iconCls="icon-edit" 
+                    width="100%" 
+                    fit="true"
+                    idField="class_id" 
+                    pagination="true"
+                    remoteSort="false" 
+                    singleSelect="false" 
+                    showFooter="false"
+                    striped="true">
+                    <thead>
+                        <tr align="center">
+                            <th data-options="field:'class_id'" width="40">序号</th>
+                            <th data-options="field:'class_title'" width="150">课程名称</th>
+                            <th data-options="field:'class_price'" width="160">课程价格</th>
+                            <th data-options="field:'teacher_name'" width="50">讲师</th>
+                            <th data-options="field:'commis_rate'" width="75">分销比例(%)</th>
+                            <th data-options="field:'study_num'" width="60" formatter="formUserNumber">报名人数</th>
+                            <th data-options="field:'class_sort'" width="80">排序</th>
+                            <th data-options="field:'class_addtime'" width="120">创建时间</th>
+                            <th data-options="field:'operation'" width="200" formatter="formatClassOperation">操作</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </body> 
+</html>
