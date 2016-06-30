@@ -40,47 +40,52 @@ class StoreService
      * 发送消息
      * 
      * @param type $storeId 店铺id
-     * @param type $userId 平台用户id
+     * @param type $fansId 店铺粉丝id
      * @param type $tplCode 模板调用代码
      * @param type $params 模板参数
      * @return boolean
      */
-    public function sendMessage($storeId, $userId, $tplCode, $params)
+    public function sendMessage($storeId, $fansId, $tplCode, $params)
     {
-        $tplModel = new \Common\Model\MessageTemplatesModel();
-        $tplInfo = $tplModel->getOneTemplates($tplCode);
+        static $tpl = [];
+        if (!isset($tpl[$tplCode])) {
+            $tplModel = new \Common\Model\MessageTemplatesModel();
+            $tpl[$tplCode] = $tplModel->getOneTemplates($tplCode);
+        }
+        $tplInfo = $tpl[$tplCode];
         if (empty($tplInfo) || $tplInfo['tpl_state'] == 0) {
             return ['error' => '模板不存在'];
         }
         
         $fansModel = new \Common\Model\FansModel();
-        $receiver = $fansModel->getFansInfo(['store_id' => $storeId, 'user_id' => $userId]);
+        $receiver = $fansModel->getFansInfo(['fans_id' => $fansId]);
 	if (empty($receiver)) {
-            return ['error' => '店铺用户不存在'];
+            return ['error' => '接收人不存在'];
         }
         $message = notifyReplaceText($tplInfo['tpl_content'], $params);
         
         $storeWechatService = new \Common\Service\StoreWechatService();
         // 发送
-//        $messageModel = M('message');
-//        $data = array(
-//            'to_fans_id'        => $receiver['fans_id'],
-//            'msg_type'          => 'text',
-//            'msg_body'          => $message,
-//            'msg_state'         => 0,
-//            'msg_create_time'   => time(),
-//        );
-//        $msgId = $messageModel->add($data);
-//        if (!$msgId) {
-//            return false;
-//        }
+        $messageModel = M('message');
+        $data = array(
+            'to_fans_id'        => $receiver['fans_id'],
+            'msg_type'          => 'text',
+            'msg_body'          => $message,
+            'msg_state'         => 0,
+            'msg_create_time'   => time(),
+        );
+        $msgId = $messageModel->add($data);
+        if (!$msgId) {
+            return false;
+        }
+        
         $result = $storeWechatService->sendCustomMessage($storeId, [
             'touser' => $receiver['openid'],
             'msgtype' => 'text',
             'text' => ['content' => $message]
         ]);
         if (!$result) {
-            echo $storeWechatService->errMsg;
+            $messageModel->where(['msg_id' => $msgId])->setField('msg_stateinfo', $storeWechatService->errMsg);
         }
         
         return true;

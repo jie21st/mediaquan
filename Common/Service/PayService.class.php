@@ -139,7 +139,7 @@ class PayService
             }
             
             // 订单分销结算
-            $classService->orderBill($orderInfo);
+            $classService->orderCommission($orderInfo);
             
             // 提交事务
             $orderModel->commit();

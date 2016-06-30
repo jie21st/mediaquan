@@ -48,7 +48,7 @@ class ClassService
      * @param type $userId
      * @return type
      */
-    public function createOrder($input, $userId)
+    public function createOrder($input, $userId, $userNickname)
     {
         $orderModel = new \Common\Model\OrderModel();
         
@@ -142,13 +142,17 @@ class ClassService
     {
         $classModel = new \Common\Model\ClassModel;
         $userModel = new \Common\Model\UserModel;
-
+        $storeId = $classOrder['store_id'];
+        $classId = $classOrder['class_id'];
+        $buyerId = $classOrder['buyer_id'];
+        $className = $classOrder['class_title'];
+        
         // 插入课程报名表
         $data               = array();
-        $data['class_id']   = $classOrder['class_id'];
-        $data['store_id']   = $classOrder['store_id'];
+        $data['class_id']   = $classId;
+        $data['store_id']   = $storeId;
         $data['store_name'] = $classOrder['store_name'];
-        $data['user_id']    = $classOrder['buyer_id'];
+        $data['user_id']    = $buyerId;
         $data['order_id']   = $classOrder['order_id'];
         $data['apply_amount'] = $classOrder['order_amount'];
         $data['apply_time'] = time();
@@ -161,7 +165,7 @@ class ClassService
         // 增加课程学习人数
         $data = array();
         $data['study_num'] = ['exp', 'study_num+1'];
-        $update = $classModel->editClass($data, ['class_id' => $classOrder['class_id']]);
+        $update = $classModel->editClass($data, ['class_id' => $classId]);
         if (! $update) {
             throw new \Exception('更新课程学习人数失败');
         }
@@ -169,141 +173,136 @@ class ClassService
         // 增加用户购买次数
         $data = array();
         $data['buy_num'] = ['exp', 'buy_num+1'];
-        $result = $userModel->editUser($data, ['user_id' => $classOrder['buyer_id']]);
+        $result = $userModel->editUser($data, ['user_id' => $buyerId]);
         if (! $result) {
             throw new \Exception('更新用户购买次数失败');
         }
-        // 通知购买人
-        $storeService = new StoreService();
-        $storeService->sendMessage($classOrder['store_id'], $classOrder['buyer_id'], 'user_buy', [
-            'class_name' => $classOrder['class_title'],
-            'recom_url' => C('MEDIA_SITE_URL').'/class/'.$classOrder['class_id'].'.html?share=1',
-        ]);
-        
-        // 通知粉丝 3级
-//        function notifyFans($obj, $openid, $buyerInfo, $orderInfo) {
-//            $obj->sendCustomMessage([
-//                'touser' => $openid,
-//                'msgtype' => 'text',
-//                'text' => [
-//                    'content' => sprintf(
-//                                    '%s购买了《%s》，课程很实用，快去和他一起学习吧，<a href="%s">点击听课</a>',
-//                                    $buyerInfo['user_nickname'],
-//                                    $orderInfo['class_title'],
-//                                    C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html'
-//                                )
-//                ]
-//            ]);
-//        }
-//        $buyerInfo = $userModel->getUserInfo(['user_id' => $classOrder['buyer_id']]);
-//        $users = $userModel->where(['parent_id' => $buyerInfo['user_id']])->select();
-//        $wechatService = new \Common\Service\WechatService;
-//        foreach ($users as $user) {
-//            notifyFans($wechatService, $user['user_wechatopenid'], $buyerInfo, $classOrder);
-//            $result = $userModel->where(['parent_id' => $user['user_id']])->select();
-//            foreach ($result as $value) {
-//                notifyFans($wechatService, $value['user_wechatopenid'], $buyerInfo, $classOrder);
-//                $result3 = $userModel->where(['parent_id' => $value['user_id']])->select();
-//                foreach ($result3 as $value3) {
-//                    notifyFans($wechatService, $value3['user_wechatopenid'], $buyerInfo, $classOrder);
-//                }
-//            }
-//        }
+        // 通知
+        $storeFansService = new StoreFansService();
+        $fans = $storeFansService->getFansByUserId($storeId, $buyerId);
+        if($fans) {
+            $fansId = $fans['fans_id'];
+            $fansNickname = $fans['fans_nickname'];
+            // 通知自己
+            $storeService = new StoreService();
+            $storeService->sendMessage(
+                $storeId,
+                $fansId,
+                'user_buy',
+                [
+                    'class_name' => $classOrder['class_title'],
+                    'recom_url' => C('MEDIA_SITE_URL').'/class/'.$classId.'.html?share=1',
+                ]
+            );
+            // 通知粉丝
+            $storeFansService->getFans(
+                $fansId,
+                3,
+                ['openid'],
+                function($fans) use($storeService, $storeId, $fansNickname, $classId, $className) {
+                    $storeService->sendMessage(
+                            $storeId,
+                            $fans['fans_id'],
+                            'user_buy_notify_fans',
+                            [
+                                'buyer_name' => $fansNickname,
+                                'class_name' => $className,
+                                'class_url' => C('MEDIA_SITE_URL').'/class/'.$classId.'.html',
+                            ]
+                    );
+                }
+            );
+        }
     }
     
     /**
-     * 订单结算
+     * 分佣
      * 
-     * @param type $orderInfo
+     * @param type $order 订单详细信息
+     * @return boolean
      */
-    public function orderBill($orderInfo)
+    public function orderCommission($order)
     {
-        return false;
-        if ($orderInfo['commis_rate'] == 0) {
-            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'该订单佣金比例为0');
-            return;
+        $storeId = $order['store_id'];
+        $orderId = $order['order_id'];
+        $buyerId = $order['buyer_id'];
+        
+        $storeService = new StoreService();
+        
+        if ($order['commis_rate'] == 0) {
+            return false;   //未设置分销比例
         }
         
-        $userModel = new \Common\Model\UserModel;
-        $buyerInfo = $userModel->getUserInfo(['user_id' => $orderInfo['buyer_id']]);
-        if ($buyerInfo['parent_id'] == 0) {
-            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'该用户没有推荐人');
-            return;
+        // 店铺是否开启分销
+        $storeInfo = $storeService->getStoreInfoByID($storeId);
+        if ($storeInfo['if_distribution'] == 0) {
+            return false;
         }
         
-        $seller_level_rate = C('SELLER_LEVEL_RATE');
-        if (empty($seller_level_rate)) {
-            \Think\Log::write('订单结算: 失败 '.$orderInfo['order_sn'].'未设置销售员分销比例');
-            return;
+        // 查询店铺粉丝
+        $storeFansService = new StoreFansService();
+        $fans = $storeFansService->getFansByUserId($storeId, $buyerId);
+        if (empty($fans) || $fans['parent_id'] == 0) {
+            return false;
         }
         
-        $parents = $this->getUserParents($orderInfo['buyer_id'], 3);
-        if (is_array($parents) && !empty($parents)) {
-            $parentsCount = count($parents);
-            $model = D('orderBill');
-            $pdService = new PredepositService();
-            $wechatService = new \Common\Service\WechatService;
+        // 获取店铺分销佣金设置
+        $setting = M('store_distribution')->where(['store_id' => $storeId])->find();
+        if (empty($setting)) {
+            return false;
+        }
+        
+        $commisTotal =  $order['order_amount'] * $order['commis_rate'] / 100;
+        
+        // 获取该粉丝的上级
+        $parentsIds = $storeFansService->getParents($fans['fans_id'], 3);
+        if (empty($parentsIds)) {
+            return false;
+        }
+
+        $i = 1;
+        $pdService = new PredepositService;
+        $fansModel = new \Common\Model\FansModel();
+        foreach ($parentsIds as $parentId) {
+            // 获取上级粉丝信息
+            $parentInfo = $fansModel->getFansInfo(['fans_id' => $parentId]);
             
-            for ($i = 0; $i < $parentsCount; $i++) {
-                $sellerId = $parents[$i];
-                // 销售员信息
-                $parentInfo = $userModel->getUserInfo(['user_id' => $sellerId]);
-                // 销售员分配比例
-                $sellerRate = $seller_level_rate[$parentsCount-1][$i]/100;
-                // 订单佣金金额
-                $orderCommisAmount = $orderInfo['order_amount'] * $orderInfo['commis_rate'] / 100;
-                // 获得佣金金额
-                $commisAmount = round($orderCommisAmount * $sellerRate, 2, PHP_ROUND_HALF_DOWN);
-                // 收益记录
-                $insertId = $model->add([
-                    'user_id' => $sellerId,
-                    'buyer_id' => $orderInfo['buyer_id'],
-                    'order_id' => $orderInfo['order_id'],
-                    'gains_amount' => $commisAmount,
-                    'gains_time' => time(),
-                    'level_val'  => $i+1,
-                    'level_rate' => $sellerRate*100,
+            if ($setting['level'.$i.'_commis_type'] == 1) {
+                $commisAmount = $commisTotal * $setting['level'.$i.'_commis_val'] / 100;
+            } else {
+                $commisAmount = 0;
+            }
+            M('order_commission')->add([
+                'order_id' => $orderId,
+                'store_id' => $storeId,
+                'buyer_id' => $buyerId,
+                'user_id'  => $parentInfo['user_id'],
+                'fans_id'  => $parentId,
+                'order_amount' => $order['order_amount'],
+                'commis_amount' => $commisAmount,
+                'level' => $i,
+            ]);
+            if ($commisAmount > 0) {
+                $pdService->changePd('commission', [
+                    'name' => $fans['fans_nickname'].'购买《'.$order['class_title'].'》',
+                    'user_id' => $parentInfo['user_id'],
+                    'amount' => $commisAmount,
+                    'order_sn' => $order['order_sn'],
                 ]);
-                if (! $insertId) {
-                    throw new \Exception('分销收益记录失败');
-                }
-                
-                // 收益入账
-                $pdData = array();
-                $pdData['user_id'] = $sellerId;
-                $pdData['amount'] = $commisAmount;
-                $pdData['name'] = $buyerInfo['user_nickname'].' 购买了 '.$orderInfo['class_title'];
-                $pdData['order_sn'] = $orderInfo['order_sn'];
-                $pdService->changePd('sale_income', $pdData);
-                
-                // 收益通知
-                $wechatService->sendCustomMessage([
-                    'touser' => $parentInfo['user_wechatopenid'],
-                    'msgtype' => 'text',
-                    'text' => [
-                        'content' => sprintf(
-                                        '%s购买了《%s》，您获得收益%s元，课程很受欢迎，快去介绍给你的好友吧，<a href="%s">点击分享这门课程</a>',
-                                        $buyerInfo['user_nickname'],
-                                        $orderInfo['class_title'],
-                                        glzh_price_format($commisAmount),
-                                        C('MEDIA_SITE_URL').'/class/'.$orderInfo['class_id'].'.html?share=1'
-                                    )
+                $storeService->sendMessage(
+                    $storeId,
+                    $parentInfo['fans_id'],
+                    'user_buy_parents_gains',
+                    [
+                        'buyer_name' => $fans['fans_nickname'],
+                        'amount'     => $commisAmount,
+                        'class_name' => $order['class_title'],
+                        'class_url'  => C('MEDIA_SITE_URL').'/class/'.$order['class_id'].'.html',
                     ]
-                ]);
+                );
             }
+            
+            $i++;
         }
-    }
-    
-    public function getUserParents($userId, $level = 3) {
-        static $list=array();
-        if ($level-- > 0) {
-            $userModel = new \Common\Model\UserModel;
-            $childInfo = $userModel->getUserInfo(['user_id' => $userId]);
-            if (intval($childInfo['parent_id']) != 0) {
-                $list[] = $childInfo['parent_id'];
-                return $this->getUserParents($childInfo['parent_id'], $level);
-            }
-        }
-        return $list;
     }
 }

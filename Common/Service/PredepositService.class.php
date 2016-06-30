@@ -23,11 +23,11 @@ class PredepositService
      * @throws Exception
      * @return unknown
      */
-    public function changePd($change_type,$data = array(), $ctime = '') {
+    public function changePd($change_type,$data = array()) {
         $data_log = array();
         $data_pd = array();
         $data_log['lg_user_id'] = $data['user_id'];
-        $data_log['lg_create_time'] = ($ctime === '') ? time() : $ctime;
+        $data_log['lg_create_time'] = time();
         $data_log['lg_type'] = $change_type;
         switch ($change_type){
             case 'order_pay':
@@ -42,10 +42,10 @@ class PredepositService
                 $data_log['lg_desc'] = '充值，充值单号: '.$data['pdr_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
                 break;
-            case 'sale_income':
+            case 'commission':
                 $data_log['lg_name'] = $data['name'];
                 $data_log['lg_av_amount'] = $data['amount'];
-                $data_log['lg_desc'] = '分销收益，订单号: '.$data['order_sn'];
+                $data_log['lg_desc'] = '分销佣金，订单号: '.$data['order_sn'];
                 $data_pd['available_predeposit'] = array('exp','available_predeposit+'.$data['amount']);
                 break;
     	    case 'cash':
