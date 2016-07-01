@@ -3,7 +3,7 @@ namespace Org\Util;
 
 class Component extends \Org\Util\Wechat
 {
-    const INFOTYPE_AUTHORIZED = 'unauthorized';
+    const INFOTYPE_AUTHORIZED = 'authorized';
     const INFOTYPE_UNAUTHORIZED = 'unauthorized';
     const INFOTYPE_VERIFY_TICKET = 'component_verify_ticket';
     const INFOTYPE_UPDATEAUTHORIZED = 'updateauthorized';
