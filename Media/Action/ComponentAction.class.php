@@ -94,12 +94,6 @@ class ComponentAction extends CommonAction
 
             $model = M('store_wechat');
             
-            // 取得当前店铺的公众号信息
-            $currentStoreWechatInfo = $model->where(['store_id' => session('store_id')])->find();
-            if ($currentStoreWechatInfo && $currentStoreWechatInfo['appid'] != $appid) {
-                exit('店铺已绑定'.$currentStoreWechatInfo['mp_username'].'的公众号，无法绑定其他公众号');
-            }
-            
             // 取得授权app绑定的店铺公众号信息
             $appInfo = $model->where(['appid' => $appid])->find();
             if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
@@ -110,6 +104,12 @@ class ComponentAction extends CommonAction
                 $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;
                 $update = $model->where(['appid' => $appid])->save($data);
                 exit('该公众号已绑定其他店铺');
+            }
+            
+            // 取得当前店铺的公众号信息  公众号一致性校验
+            $currentStoreWechatInfo = $model->where(['store_id' => session('store_id')])->find();
+            if ($currentStoreWechatInfo && $currentStoreWechatInfo['appid'] != $appid) {
+                exit('店铺已绑定'.$currentStoreWechatInfo['mp_username'].'的公众号，无法绑定其他公众号');
             }
             
             $funcInfo = array();
