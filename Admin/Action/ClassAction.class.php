@@ -27,7 +27,7 @@ class ClassAction extends CommonAction
 		array('class_title', 'require',  '请填写课程名称', 1, '', 3),
 		array('class_image', 'require',  '请上传课程主图', 1, '', 3),
 		array('class_price', 'require',  '请填写课程原价', 1, '', 3),
-		array('class_sort', 'require',  '请填写课程排序', 2, '', 3),
+		array('class_sort', '1,255',  '请填写正确的课程排序', 2, 'between', 3),
 		array('body', 'require',  '请填写课程描述', 1, '', 3),
 		array('commis_rate', 'require',  '请填写佣金比例', 2, '', 3),
 		array('fx_title', 'require',  '请填写分享标题', 1, '', 3),
@@ -150,7 +150,7 @@ class ClassAction extends CommonAction
 			//获取店铺信息
 			$this->stores = M('store')->field(array('store_id , store_name'))->select();
 			//获取店铺讲师
-			$this->teachers = M('store_teacher')->field(array('teacher_id , teacher_name'))->select();
+			$this->teachers = M('store_teacher')->where(array('store_id'=>$this->stores['0']['store_id']))->field(array('teacher_id , teacher_name'))->select();
 			$this->classInfo = M('class')->where(array('class_id' => $class_id))->find();
 			$this->display();
 		}
@@ -175,8 +175,8 @@ class ClassAction extends CommonAction
 				$data['fx_title'] = I('post.fx_title');
 				$data['fx_img'] = I('post.fx_img');
 				$data['fx_desc'] = I('post.fx_desc');
-				$bool = $classModel->where("class_id=$class_id")->data($data)->save();
-				if($bool) {
+				$bool = $classModel->where("class_id=$class_id")->save($data);
+				if(false !== $bool) {
 					$this->ajaxReturn(['code'=>1, 'msg' => 'success']);
 				} else {
 					$this->ajaxReturn(['code'=>0, 'msg' => '更新数据失败']);
