@@ -95,6 +95,12 @@ class ComponentAction extends CommonAction
             $model = M('store_wechat');
             $appInfo = $model->where(['appid' => $appid])->find();
             if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
+                // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
+                $data = array();
+                $data['access_token']       = $authorizationInfo['authorizer_access_token'];
+                $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
+                $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;
+                $update = $model->where(['appid' => $appid])->save($data);
                 exit('该公众号已绑定其他店铺');
             }
 
