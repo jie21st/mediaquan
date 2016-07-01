@@ -6,10 +6,10 @@ namespace Common\Model;
  */
 class FansModel extends CommonModel
 {
-    protected $trueTableName = 'm_store_fans';
+    protected $tableName = 'store_wechat_fans';
     
-    public function getFansInfo($condition)
+    public function getFansInfo($condition, $field = '')
     {
-        return $this->where($condition)->find();
+        return $this->field($field)->where($condition)->find();
     }
 }
