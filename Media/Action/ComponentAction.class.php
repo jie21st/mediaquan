@@ -93,6 +93,14 @@ class ComponentAction extends CommonAction
             $appid = $authorizationInfo['authorizer_appid'];
 
             $model = M('store_wechat');
+            
+            // 取得当前店铺的公众号信息
+            $currentStoreWechatInfo = $model->where(['store_id' => session('store_id')])->find();
+            if ($currentStoreWechatInfo && $currentStoreWechatInfo['appid'] != $appid) {
+                exit('店铺已绑定'.$currentStoreWechatInfo['mp_username'].'的公众号，无法绑定其他公众号');
+            }
+            
+            // 取得授权app绑定的店铺公众号信息
             $appInfo = $model->where(['appid' => $appid])->find();
             if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
                 // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
@@ -103,7 +111,7 @@ class ComponentAction extends CommonAction
                 $update = $model->where(['appid' => $appid])->save($data);
                 exit('该公众号已绑定其他店铺');
             }
-
+            
             $funcInfo = array();
             foreach ($authorizationInfo['func_info'] as $func) {
                 $funcInfo[] = $func['funcscope_category']['id'];
