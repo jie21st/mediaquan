@@ -136,7 +136,7 @@ class ComponentAction extends CommonAction
 
             if ($appInfo) {
                 $data['update_time'] = time();
-                $update = $model->where(['rec_id' => $appInfo['rec_id']])->save($data);
+                $update = $model->save($data);
             } else {
                 $data['create_time'] = time();
                 $data['update_time'] = $data['create_time'];
