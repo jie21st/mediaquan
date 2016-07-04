@@ -143,6 +143,8 @@ class ComponentAction extends CommonAction
                 $update = $model->add($data);
             }
             
+            $storeModel = new \Common\Model\StoreModel();
+            $storeModel->where(['store_id' => session('store_id')])->setField('if_bind_wechat', 1);
             exit('授权成功');
         } else {
             $authcode = $cp->getPreAuthCode();
