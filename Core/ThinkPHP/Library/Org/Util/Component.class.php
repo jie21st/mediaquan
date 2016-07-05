@@ -16,15 +16,25 @@ class Component extends \Org\Util\Wechat
     const COMPONENT_OAUTH_TOKEN_URL = '/sns/oauth2/component/access_token';
 
     private $component_access_token;
+    protected $account = array();
 
-    public function __construct()
+    public function __construct($account = array())
     {
-        parent::__construct([
-            'appid' => 'wx1445ced338f34e05',
-            'appsecret' => 'c8cc91a726b126145f3ef65acbf01de9',
-            'encodingaeskey' => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
-            'token' => '86a8c273c5a0110d49a0dd7c724ac3fc',
-        ]);
+        $this->appid = 'wx1445ced338f34e05';
+        $this->appsecret = 'c8cc91a726b126145f3ef65acbf01de9';
+        $this->encodingAesKey = 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF';
+        $this->token = '86a8c273c5a0110d49a0dd7c724ac3fc';
+        
+        if($account) {
+            $this->account = $account;
+            $this->account['store_appid'] = $account['appid'];
+        }
+//        parent::__construct([
+//            'appid' => 'wx1445ced338f34e05',
+//            'appsecret' => 'c8cc91a726b126145f3ef65acbf01de9',
+//            'encodingaeskey' => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
+//            'token' => '86a8c273c5a0110d49a0dd7c724ac3fc',
+//        ]);
     }
 
     public function getRevInfoType() {
@@ -64,14 +74,18 @@ class Component extends \Org\Util\Wechat
             return $rs;
         }
 
-
         $ticket = $this->getCache('component:verify_ticket');
-        $requestData = [
+        if (empty($ticket)) {
+            $this->errMsg = '缺少接入平台关键数据，等待微信开放平台推送数据，请十分钟后再试或是检查“授权事件接收URL”是否写错';
+            return false;
+        }
+        
+        $data = [
             'component_appid' => $appid,
             'component_appsecret' => $appsecret,
             'component_verify_ticket' => $ticket,
         ];
-        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTH_URL, self::json_encode($requestData));
+        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTH_URL, self::json_encode($data));
         if ($result) {
             $json = json_decode($result,true);
             if (!$json || isset($json['errcode'])) {
@@ -93,14 +107,10 @@ class Component extends \Org\Util\Wechat
     public function getPreAuthCode()
     {
         if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
-        $appid = $this->appid;
-        //echo $this->component_access_token;
-        //$authname = 'component:pre_auth_code';
-        //if ($rs = $this->getCache($authname)){
-        //    return $rs;
-        //}
-
-        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_PREAUTHCODE_URL.'?component_access_token='.$this->component_access_token, self::json_encode(['component_appid' => $appid]));
+        $data = array(
+            'component_appid' => $this->appid
+        );
+        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_PREAUTHCODE_URL.'?component_access_token='.$this->component_access_token, self::json_encode($data));
         if ($result) {
             $json = json_decode($result,true); 
             if (!$json || !empty($json['errcode'])) {
@@ -110,16 +120,18 @@ class Component extends \Org\Util\Wechat
             }
 
             return $json['pre_auth_code'];
-            //$this->pre_auth_code = $json['pre_auth_code'];
-            //$expire = $json['expires_in'] ? intval($json['expires_in'])-100 : 600;
-            //$this->setCache($authname, $this->pre_auth_code, $expire); 
-            //return $this->pre_auth_code;
         }
         return false;
     }
 
-    public function getAuthorizeRedirect($redirect, $code){
-        return self::COMPONENT_AUTHORIZE_URL.'?component_appid='.$this->appid.'&pre_auth_code='.$code.'&redirect_uri='.urlencode($redirect);
+    public function getAuthorizeRedirect($redirect = ''){
+        $preauthcode = $this->getPreAuthCode();
+        if ($preauthcode) {
+            $authurl = "javascript:alert('{$this->errMsg}');";
+        } else {
+            $authurl = self::COMPONENT_AUTHORIZE_URL.'?component_appid='.$this->appid.'&pre_auth_code='.$preauthcode.'&redirect_uri='.urlencode($redirect);
+        }
+        return $authurl;
     }
 
     public function queryAuth($authcode)
