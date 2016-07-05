@@ -147,9 +147,8 @@ class ComponentAction extends CommonAction
             $storeModel->where(['store_id' => session('store_id')])->setField('if_bind_wechat', 1);
             exit('授权成功');
         } else {
-            $authcode = $cp->getPreAuthCode();
-            $url = $cp->getAuthorizeRedirect(C('MEDIA_SITE_URL').'/component/auth', $authcode);
-            redirect($url);
+            $authurl = $cp->getAuthorizeRedirect(C('MEDIA_SITE_URL').'/component/auth');
+            echo '<a style="margin-left:5px;" href="' . $authurl . '"><img src="https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon_button3_2.png"></a>';
         }
     }
 }
