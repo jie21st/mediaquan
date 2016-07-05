@@ -126,7 +126,7 @@ class Component extends \Org\Util\Wechat
 
     public function getAuthorizeRedirect($redirect = ''){
         $preauthcode = $this->getPreAuthCode();
-        if ($preauthcode) {
+        if (empty($preauthcode)) {
             $authurl = "javascript:alert('{$this->errMsg}');";
         } else {
             $authurl = self::COMPONENT_AUTHORIZE_URL.'?component_appid='.$this->appid.'&pre_auth_code='.$preauthcode.'&redirect_uri='.urlencode($redirect);
