@@ -56,13 +56,12 @@ class CommonAction extends Action
     
     protected function checkStoreUserBind($storeId)
     {
-        $storeService = new \Common\Service\StoreService();
         if (session('?store_fans_'.$storeId)) {
             return;
         }
         $wechatModel = M('store_wechat');
         $appInfo = $wechatModel->where(['store_id'=> $storeId])->find();
-        if (empty($appInfo) || $appInfo['auth_state'] == 0 || $appInfo['mp_verify_type'] == '-1') {
+        if (empty($appInfo) || $appInfo['auth_state'] == 0 || $appInfo['mp_type'] != 4) {
             session('store_fans_'.$storeId, -1); // -1表示无法绑定
             return;
         }
