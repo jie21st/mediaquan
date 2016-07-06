@@ -102,8 +102,29 @@ class LoginAction extends \Think\Action
                         $weObj = new \Org\Util\Wechat();
                         $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
                         $userinfo = $weObj->getUserInfo($oauth['openid']);
-                        dump($userinfo);
-                        session('store_fans_'.session('current_store_id'), -1);
+                        if($userinfo && !empty($userinfo) && !empty($userinfo['subscribe'])) {
+                            $userinfo['nickname'] = stripcslashes($userinfo['nickname']);
+                            if (!empty($userinfo['headimgurl'])) {
+                                    $userinfo['headimgurl'] = rtrim($userinfo['headimgurl'], '0') . 132;
+                            }
+                            $userinfo['avatar'] = $userinfo['headimgurl'];
+                            $_SESSION['userinfo'] = base64_encode(iserializer($userinfo));
+
+                            $insert = array(
+                                    'openid' => $userinfo['openid'],
+                                    'user_id' => session('user_id'),
+                                    'store_id' => $appInfo['store_id'],
+                                    'fans_nickname' => stripslashes($userinfo['nickname']),
+                                    'subscribe_state' => $userinfo['subscribe'],
+                                    'subscribe_time' => $userinfo['subscribe_time'],
+                                    'unsubscribe_time' => 0,
+                            );
+                            
+                            $fansId = $fansModel->add($insert);
+                            session('store_fans_'.session('current_store_id'), $fansId);
+                        } else {
+                            session('store_fans_'.session('current_store_id'), -1);
+                        }
                     }
                 }
                 redirect(cookie('returnUrl'));
