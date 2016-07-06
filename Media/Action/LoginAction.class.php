@@ -100,7 +100,8 @@ class LoginAction extends \Think\Action
                         session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
                     } else {
                         $weObj = new \Org\Util\Wechat();
-                        $userinfo = $weObj->getOauthUserinfo($appInfo['access_token'], $oauth['openid']);
+                        $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
+                        $userinfo = $weObj->getUserInfo($oauth['openid']);
                         dump($userinfo);
                         session('store_fans_'.session('current_store_id'), -1);
                     }
