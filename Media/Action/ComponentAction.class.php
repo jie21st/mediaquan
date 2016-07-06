@@ -82,15 +82,31 @@ class ComponentAction extends CommonAction
             if (!$auth) {
                 exit('授权失败'.$cp->errMsg);
             }
+            $appid = $auth['authorization_info']['authorizer_appid'];
                 //dump($auth);
-            $result = $cp->getAuthorizerInfo($auth['authorization_info']['authorizer_appid']);
+            $result = $cp->getAuthorizerInfo($appid);
             if (!$result) {
                 exit('授权失败'.$cp->errMsg);
             }
                 
             $authorizerInfo = $result['authorizer_info'];
             $authorizationInfo = $auth['authorization_info'];
-            $appid = $authorizationInfo['authorizer_appid'];
+            
+            if ($authorizerInfo['service_type_info'] == '0' || $authorizerInfo['service_type_info'] == '1') {
+                // 订阅号
+                if ($authorizerInfo['verify_type_info']['id'] > '-1') {
+                        $type = '2';   // 认证的订阅号
+                } else {
+                        $type = '1';   // 未认证的订阅号
+                }
+            } elseif ($authorizerInfo['service_type_info'] == '2') {
+                // 服务号
+                if ($authorizerInfo['verify_type_info']['id'] > '-1') {
+                        $type = '4';   // 认证的服务号
+                } else {
+                        $type = '3';   // 未认证的服务号
+                }
+            }
 
             $model = M('store_wechat');
             
@@ -126,6 +142,7 @@ class ComponentAction extends CommonAction
             $data['mp_headimg']         = $authorizerInfo['head_img'];
             $data['mp_wechatid']        = $authorizerInfo['alias'];
             $data['mp_username']        = $authorizerInfo['user_name'];
+            $data['mp_type']            = $type;
             $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
             $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
             $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
