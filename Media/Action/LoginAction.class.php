@@ -90,15 +90,20 @@ class LoginAction extends \Think\Action
         }
         $component = new \Org\Util\Component;
         if (isset($_GET['state'])) {
-            $result = $component->getOauthAccessToken($appInfo['appid']);
-            if ($result) {
-                $fansModel = new \Common\Model\FansModel();
-                $fansInfo = $fansModel->where(['openid' => $result['openid']])->find();
-                if ($fansInfo) {
-                    $fansModel->where(['openid' => $result['openid']])->setField('user_id', session('user_id'));
-                    session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
-                } else {
-                    session('store_fans_'.session('current_store_id'), -1);
+            $oauth = $component->getOauthAccessToken($appInfo['appid']);
+            if ($oauth) {
+                if ($appInfo['mp_type'] == 4) {
+                    $fansModel = new \Common\Model\FansModel();
+                    $fansInfo = $fansModel->where(['openid' => $oauth['openid']])->find();
+                    if ($fansInfo) {
+                        $fansModel->where(['openid' => $oauth['openid']])->setField('user_id', session('user_id'));
+                        session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
+                    } else {
+                        $weObj = new \Org\Util\Wechat();
+                        $userinfo = $weObj->getOauthUserinfo($appInfo['access_token'], $oauth['openid']);
+                        dump($userinfo);
+                        session('store_fans_'.session('current_store_id'), -1);
+                    }
                 }
                 redirect(cookie('returnUrl'));
             } else {
