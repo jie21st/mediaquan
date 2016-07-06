@@ -108,7 +108,6 @@ class LoginAction extends \Think\Action
                                     $userinfo['headimgurl'] = rtrim($userinfo['headimgurl'], '0') . 132;
                             }
                             $userinfo['avatar'] = $userinfo['headimgurl'];
-                            $_SESSION['userinfo'] = base64_encode(iserializer($userinfo));
 
                             $insert = array(
                                     'openid' => $userinfo['openid'],
