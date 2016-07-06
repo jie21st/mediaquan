@@ -92,14 +92,14 @@ class ComponentAction extends CommonAction
             $authorizerInfo = $result['authorizer_info'];
             $authorizationInfo = $auth['authorization_info'];
             
-            if ($authorizerInfo['service_type_info'] == '0' || $authorizerInfo['service_type_info'] == '1') {
+            if ($authorizerInfo['service_type_info']['id'] == '0' || $authorizerInfo['service_type_info']['id'] == '1') {
                 // 订阅号
                 if ($authorizerInfo['verify_type_info']['id'] > '-1') {
                         $type = '2';   // 认证的订阅号
                 } else {
                         $type = '1';   // 未认证的订阅号
                 }
-            } elseif ($authorizerInfo['service_type_info'] == '2') {
+            } elseif ($authorizerInfo['service_type_info']['id'] == '2') {
                 // 服务号
                 if ($authorizerInfo['verify_type_info']['id'] > '-1') {
                         $type = '4';   // 认证的服务号
