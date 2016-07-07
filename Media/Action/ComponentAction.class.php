@@ -107,7 +107,6 @@ class ComponentAction extends CommonAction
         if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
             // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
             $data = array();
-            $data['access_token']       = $auth_access_token;
             $data['refresh_token']      = $auth_refresh_token;
             $data['token_expiretime']   = $auth_token_expiretime;
             $update = $model->where(['appid' => $auth_appid])->save($data);
@@ -139,7 +138,6 @@ class ComponentAction extends CommonAction
         $data['mp_verify_type']     = $accountInfo['authorizer_info']['verify_type_info']['id'];
         $data['mp_qrcode']          = $accountInfo['authorizer_info']['qrcode_url'];
         $data['auth_state']         = 1;
-        $data['access_token']       = $auth_access_token;
         $data['refresh_token']      = $auth_refresh_token;
         $data['token_expiretime']   = $auth_token_expiretime;
 

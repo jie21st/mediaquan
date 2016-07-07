@@ -29,7 +29,7 @@ class WechatPlatform extends \Org\Util\Wechat
         $this->encodingAesKey = $setting['encodingaeskey'];
         $this->token = $setting['token'];
         
-        if($account) {
+        if(is_array($account)) {
             $this->account = $account;
         }
     }
@@ -229,8 +229,66 @@ class WechatPlatform extends \Org\Util\Wechat
         }
         return false;
     }
+    
+    private function getAuthRefreshToken() {
+        
+        $cachename = 'wechat:refresh_token:' . $this->account['appid'];
+        if ($rs = $this->getCache($cachename)) {
+            echo "cache refresh_token ".$rs;
+            return $rs;
+        }
+        
+        $auth_refresh_token = $this->account['refresh_token'];
+        $this->setCache($cachename, $auth_refresh_token);
+        echo "get refresh_token ".$auth_refresh_token;
+        return $auth_refresh_token;
+    }
+    
+    private function setAuthRefreshToken($token)
+    {
+        M('store_wechat')->where(['appid' => $this->account['appid']])->setField('refresh_token', $token);
+        $this->setCache('wechat:refresh_token:' . $this->account['appid'], $token);
+    }
 
-
+    public function getAccessToken() {
+        
+        $cachename = 'wechat:access_token:'.$this->account['appid'];
+        if ($rs = $this->getCache($cachename)) {
+            $this->access_token = $rs;
+            return $rs;
+        }
+        
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) 
+            return false;
+        $refreshtoken = $this->getAuthRefreshToken();
+        $data = array(
+            'component_appid' => $this->appid,
+            'authorizer_appid' => $this->account['appid'],
+            'authorizer_refresh_token' => $refreshtoken,
+        );
+        $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTHORIZER_TOKEN_URL.'?component_access_token='.$this->component_access_token, self::json_encode($data));
+        if ($result) {
+            $json = json_decode($result, true);
+            if (!$json || !empty($json['errcode'])) {
+                $this->errCode = $json['errcode'];
+                $this->errMsg = $json['errmsg'];
+                return false;
+            }
+            
+            if ($json['authorizer_refresh_token'] != $refreshtoken) {
+                $this->setAuthRefreshToken($response['authorizer_refresh_token']);
+            } else {
+                echo 'refreshtoken 没变';
+            }
+            print_r($json);
+            $this->access_token = $json['authorizer_access_token'];
+            $expire = $json['expires_in'] ? intval($json['expires_in']) - 200 : 3600;
+            $this->setCache($cachename, $json['authorizer_access_token'], $expire);
+            
+            return $json['authorizer_access_token'];
+        }
+        return false;
+    }
 
     public function log($log) {
         if (is_array($log)) {
