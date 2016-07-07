@@ -157,9 +157,11 @@ class ComponentAction extends CommonAction
         exit('授权成功');
     }
     
-    public function bind()
+    /**
+     * 模拟店铺管理后台授权
+     */
+    public function bindOp()
     {
-        // 模拟店铺管理后台授权
         if (isset($_GET['store_id'])) {
             session('store_id', $_GET['store_id']);
         }
