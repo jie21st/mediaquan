@@ -539,3 +539,14 @@ function getFiles($path, $allowFiles, &$files = array())
     }
     return $files;
 }
+
+/**
+ * 字符串中是否存在某字符
+ * 
+ * @param type $string
+ * @param type $find
+ * @return type
+ */
+function str_exists($string, $find) {
+	return !(strpos($string, $find) === false);
+}
