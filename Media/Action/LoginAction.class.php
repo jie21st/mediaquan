@@ -107,7 +107,7 @@ class LoginAction extends \Think\Action
                     // 已存在粉丝
                     session('openid', $oauth['openid']);
                     $fansModel->where(['openid' => $oauth['openid']])->setField('user_id', session('user_id'));
-                    session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
+                    session('store_fans_'.$storeId, $fansInfo['fans_id']);
                 } else {
                     $weObj = new \Org\Util\Wechat();
                     $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
