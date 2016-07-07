@@ -73,8 +73,18 @@ class CommonAction extends Action
         if (is_array($fansInfo) && !empty($fansInfo)) {
             session('store_fans_'.$storeId, $fansInfo['fans_id']);
         } else {
-            $returnUrl = C('MEDIA_SITE_URL') . $_SERVER['REQUEST_URI'];
-            redirect('/login/bindStoreUser?returnUrl='.$returnUrl);
+            $accountPlatform = new \Org\Util\WechatPlatform();
+            $state = session('state');
+            if (empty($state)) {
+                $state = md5(uniqid(rand(), true));
+                session('state', $state);
+            }
+            if (!session('?_dest_url')) {
+                session('_dest_url', getCurrentURL());
+            }
+            $callback = C('MEDIA_SITE_URL').'/login/bindStoreUser?store_id='.$storeId.'&scope=snsapi_base';
+            $loginUrl = $accountPlatform->getOauthRedirect($appInfo['appid'], urlencode($callback) , $state, 'snsapi_base');
+            redirect($loginUrl);
         }
     }
 
