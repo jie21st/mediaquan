@@ -83,65 +83,70 @@ class LoginAction extends \Think\Action
     }
     
     public function bindStoreUserOp(){
+        
+        $storeId = I('get.store_id');
+        $code = I('get.code');
+        $scope = I('get.scope');
+        
+        if (session('state') !=  I('get.state') || empty($code)) {
+            exit('通信错误，请在微信中重新发起请求');
+        }
+        
         $wechatModel = M('store_wechat');
-        $appInfo = $wechatModel->where(['store_id' => session('current_store_id')])->find();
+        $appInfo = $wechatModel->where(['store_id' => $storeId])->find();
         if (empty($appInfo)) {
             exit('app not exists');
         }
-        $component = new \Org\Util\Component;
-        if (isset($_GET['state'])) {
-            $oauth = $component->getOauthAccessToken($appInfo['appid']);
-            if ($oauth) {
-                if ($appInfo['mp_type'] == 4) {
-                    $fansModel = new \Common\Model\FansModel();
-                    $fansInfo = $fansModel->where(['openid' => $oauth['openid']])->find();
-                    if ($fansInfo) {
-                        $fansModel->where(['openid' => $oauth['openid']])->setField('user_id', session('user_id'));
-                        session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
-                    } else {
-                        $weObj = new \Org\Util\Wechat();
-                        $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
-                        $userinfo = $weObj->getUserInfo($oauth['openid']);
-                        if($userinfo && !empty($userinfo) && !empty($userinfo['subscribe'])) {
-                            $userinfo['nickname'] = stripcslashes($userinfo['nickname']);
-                            if (!empty($userinfo['headimgurl'])) {
-                                    $userinfo['headimgurl'] = rtrim($userinfo['headimgurl'], '0') . 132;
-                            }
-                            $userinfo['avatar'] = $userinfo['headimgurl'];
-
-                            $insert = array(
-                                    'openid' => $userinfo['openid'],
-                                    'user_id' => session('user_id'),
-                                    'store_id' => $appInfo['store_id'],
-                                    'fans_nickname' => stripslashes($userinfo['nickname']),
-                                    'fans_sex' => $userinfo['sex'],
-                                    'fans_avatar' => $userinfo['headimgurl'],
-                                    'fans_province' => $userinfo['province'],
-                                    'fans_city' => $userinfo['city'],
-                                    'fans_remark' => $userinfo['remark'],
-                                    'subscribe_state' => $userinfo['subscribe'],
-                                    'subscribe_time' => $userinfo['subscribe_time'],
-                                    'unsubscribe_time' => 0,
-                            );
-                            
-                            $fansId = $fansModel->add($insert);
-                            session('store_fans_'.session('current_store_id'), $fansId);
-                        } else {
-                            session('store_fans_'.session('current_store_id'), -1);
+        $wechatPlatform = new \Org\Util\WechatPlatform();
+        $oauth = $wechatPlatform->getOauthAccessToken($appInfo['appid']);
+        if ($oauth) {
+            if ($appInfo['mp_type'] == 4) {
+                $fansModel = new \Common\Model\FansModel();
+                $fansInfo = $fansModel->where(['openid' => $oauth['openid']])->find();
+                if ($fansInfo) {
+                    // 已存在粉丝
+                    session('openid', $oauth['openid']);
+                    $fansModel->where(['openid' => $oauth['openid']])->setField('user_id', session('user_id'));
+                    session('store_fans_'.session('current_store_id'), $fansInfo['fans_id']);
+                } else {
+                    $weObj = new \Org\Util\Wechat();
+                    $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
+                    $userinfo = $weObj->getUserInfo($oauth['openid']);
+                    if($userinfo && !empty($userinfo) && !empty($userinfo['subscribe'])) {
+                        $userinfo['nickname'] = stripcslashes($userinfo['nickname']);
+                        if (!empty($userinfo['headimgurl'])) {
+                                $userinfo['headimgurl'] = rtrim($userinfo['headimgurl'], '0') . 132;
                         }
+                        $userinfo['avatar'] = $userinfo['headimgurl'];
+
+                        $insert = array(
+                                'openid' => $userinfo['openid'],
+                                'user_id' => session('user_id'),
+                                'store_id' => $appInfo['store_id'],
+                                'fans_nickname' => stripslashes($userinfo['nickname']),
+                                'fans_sex' => $userinfo['sex'],
+                                'fans_avatar' => $userinfo['headimgurl'],
+                                'fans_province' => $userinfo['province'],
+                                'fans_city' => $userinfo['city'],
+                                'fans_remark' => $userinfo['remark'],
+                                'subscribe_state' => $userinfo['subscribe'],
+                                'subscribe_time' => $userinfo['subscribe_time'],
+                                'unsubscribe_time' => 0,
+                        );
+
+                        $fansId = $fansModel->add($insert);
+                        session('store_fans_'.session('current_store_id'), $fansId);
+                    } else {
+                        session('store_fans_'.session('current_store_id'), -1);
                     }
                 }
-                redirect(cookie('returnUrl'));
-            } else {
-                echo '系统错误';
             }
-        } else {
-            cookie('returnUrl', $_GET['returnUrl']);
-            $state = md5(uniqid(rand(), TRUE));
-            session('state', $state);
-            $loginUrl = $component->getOauthRedirect($appInfo['appid'], C('MEDIA_SITE_URL').'/login/bindStoreUser', $state, 'snsapi_base');
-            redirect($loginUrl);
         }
+        
+        // 跳转
+        $forward = urldecode(session('_dest_url'));
+        $forward = str_exists($forward, 'store_id=') ? $forward : "{$forward}&i={$storeId}";
+        redirect($forward . '&wxref=mp.weixin.qq.com#wechat_redirect');
     }
     
     public function logoutOp()
