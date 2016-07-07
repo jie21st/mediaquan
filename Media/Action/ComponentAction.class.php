@@ -139,8 +139,8 @@ class ComponentAction extends CommonAction
         $data['mp_verify_type']     = $accountInfo['authorizer_info']['verify_type_info']['id'];
         $data['mp_qrcode']          = $accountInfo['authorizer_info']['qrcode_url'];
         $data['auth_state']         = 1;
-        $data['access_token']       = $accountInfo['authorizer_info']['authorizer_access_token'];
-        $data['refresh_token']      = $accountInfo['authorizer_info']['authorizer_refresh_token'];
+        $data['access_token']       = $auth_access_token;
+        $data['refresh_token']      = $auth_refresh_token;
         $data['token_expiretime']   = $auth_token_expiretime;
 
         if ($appInfo) {
