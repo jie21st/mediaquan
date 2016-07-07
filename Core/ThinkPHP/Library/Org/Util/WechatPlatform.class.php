@@ -23,21 +23,15 @@ class WechatPlatform extends \Org\Util\Wechat
 
     public function __construct($account = array())
     {
-        $this->appid = 'wx1445ced338f34e05';
-        $this->appsecret = 'c8cc91a726b126145f3ef65acbf01de9';
-        $this->encodingAesKey = 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF';
-        $this->token = '86a8c273c5a0110d49a0dd7c724ac3fc';
+        $setting = (new \Common\Model\SettingModel)->get('platform');
+        $this->appid = $setting['appid'];
+        $this->appsecret = $setting['appsecret'];
+        $this->encodingAesKey = $setting['encodingaeskey'];
+        $this->token = $setting['token'];
         
         if($account) {
             $this->account = $account;
-            $this->account['store_appid'] = $account['appid'];
         }
-//        parent::__construct([
-//            'appid' => 'wx1445ced338f34e05',
-//            'appsecret' => 'c8cc91a726b126145f3ef65acbf01de9',
-//            'encodingaeskey' => 'NJqKhReOkr5JchPCCzVZVFWrlgPRrMT6VxL4Dbs0wbF',
-//            'token' => '86a8c273c5a0110d49a0dd7c724ac3fc',
-//        ]);
     }
 
     public function getRevInfoType() {
@@ -67,10 +61,8 @@ class WechatPlatform extends \Org\Util\Wechat
         }
     }
 
-    public function checkComponentAuth()
+    public function getComponentAccesstoken()
     {
-        $appid = $this->appid;
-        $appsecret = $this->appsecret;
         $authname = 'component:access_token';
         if ($rs = $this->getCache($authname))  {
             $this->component_access_token = $rs;
@@ -84,8 +76,8 @@ class WechatPlatform extends \Org\Util\Wechat
         }
         
         $data = [
-            'component_appid' => $appid,
-            'component_appsecret' => $appsecret,
+            'component_appid' => $this->appid,
+            'component_appsecret' => $this->appsecret,
             'component_verify_ticket' => $ticket,
         ];
         $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTH_URL, self::json_encode($data));
@@ -109,7 +101,10 @@ class WechatPlatform extends \Org\Util\Wechat
 
     public function getPreAuthCode()
     {
-        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) {
+            return false;
+        }
+        
         $data = array(
             'component_appid' => $this->appid
         );
@@ -139,7 +134,7 @@ class WechatPlatform extends \Org\Util\Wechat
 
     public function queryAuth($authcode)
     {
-        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) return false;
         $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_QUERY_AUTH_URL.'?component_access_token='.$this->component_access_token, self::json_encode(['component_appid' => $this->appid, 'authorization_code' => $authcode])); 
         if($result) {
             $json = json_decode($result, true); 
@@ -152,10 +147,14 @@ class WechatPlatform extends \Org\Util\Wechat
         }
         return false;
     }
+    public function getAuthInfo($code)
+    {
+        return $this->queryAuth($code);
+    }
 
     public function getAuthorizerInfo($authorizer_appid)
     {
-        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) return false;
         $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTHORIZER_INFO.'?component_access_token='.$this->component_access_token, self::json_encode(['component_appid' => $this->appid, 'authorizer_appid' => $authorizer_appid]));
 
         if ($result) {
@@ -172,7 +171,7 @@ class WechatPlatform extends \Org\Util\Wechat
     
     public function getAuthorizeRefreshToken($appid, $refresh_token)
     {
-        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) return false;
         $result = $this->http_post(self::API_URL_PREFIX.self::COMPONENT_AUTHORIZER_TOKEN_URL.'?component_access_token='.$this->component_access_token, self::json_encode(['component_appid' => $this->appid, 'authorizer_appid' => $appid, 'authorizer_refresh_token' => $refresh_token]));
         if ($result) {
             $json = json_decode($result, true);
@@ -193,7 +192,7 @@ class WechatPlatform extends \Org\Util\Wechat
 
 
     public function getOauthAccessToken($appid){
-        if (!$this->component_access_token && !$this->checkComponentAuth()) return false;
+        if (!$this->component_access_token && !$this->getComponentAccesstoken()) return false;
         $code = isset($_GET['code'])?$_GET['code']:'';
         if (!$code) return false;
         $result = $this->http_get(self::API_BASE_URL_PREFIX.self::COMPONENT_OAUTH_TOKEN_URL.'?appid='.$appid.'&code='.$code.'&grant_type=authorization_code&component_appid='.$this->appid.'&component_access_token='.$this->component_access_token);
