@@ -299,6 +299,20 @@ function getReferer(){
 	return empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
 }
 
+/**
+ * 取得当前页面url
+ * @return string
+ */
+function getCurrentURL() {
+    if ($_SERVER['SERVER_PORT'] == 443 || (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) != 'off')) {
+        $scheme = 'https://';
+    } else {
+        $scheme = 'http://';
+    }
+    $port = ($_SERVER['SERVER_PORT'] != '80') ? ':' . $_SERVER['SERVER_PORT'] : '';
+    return $scheme . $_SERVER['SERVER_NAME'] . $port . $_SERVER['REQUEST_URI'];
+}
+
 function showMessage($msg, $url = '', $type = 'html') {
     // 如果默认为空，则跳转至上一步链接
     $url = ($url !='' ? $url : getReferer());
