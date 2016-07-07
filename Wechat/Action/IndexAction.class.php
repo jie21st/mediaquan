@@ -28,8 +28,9 @@ class IndexAction extends \Think\Action
     
     public function indexOp()
     {
-        $appid = I('get.appid');
-        if (empty($appid)){
+        if (!empty(I('get.appid'))){
+            $appid = ltrim(I('get.appid'), '/');
+        } else {
             exit('invalid appid');
         }
         
