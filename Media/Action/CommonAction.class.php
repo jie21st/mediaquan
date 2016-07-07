@@ -83,7 +83,7 @@ class CommonAction extends Action
                 session('_dest_url', getCurrentURL());
             }
             $callback = C('MEDIA_SITE_URL').'/login/bindStoreUser?store_id='.$storeId.'&scope=snsapi_base';
-            $loginUrl = $accountPlatform->getOauthRedirect($appInfo['appid'], urlencode($callback) , $state, 'snsapi_base');
+            $loginUrl = $accountPlatform->getOauthRedirect($appInfo['appid'], $callback, $state, 'snsapi_base');
             redirect($loginUrl);
         }
     }
