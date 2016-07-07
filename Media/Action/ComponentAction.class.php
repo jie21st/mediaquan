@@ -69,104 +69,106 @@ class ComponentAction extends CommonAction
      */
     public function authOp()
     {
+        $wechatPlatform = new \Org\Util\WechatPlatform();
+        if (empty($_GET['auth_code'])) {
+            showMessage('授权登录失败，请重试');
+        }
+        $auth_info = $wechatPlatform->getAuthInfo($_GET['auth_code']);
+        $auth_access_token = $auth_info['authorization_info']['authorizer_access_token'];
+        $auth_refresh_token = $auth_info['authorization_info']['authorizer_refresh_token'];
+        $auth_token_expiretime = time() + intval($auth_info['authorization_info']['expires_in']) - 100;
+        $auth_appid = $auth_info['authorization_info']['authorizer_appid'];
+
+	$accountInfo = $wechatPlatform->getAuthorizerInfo($auth_appid);
+	if (!$accountInfo) {
+            showMessage('授权登录新建公众号失败，请重试');
+	}
+            
+        if ($accountInfo['authorizer_info']['service_type_info']['id'] == '0' || $accountInfo['authorizer_info']['service_type_info']['id'] == '1') {
+            // 订阅号
+            if ($accountInfo['authorizer_info']['verify_type_info']['id'] > '-1') {
+                    $type = '2';   // 认证的订阅号
+            } else {
+                    $type = '1';   // 未认证的订阅号
+            }
+        } elseif ($accountInfo['authorizer_info']['service_type_info']['id'] == '2') {
+            // 服务号
+            if ($accountInfo['authorizer_info']['verify_type_info']['id'] > '-1') {
+                    $type = '4';   // 认证的服务号
+            } else {
+                    $type = '3';   // 未认证的服务号
+            }
+        }
+
+        $model = M('store_wechat');
+
+        // 取得授权app绑定的店铺公众号信息
+        $appInfo = $model->where(['appid' => $auth_appid])->find();
+        if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
+            // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
+            $data = array();
+            $data['access_token']       = $auth_access_token;
+            $data['refresh_token']      = $auth_refresh_token;
+            $data['token_expiretime']   = $auth_token_expiretime;
+            $update = $model->where(['appid' => $auth_appid])->save($data);
+            showMessage('该公众号已绑定其他店铺');
+        }
+
+        // 取得当前店铺的公众号信息  公众号一致性校验
+        $currentStoreWechatInfo = $model->where(['store_id' => session('store_id')])->find();
+        if ($currentStoreWechatInfo && $currentStoreWechatInfo['appid'] != $auth_appid) {
+            showMessage('店铺已绑定'.$currentStoreWechatInfo['mp_username'].'的公众号，无法绑定其他公众号');
+        }
+
+        $funcInfo = array();
+        foreach ($accountInfo['authorization_info']['func_info'] as $func) {
+            $funcInfo[] = $func['funcscope_category']['id'];
+        }
+
+        // 绑定
+        $data = array();
+        $data['store_id']           = session('store_id');
+        $data['appid']              = $auth_appid;
+        $data['func_info']          = implode(',', $funcInfo);
+        $data['mp_nickname']        = $accountInfo['authorizer_info']['nick_name'];
+        $data['mp_headimg']         = $accountInfo['authorizer_info']['head_img'];
+        $data['mp_wechatid']        = $accountInfo['authorizer_info']['alias'];
+        $data['mp_username']        = $accountInfo['authorizer_info']['user_name'];
+        $data['mp_type']            = $type;
+        $data['mp_service_type']    = $accountInfo['authorizer_info']['service_type_info']['id'];
+        $data['mp_verify_type']     = $accountInfo['authorizer_info']['verify_type_info']['id'];
+        $data['mp_qrcode']          = $accountInfo['authorizer_info']['qrcode_url'];
+        $data['auth_state']         = 1;
+        $data['access_token']       = $accountInfo['authorizer_info']['authorizer_access_token'];
+        $data['refresh_token']      = $accountInfo['authorizer_info']['authorizer_refresh_token'];
+        $data['token_expiretime']   = $auth_token_expiretime;
+
+        if ($appInfo) {
+            $data['update_time'] = time();
+            $update = $model->save($data);
+        } else {
+            $data['create_time'] = time();
+            $data['update_time'] = $data['create_time'];
+            $update = $model->add($data);
+        }
+
+        $storeModel = new \Common\Model\StoreModel();
+        $storeModel->where(['store_id' => session('store_id')])->setField('if_bind_wechat', 1);
+        exit('授权成功');
+    }
+    
+    public function bind()
+    {
+        // 模拟店铺管理后台授权
         if (isset($_GET['store_id'])) {
             session('store_id', $_GET['store_id']);
         }
-        if (! session('?store_id')) {
+        if (!session('?store_id')) {
             exit('请指定store_id');
         }
-        $cp = new \Org\Util\Component();
-        if (isset($_GET['auth_code'])) {
-            // auth callback
-            $auth = $cp->queryAuth($_GET['auth_code']);
-            if (!$auth) {
-                exit('授权失败'.$cp->errMsg);
-            }
-            $appid = $auth['authorization_info']['authorizer_appid'];
-                //dump($auth);
-            $result = $cp->getAuthorizerInfo($appid);
-            if (!$result) {
-                exit('授权失败'.$cp->errMsg);
-            }
-                
-            $authorizerInfo = $result['authorizer_info'];
-            $authorizationInfo = $auth['authorization_info'];
-            
-            if ($authorizerInfo['service_type_info']['id'] == '0' || $authorizerInfo['service_type_info']['id'] == '1') {
-                // 订阅号
-                if ($authorizerInfo['verify_type_info']['id'] > '-1') {
-                        $type = '2';   // 认证的订阅号
-                } else {
-                        $type = '1';   // 未认证的订阅号
-                }
-            } elseif ($authorizerInfo['service_type_info']['id'] == '2') {
-                // 服务号
-                if ($authorizerInfo['verify_type_info']['id'] > '-1') {
-                        $type = '4';   // 认证的服务号
-                } else {
-                        $type = '3';   // 未认证的服务号
-                }
-            }
-
-            $model = M('store_wechat');
-            
-            // 取得授权app绑定的店铺公众号信息
-            $appInfo = $model->where(['appid' => $appid])->find();
-            if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
-                // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
-                $data = array();
-                $data['access_token']       = $authorizationInfo['authorizer_access_token'];
-                $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
-                $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;
-                $update = $model->where(['appid' => $appid])->save($data);
-                exit('该公众号已绑定其他店铺');
-            }
-            
-            // 取得当前店铺的公众号信息  公众号一致性校验
-            $currentStoreWechatInfo = $model->where(['store_id' => session('store_id')])->find();
-            if ($currentStoreWechatInfo && $currentStoreWechatInfo['appid'] != $appid) {
-                exit('店铺已绑定'.$currentStoreWechatInfo['mp_username'].'的公众号，无法绑定其他公众号');
-            }
-            
-            $funcInfo = array();
-            foreach ($authorizationInfo['func_info'] as $func) {
-                $funcInfo[] = $func['funcscope_category']['id'];
-            }
-
-            // 绑定
-            $data = array();
-            $data['store_id']           = session('store_id');
-            $data['appid']              = $appid;
-            $data['func_info']          = implode(',', $funcInfo);
-            $data['mp_nickname']        = $authorizerInfo['nick_name'];
-            $data['mp_headimg']         = $authorizerInfo['head_img'];
-            $data['mp_wechatid']        = $authorizerInfo['alias'];
-            $data['mp_username']        = $authorizerInfo['user_name'];
-            $data['mp_type']            = $type;
-            $data['mp_service_type']    = $authorizerInfo['service_type_info']['id'];
-            $data['mp_verify_type']     = $authorizerInfo['verify_type_info']['id'];
-            $data['mp_qrcode']          = $authorizerInfo['qrcode_url'];
-            $data['auth_state']         = 1;
-            $data['access_token']       = $authorizationInfo['authorizer_access_token'];
-            $data['refresh_token']      = $authorizationInfo['authorizer_refresh_token'];
-            $data['token_expiretime']   = time() + intval($authorizationInfo['expires_in']) - 100;
-
-            if ($appInfo) {
-                $data['update_time'] = time();
-                $update = $model->save($data);
-            } else {
-                $data['create_time'] = time();
-                $data['update_time'] = $data['create_time'];
-                $update = $model->add($data);
-            }
-            
-            $storeModel = new \Common\Model\StoreModel();
-            $storeModel->where(['store_id' => session('store_id')])->setField('if_bind_wechat', 1);
-            exit('授权成功');
-        } else {
-            $authurl = $cp->getAuthorizeRedirect(C('MEDIA_SITE_URL').'/component/auth');
-            echo '<a style="margin-left:5px;" href="' . $authurl . '"><img src="https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon_button3_2.png"></a>';
-        }
+        $wechatPlatform = new \Org\Util\WechatPlatform();
+        $authurl = $wechatPlatform->getAuthorizeRedirect(C('MEDIA_SITE_URL').'/component/auth');
+        echo '<a style="margin-left:5px;" href="' . $authurl . '"><img src="https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon_button3_2.png"></a>';
     }
 }
 
