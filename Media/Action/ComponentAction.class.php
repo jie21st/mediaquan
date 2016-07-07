@@ -9,6 +9,8 @@ class ComponentAction extends CommonAction
     
     /**
      * 授权推送事件接收
+     * 
+     * @TODO 删除缓存的token
      */
     public function receiveOp()
     {
@@ -40,9 +42,7 @@ class ComponentAction extends CommonAction
                 
                 $update = array();
                 $update['func_info']        = implode(',', $funcInfo);
-                $update['access_token']     = $authorizationInfo['authorizer_access_token'];
                 $update['refresh_token']    = $authorizationInfo['authorizer_refresh_token'];
-                $update['token_expiretime'] = time() + intval($authorizationInfo['expires_in']) - 100;
                 $update['update_time']      = time();
                 $result = M('store_wechat')->where(['appid' => $appid])->save($update);
                 if ($result === false) {
