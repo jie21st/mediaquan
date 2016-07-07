@@ -74,9 +74,7 @@ class ComponentAction extends CommonAction
             showMessage('授权登录失败，请重试');
         }
         $auth_info = $wechatPlatform->getAuthInfo($_GET['auth_code']);
-        $auth_access_token = $auth_info['authorization_info']['authorizer_access_token'];
         $auth_refresh_token = $auth_info['authorization_info']['authorizer_refresh_token'];
-        $auth_token_expiretime = time() + intval($auth_info['authorization_info']['expires_in']) - 100;
         $auth_appid = $auth_info['authorization_info']['authorizer_appid'];
 
 	$accountInfo = $wechatPlatform->getAuthorizerInfo($auth_appid);
@@ -105,11 +103,6 @@ class ComponentAction extends CommonAction
         // 取得授权app绑定的店铺公众号信息
         $appInfo = $model->where(['appid' => $auth_appid])->find();
         if ($appInfo && ($appInfo['store_id'] != session('store_id'))) {
-            // 因为已经获取到此app最新的令牌，需要更新否则token将不可用
-            $data = array();
-            $data['refresh_token']      = $auth_refresh_token;
-            $data['token_expiretime']   = $auth_token_expiretime;
-            $update = $model->where(['appid' => $auth_appid])->save($data);
             showMessage('该公众号已绑定其他店铺');
         }
 
@@ -139,7 +132,6 @@ class ComponentAction extends CommonAction
         $data['mp_qrcode']          = $accountInfo['authorizer_info']['qrcode_url'];
         $data['auth_state']         = 1;
         $data['refresh_token']      = $auth_refresh_token;
-        $data['token_expiretime']   = $auth_token_expiretime;
 
         if ($appInfo) {
             $data['update_time'] = time();
