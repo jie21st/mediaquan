@@ -15,6 +15,8 @@ class IndexAction extends \Think\Action
     private $wechat;
     
     private $message;
+    
+    private $account;
 
     /**
      * __construct 
@@ -40,11 +42,12 @@ class IndexAction extends \Think\Action
         if (empty($account)){
             exit('account not exists');
         }
+        $this->account = $account;
 
         $wechat = new WechatPlatform($account);
         $wechat->valid();
         
-        $message = $wechat->getRevData();
+        $message = $wechat->getRev()->getRevData();
         $this->message = $message;
         
         $this->booking($message);
@@ -124,6 +127,24 @@ class IndexAction extends \Think\Action
     }
     
     private function booking($message) {
-     \Think\Log::write(print_r($message, true));
+        $fansModel = new \Common\Model\FansModel();
+        $fans = $fansModel->getFansInfo(['openid' => $message['FromUserName']]);
+        if (!empty($fans)) {
+            if ($message['Event'] == 'unsubscribe') {
+                $fansModel->where(['fans_id' => $fans['fans_id']])->save(['subscribe_state' => 0, 'unsubscribe_time' => time()]);
+            }
+        } else {
+            if ($message['Event'] == 'subscribe' || $message['MsgType'] == 'text') {
+                $rec = array();
+                $rec['store_id'] = $this->account['store_id'];
+                $rec['user_id'] = 0;
+                $rec['openid'] = $message['FromUserName'];
+                $rec['subscribe_state'] = 1;
+                $rec['subscribe_time'] = $message['CreateTime'];
+                $rec['unsubscribe_time'] = 0;
+                
+                $fansModel->add($message);
+            }
+        }
     }
 }
