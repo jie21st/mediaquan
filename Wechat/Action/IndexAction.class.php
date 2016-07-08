@@ -143,7 +143,7 @@ class IndexAction extends \Think\Action
                 $rec['subscribe_time'] = $message['CreateTime'];
                 $rec['unsubscribe_time'] = 0;
                 
-                $fansModel->add($message);
+                $fansModel->add($rec);
             }
         }
     }
