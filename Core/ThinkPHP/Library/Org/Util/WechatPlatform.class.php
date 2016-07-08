@@ -21,7 +21,7 @@ class WechatPlatform extends \Org\Util\Wechat
     private $component_access_token;
     protected $account = array();
 
-    public function __construct($account = array())
+    public function __construct($storeIdOrAccount)
     {
         $setting = (new \Common\Model\SettingModel)->get('platform');
         $this->appid = $setting['appid'];
@@ -29,7 +29,13 @@ class WechatPlatform extends \Org\Util\Wechat
         $this->encodingAesKey = $setting['encodingaeskey'];
         $this->token = $setting['token'];
         
-        if(is_array($account)) {
+        if (!empty($storeIdOrAccount)) {
+            if(is_array($storeIdOrAccount)) {
+                $account = $storeIdOrAccount;
+            } else {
+                $account = M('store_wechat')->where(['store_id' => $storeIdOrAccount])->find();
+            }
+
             $this->account = $account;
         }
     }
