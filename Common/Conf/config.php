@@ -40,6 +40,7 @@ return array(
     'DB_PWD'            => 'm1y2s3q4l5', // 密码
     'DB_PORT'           => '3306', // 端口
     'DB_PREFIX'         => 'm_', // 数据库表前缀
+    'DB_CHARSET'        => 'utf8mb4',
 
     // 数据缓存
     'DATA_CACHE_TYPE'   => 'Redis',
