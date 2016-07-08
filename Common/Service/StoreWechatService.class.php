@@ -6,36 +6,39 @@ namespace Common\Service;
  */
 class StoreWechatService
 {
+    protected $storeId;
     protected $wechat;
     
     public $errMsg = '';
-
-    private function checkStoreAuth($storeId)
+    
+    public function __construct($storeId = '')
     {
-        if (!$storeId) {
-            $this->errMsg = 'store_id is invalid';
-            return false;
+        if(empty($storeId)) {
+            trigger_error('error store id, can not construct ' . __CLASS__, E_USER_WARNING);
         }
+        $this->storeId = $storeId;
+    }
+
+    private function checkStoreAuth()
+    {
         $storeModel = new \Common\Model\StoreModel();
-        $storeInfo = $storeModel->getStoreInfo(['store_id' => $storeId]);
+        $storeInfo = $storeModel->getStoreInfo(['store_id' => $this->storeId]);
         if (empty($storeInfo) || $storeInfo['store_state'] == 0) {
-            $this->errMsg = 'store is closed or not exists';
+            $this->errMsg = '店铺不存在或已关闭';
             return false;
         }
         if ($storeInfo['if_bind_wechat'] == 0) {
-            $this->errMsg = 'store doesn\'t bind wechat';
+            $this->errMsg = '该店铺未绑定公众号';
             return false;
         }
         
         // 获取店铺公众号信息
-        $appInfo = M('store_wechat')->where(['store_id' => $storeId])->find();
-        if (empty($appInfo) || $appInfo['auth_state'] == '0') {
+        $account = M('store_wechat')->where(['store_id' => $this->storeId])->find();
+        if (empty($account) || $account['auth_state'] == '0') {
             $this->errMsg = '店铺微信取消授权';
             return false;
         }
-        $wechat = new \Org\Util\Wechat;
-        $wechat->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
-        $this->wechat = $wechat;
+        $this->wechat = new \Org\Util\WechatPlatform($account);
         
         return true;
     }
@@ -48,9 +51,9 @@ class StoreWechatService
      * @param type $expire
      * @return boolean
      */
-    public function getQRUrl($storeId, $scene_id, $type = 0, $expire = 3600)
+    public function getQRUrl($scene_id, $type = 0, $expire = 3600)
     {
-        if (!$this->wechat && !$this->checkStoreAuth($storeId)) return false;
+        if (!$this->wechat && !$this->checkStoreAuth()) return false;
         if ($scene_id <= 0) {
             return false;
         }
@@ -81,9 +84,11 @@ class StoreWechatService
      *
      * @return mixed
      */
-    public function sendCustomMessage($storeId, $data)
+    public function sendCustomMessage($data)
     {
-        if (!$this->wechat && !$this->checkStoreAuth($storeId)) return false;
+        if (!$this->wechat && !$this->checkStoreAuth()) {
+            return false;
+        }
         $result = $this->wechat->sendCustomMessage($data);
         if (!$result) {
             $this->errMsg = $this->wechat->errMsg;

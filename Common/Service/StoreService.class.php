@@ -64,7 +64,7 @@ class StoreService
         }
         $message = notifyReplaceText($tplInfo['tpl_content'], $params);
         
-        $storeWechatService = new \Common\Service\StoreWechatService();
+        $storeWechatService = new \Common\Service\StoreWechatService($storeId);
         // 发送
         $messageModel = M('message');
         $data = array(
@@ -79,7 +79,7 @@ class StoreService
             return false;
         }
         
-        $result = $storeWechatService->sendCustomMessage($storeId, [
+        $result = $storeWechatService->sendCustomMessage([
             'touser' => $receiver['openid'],
             'msgtype' => 'text',
             'text' => ['content' => $message]

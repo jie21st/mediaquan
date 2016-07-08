@@ -180,7 +180,7 @@ class ClassService
         // 通知
         $storeFansService = new StoreFansService();
         $fans = $storeFansService->getFansByUserId($storeId, $buyerId);
-        if($fans) {
+        if($fans) {  
             $fansId = $fans['fans_id'];
             $fansNickname = $fans['fans_nickname'];
             // 通知自己
