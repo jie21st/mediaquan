@@ -2,7 +2,7 @@
 namespace Wechat\Action;
 
 use \Org\Util\Wechat;
-use \Org\Util\Component;
+use \Org\Util\WechatPlatform;
 
 class IndexAction extends \Think\Action
 {
@@ -13,6 +13,8 @@ class IndexAction extends \Think\Action
      * @access private
      */
     private $wechat;
+    
+    private $message;
 
     /**
      * __construct 
@@ -34,20 +36,28 @@ class IndexAction extends \Think\Action
             exit('invalid appid');
         }
         
-        $model = M('store_wechat');
-        $appInfo = $model->where(['appid' => $appid])->find();
-        if (empty($appInfo)){
-            exit('app not exists');
+        $account = M('store_wechat')->where(['appid' => $appid])->find();
+        if (empty($account)){
+            exit('account not exists');
         }
 
-        $wechat = new Component;
+        $wechat = new WechatPlatform($account);
         $wechat->valid();
+        
+        $message = $wechat->getRevData();
+        $this->message = $message;
+        
+        $this->booking($message);
+        
+        
+        /*
         $type = $wechat->getRev()->getRevType();
         switch($type) {
             case Component::MSGTYPE_EVENT:
                 $event = $wechat->getRev()->getRevEvent();
                 $openid = $wechat->getRevFrom();
                 $fansModel = new \Common\Model\FansModel();
+                $fans = $fansModel->getFansInfo(['openid' => $openid]);
                 switch ($event['event']) {
                     case 'subscribe':
                         if ($appInfo['mp_verify_type'] != 0) {
@@ -60,7 +70,8 @@ class IndexAction extends \Think\Action
                         $fansInfo = $fansModel->where(['openid' => $openid])->find();
                         if (empty($fansInfo)) {
                             $insert = array();
-                            $insert['store_id'] = $appInfo['store_id'];
+                            $insert['store_id'] = $account['store_id'];
+                            $insert['user_id'] = 0;
                             $insert['openid'] = $userInfo['openid'];
                             $insert['fans_nickname'] = $userInfo['nickname'];
                             $insert['fans_sex'] = $userInfo['sex'];
@@ -70,6 +81,7 @@ class IndexAction extends \Think\Action
                             $insert['fans_city'] = $userInfo['city'];
                             $insert['subscribe_state'] = 1;
                             $insert['subscribe_time'] = $userInfo['subscribe_time'];
+                            $insert['unsubscribe_time'] = 0;
                             $insert['fans_remark'] = $userInfo['remark'];
 
                             $fansModel->add($insert);
@@ -108,33 +120,10 @@ class IndexAction extends \Think\Action
                 $data = $wechat->getRevData();
                 \Think\Log::write('其他接收'.print_r($data, true));
         }
+        */
     }
     
-    /**
-     * 接收微信推送消息
-     */
-    public function _receiveOp()
-    {
-        (new \Media\Service\WechatResponseService)->responseHandle();
-    }
-    
-    /**
-     * 公众平台JSAPI签名
-     * 
-     * @access public
-     * @return void
-     */
-    public function getJsSignOp()
-    {
-        $url = I('request.url', '', 'urldecode');
-        if (! $url) {
-            $this->ajaxReturn(['code' => 10010, 'msg' => '参数错误'], 'jsonp');
-        }
-        $result = $this->wechat->getJsSign($url);
-        if ($result) {
-            $this->ajaxReturn(['code' => 1, 'data' => $result, 'msg' => 'SUCCESS'], 'jsonp');
-        } else {
-            $this->ajaxReturn(['code' => 10010, 'errMsg' => '参数错误'], 'jsonp');
-        }
+    private function booking($message) {
+     \Think\Log::write(print_r($message, true));
     }
 }
