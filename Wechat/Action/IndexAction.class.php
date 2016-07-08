@@ -44,7 +44,7 @@ class IndexAction extends \Think\Action
         $wechat = new WechatPlatform($account);
         $wechat->valid();
         
-        $message = $wechat->getRevData();
+        $message = $this->wechat->getRevData();
         $this->message = $message;
         
         $this->booking($message);
