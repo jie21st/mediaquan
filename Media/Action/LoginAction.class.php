@@ -112,17 +112,15 @@ class LoginAction extends \Think\Action
                     $weObj = new \Org\Util\WechatPlatform($appInfo);
                     $userinfo = $weObj->getUserInfo($oauth['openid']);
                     if($userinfo && !empty($userinfo) && !empty($userinfo['subscribe'])) {
-                        $userinfo['nickname'] = stripcslashes($userinfo['nickname']);
                         if (!empty($userinfo['headimgurl'])) {
                                 $userinfo['headimgurl'] = rtrim($userinfo['headimgurl'], '0') . 132;
                         }
-                        $userinfo['avatar'] = $userinfo['headimgurl'];
-
+                        
                         $insert = array(
                                 'openid' => $userinfo['openid'],
                                 'user_id' => session('user_id'),
                                 'store_id' => $appInfo['store_id'],
-                                'fans_nickname' => stripslashes($userinfo['nickname']),
+                                'fans_nickname' => $userinfo['nickname'],
                                 'fans_sex' => $userinfo['sex'],
                                 'fans_avatar' => $userinfo['headimgurl'],
                                 'fans_province' => $userinfo['province'],
@@ -131,6 +129,7 @@ class LoginAction extends \Think\Action
                                 'subscribe_state' => $userinfo['subscribe'],
                                 'subscribe_time' => $userinfo['subscribe_time'],
                                 'unsubscribe_time' => 0,
+                                'fans_info' => serialize($userinfo),
                         );
 
                         $fansId = $fansModel->add($insert);
