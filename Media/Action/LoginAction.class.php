@@ -109,8 +109,7 @@ class LoginAction extends \Think\Action
                     $fansModel->where(['openid' => $oauth['openid']])->setField('user_id', session('user_id'));
                     session('store_fans_'.$storeId, $fansInfo['fans_id']);
                 } else {
-                    $weObj = new \Org\Util\Wechat();
-                    $weObj->checkAuth($appInfo['appid'], '', $appInfo['access_token']);
+                    $weObj = new \Org\Util\WechatPlatform($appInfo);
                     $userinfo = $weObj->getUserInfo($oauth['openid']);
                     if($userinfo && !empty($userinfo) && !empty($userinfo['subscribe'])) {
                         $userinfo['nickname'] = stripcslashes($userinfo['nickname']);
