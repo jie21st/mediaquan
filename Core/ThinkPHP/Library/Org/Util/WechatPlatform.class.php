@@ -215,26 +215,6 @@ class WechatPlatform extends \Org\Util\Wechat
         }
         return false;
     }
-
-    public function getUserInfo($token, $openid){
-        //$userInfoCacheKey = 'wechat:userinfo:'.$openid;
-        //$expire = 604800;  //60 * 60 * 24 * 7     7天
-        //$userInfo = $this->getCache($userInfoCacheKey);
-        //if($userInfo && $userInfo['subscribe'] != 0)
-        //    return $userInfo;
-        $result = $this->http_get(self::API_URL_PREFIX.self::USER_INFO_URL.'access_token='.$token.'&openid='.$openid);
-        if ($result) {
-            $json = json_decode($result,true);
-            if (isset($json['errcode'])) {
-                $this->errCode = $json['errcode'];
-                $this->errMsg = $json['errmsg'];
-                return false;
-            }
-            //$this->setCache($userInfoCacheKey, $json, $expire);
-            return $json;
-        }
-        return false;
-    }
     
     private function getAuthRefreshToken() {
         
