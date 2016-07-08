@@ -21,21 +21,21 @@ class StoreWechatService
 
     private function checkStoreAuth()
     {
-        $storeModel = new \Common\Model\StoreModel();
-        $storeInfo = $storeModel->getStoreInfo(['store_id' => $this->storeId]);
-        if (empty($storeInfo) || $storeInfo['store_state'] == 0) {
-            $this->errMsg = '店铺不存在或已关闭';
-            return false;
-        }
-        if ($storeInfo['if_bind_wechat'] == 0) {
-            $this->errMsg = '该店铺未绑定公众号';
-            return false;
-        }
-        
+//        $storeModel = new \Common\Model\StoreModel();
+//        $storeInfo = $storeModel->getStoreInfo(['store_id' => $this->storeId]);
+//        if (empty($storeInfo) || $storeInfo['store_state'] == 0) {
+//            $this->errMsg = '店铺不存在或已关闭';
+//            return false;
+//        }
+//        if ($storeInfo['if_bind_wechat'] == 0) {
+//            $this->errMsg = '该店铺未绑定公众号';
+//            return false;
+//        }
+//        
         // 获取店铺公众号信息
         $account = M('store_wechat')->where(['store_id' => $this->storeId])->find();
         if (empty($account) || $account['auth_state'] == '0') {
-            $this->errMsg = '店铺微信取消授权';
+            $this->errMsg = '店铺未绑定公众号或已取消授权';
             return false;
         }
         $this->wechat = new \Org\Util\WechatPlatform($account);

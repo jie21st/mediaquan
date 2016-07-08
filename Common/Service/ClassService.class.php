@@ -233,23 +233,17 @@ class ClassService
             return false;   //未设置分销比例
         }
         
-        // 店铺是否开启分销
-        $storeInfo = $storeService->getStoreInfoByID($storeId);
-        if ($storeInfo['if_distribution'] == 0) {
-            return false;
+        // 获取分销设置
+        $setting = M('store_distribution')->where(['store_id'])->find();
+        if (empty($setting) || $setting['state'] != '1') {
+            return false;   // 未设置分销或未启用
         }
         
-        // 查询店铺粉丝
+        // 购买粉丝信息
         $storeFansService = new StoreFansService();
         $fans = $storeFansService->getFansByUserId($storeId, $buyerId);
         if (empty($fans) || $fans['parent_id'] == 0) {
-            return false;
-        }
-        
-        // 获取店铺分销佣金设置
-        $setting = M('store_distribution')->where(['store_id' => $storeId])->find();
-        if (empty($setting)) {
-            return false;
+            return false;   // 粉丝不存在或无上级
         }
         
         $commisTotal =  $order['order_amount'] * $order['commis_rate'] / 100;
