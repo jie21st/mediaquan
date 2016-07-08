@@ -263,10 +263,8 @@ class WechatPlatform extends \Org\Util\Wechat
             
             if ($json['authorizer_refresh_token'] != $refreshtoken) {
                 $this->setAuthRefreshToken($response['authorizer_refresh_token']);
-            } else {
-                echo 'refreshtoken 没变';
             }
-            print_r($json);
+            
             $this->access_token = $json['authorizer_access_token'];
             $expire = $json['expires_in'] ? intval($json['expires_in']) - 200 : 3600;
             $this->setCache($cachename, $json['authorizer_access_token'], $expire);
