@@ -62,7 +62,18 @@ class IndexAction extends \Think\Controller
             'module' => 'default',
             'rule' => '-1',
         );
+        
+        foreach ($pars as $par) {
+            $par['message'] = $message;
+            
+            $this->process($par);
+        }
 
+    }
+    
+    private function process($params) {
+        $processor = \Think\Process::getInstance($params['module']);
+        $response = $processor->response();
     }
     
     private function booking($message) {
