@@ -20,6 +20,7 @@ class ChapterAction extends CommonAction
 		$this->display();
 	}
 
+
 	protected $reult = array(
 		array('chapter_title', 'require',  '章节标题必须!', 1, '', 3),
 		array('class_id', 'require',  '课程类型必须!', 1, '', 3),
