@@ -4,7 +4,7 @@ namespace Wechat\Action;
 use \Org\Util\Wechat;
 use \Org\Util\WechatPlatform;
 
-class IndexController extends \Think\Controller
+class IndexAction extends \Think\Controller
 {
     /**
      * wechat 
@@ -30,7 +30,7 @@ class IndexController extends \Think\Controller
         $this->wechat = new Wechat;
     }
     
-    public function indexOp()
+    public function index()
     {
         if (!empty(I('get.appid'))){
             $appid = ltrim(I('get.appid'), '/');
@@ -62,6 +62,7 @@ class IndexController extends \Think\Controller
             'module' => 'default',
             'rule' => '-1',
         );
+
     }
     
     private function booking($message) {
