@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <head>
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/themes/icon.css">
+
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/tooltip-form-style.css"></link> 
+        <link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/css.css"></link>
+        
+
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.form.js"></script> 
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui-lang-zh_CN.js"></script>
+
+        <!-- <script src="http://adminbk.guanlizhihui.com/js/datetimeUtil.js"></script> -->
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/formatter.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui.getdata.js"></script>
+        <script>
+        var app_url = "<{$Think.config.MOBILE_SITE_URL}>"; 
+        </script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/chapterList.js"></script>
+        <style type="text/css">
+            .icon-add{
+                background-position:0;
+            }
+        </style>
+    </head>
+    <body> 
+        <div class="easyui-layout" data-options="fit:true" id="td">
+            <div data-options="region:'north'" style="padding:5px;height:70px">
+                <fieldset style="border-width: 1px;">
+                    <legend>课程查询</legend>
+                    <div id="serchmsg"> 
+                        <label>关键字:</label>
+                        <input type="text" name="chapter_title" id="chapter_title">
+                        &nbsp;
+                        <label>课程状态:</label>
+                        <select id="status" name="status">
+                            <option value="-1">不限</option>
+                            <option value="0">已结束</option>
+                            <option value="1">进行中</option>
+                        </select>
+                        &nbsp;
+                        <a href="javascript:void(0);" class="easyui-linkbutton" id="queryBtn" icon="icon-search">查询</a>
+                        &nbsp; 
+                    </div>
+                </fieldset>
+            </div>
+            
+           <div data-options="region:'center'">
+                <table id="chapterTable"
+                    border="0" 
+                    cellspacing="0" 
+                    cellpadding="0" 
+                    iconCls="icon-edit" 
+                    width="100%" 
+                    fit="true"
+                    idField="class_id" 
+                    pagination="true"
+                    remoteSort="false" 
+                    singleSelect="false" 
+                    showFooter="false"
+                    striped="true">
+                    <thead>
+                        <tr align="center">
+                            <th data-options="field:'chapter_id'" width="40">序号</th>
+                            <th data-options="field:'chapter_title'" width="250">课程标题</th>
+                            <th data-options="field:'teacher_name'" width=60">主讲老师</th>
+                            <th data-options="field:'start_datetime'" width="205">开始时间</th>
+                            <th data-options="field:'status'" width="60" formatter="formatstatusOperation">课程状态</th>
+                            <th data-options="field:'create_datetime'" width="200">创建时间</th>
+                            <th data-options="field:'creater_user'" width="80">创建人</th>
+                            <th data-options="field:'operation'" width="200" formatter="formatChapterOperation">操作</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </body> 
+</html>

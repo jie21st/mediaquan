@@ -9,7 +9,7 @@ function uploads(file, type, url, $obj, hiddenName)
     var data = new FormData;
     var images = file[0];
     var imagesType = [
-        'image/png', 'image/jpg', 'image/jpeg', 'image/gif'
+        'image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'audio/mp3',  'video/mp4', 'application/pdf'
     ];
     var types = imagesType.indexOf(images.type);
     var size = images.size;

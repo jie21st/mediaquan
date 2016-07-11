@@ -14,7 +14,7 @@ var _menus = {
            "menus":[
      	         {"menuid": "21", "menuname": "VIP在线课程管理", "icon": "icon-course_1", "url": "#"},
      	         {"menuid": "22", "menuname": "线上课程管理", "icon": "icon-course_2", "url": "/class/list"},
-     	         {"menuid": "23", "menuname": "线上课程章节管理", "icon": "icon-course_3", "url": "#"},
+     	         {"menuid": "23", "menuname": "线上课程章节管理", "icon": "icon-course_3", "url": "/chapter/list"},
      	         {"menuid": "24", "menuname": "线下训练营管理", "icon": "icon-course_4", "url": "/camp/list"}
             ]
        },

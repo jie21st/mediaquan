@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!--<link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/themes/default/easyui.css">-->
+        <!--<link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/themes/icon.css">-->
+        <!--<link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/css.css">-->
+        <!--<link rel="stylesheet" type="text/css" href="RESOURCE_SITE_URL/admin/css/pikaday.css">-->
+        <link rel="stylesheet" type="text/css" href="http://static.guanlizhihui.com/resource/admin/themes/default/easyui.css">
+        <link rel="stylesheet" type="text/css" href="http://static.guanlizhihui.com/resource/admin/themes/icon.css">
+        <link rel="stylesheet" type="text/css" href="http://static.guanlizhihui.com/resource/admin/css/tooltip-form-style.css"></link>
+        <link rel="stylesheet" type="text/css" href="http://static.guanlizhihui.com/resource/admin/css/css.css"></link>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery-1.8.0.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/easyui-lang-zh_CN.js"></script>
+         <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/datetimeUtil.js"></script>
+        <script type="text/javascript" src="RESOURCE_SITE_URL/admin/js/functions.js"></script>
+        <script type="text/javascript" src="http://static.guanlizhihui.com/resource/admin/js/easyui.getdata.js"></script>
+        <style>
+        </style>
+    </head>
+    <body>
+    <div class="ToolTip_Form" style="width:90%;">
+        <form id="chapterForm" enctype="multipart/form-data">
+            <table class="tooltable">
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>标题: </label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="text" id="chapter_title" name="chapter_title" style="width:25%;"
+                               class="easyui-validatebox" data-options="validateOnCreate:false,required:true,validType:'length[1,50]'" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>课程类型：</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <select id="class_id" name="class_id">
+                            <option value="-1">请选择</option>
+                            <foreach name="class" item="v">
+                                <option value="<{$v['class_id']}>"><{$v['class_title']}></option>
+                            </foreach>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>老师: </label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="text" id="teacher_name" name="teacher_name" style="width:25%;"
+                               class="easyui-validatebox" data-options="validateOnCreate:false,required:true,validType:'length[1,50]'"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>封面图:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <div class="div">
+                            <input type="hidden" name="cover_img_url" />
+                            <p class="sc"><input type="file" id="cover_img_url" accept="image/*"/><span class="pm" style="color: green;"></span></p>
+                            <p class="tu"></p>
+                            <p class="zhu">注：图片大小200*200px</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>课件类型:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <select id="mediaType" name="tool_type">
+                            <option value="0">语音</option>
+                            <option value="1">视频</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="audioId">
+                    <td class="tooltd_mine">
+                        <label >音频(mp3):</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="file" id="audioUploadBtn"  accept="audio/mpeg"/>
+                        <span class="pm" style="color: green;"></span>
+                        <input type="hidden" id="audioTempSavePath" name="audioUploadBtn"/>
+                        <span id="audioName"></span>
+                        <span style="margin-left: 10px;" id="audioQiniuName"></span>
+                    </td>
+                </tr>
+                <tr id="videoId" hidden>
+                    <td class="tooltd_mine">
+                        <label>视频(mp4):</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="file" id="videoUploadBtn"  accept="audio/mp4, video/mp4"/>
+                        <span class="pm" style="color: green;"></span>
+                        <input type="hidden" id="videoTempSavePath" name="videoUploadBtn"/>
+                        <span id="videoName"></span>
+                        <span style="margin-left: 10px;" id="videoQiniuName"></span>
+                    </td>
+                </tr>
+                <tr id="pdfId">
+                    <td class="tooltd_mine">
+                        <label> PDF:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="file" id="uploadPPTBtn" accept="application/pdf"/>
+                        <span class="pm" style="color: green;"></span>
+                        <input type="hidden" id="pptTempSavePath" name="uploadPPTBtn"/>
+                        <span id="pptName"></span>
+                        <span style="margin-left: 10px;" id="pptSrc"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>时长:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input type="number" id="duration_start" name="duration_start" value="00" style="width:63px;"
+                               class="easyui-validatebox" data-options="validateOnCreate:false,required:true"/> :
+                        <input type="number" id="duration_end" name="duration_end" value="00" style="width:63px;"
+                               class="easyui-validatebox" data-options="validateOnCreate:false,required:true,validType:'range[0,59]'"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>开始时间: </label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <input class="easyui-datetimebox" name="start_datetime" id="start_datetime" data-options="required:true,showSeconds:false" value="" style="width:150px">
+                    </td>
+                </tr>
+                <script type="text/javascript">
+
+
+
+                </script>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>课程状态:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                        <select id="status" name="status">
+                            <option value="1">上线</option>
+                            <option value="0">下线</option>
+                            <!--<option value="0">预告</option>
+                            <option value="1">已结束</option>
+                            <option value="2">进行中</option>-->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tooltd_mine">
+                        <label>摘要:</label>
+                    </td>
+                    <td class="tooltdgray_mine">
+                            <textarea rows="10" cols="100" id="description" name="description"
+                                      class="easyui-validatebox" data-options="validateOnCreate:false,validType:'length[0,200]'"></textarea>
+                    </td>
+                </tr>
+            </table>
+            <div  align="left" style="wmargin-top:10px;width: 50%">
+                <a href="javascript:;" class="easyui-linkbutton" icon="icon-ok" id="saveBtn" canClick="1">提交</a>
+                <!--<a href="javascript:;" class="easyui-linkbutton" icon="icon-redo" onclick="reset('#courseForm');">重置</a>-->
+                <a href="javascript:;" class="easyui-linkbutton" icon="icon-cancel" onclick="javascript:history.go(-1);">返回</a>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+
+            var url = '<{$Think.config.APP_SITE_URL}>/chapter/uploadImages';
+            var audioUrl = '<{$Think.config.APP_SITE_URL}>/chapter/uploadAudio';
+            var audioUrl = '<{$Think.config.APP_SITE_URL}>/chapter/uploadVideo';
+            var audioUrl = '<{$Think.config.APP_SITE_URL}>/chapter/uploadPDF';
+            $(function () {
+                //绑定课件类型的change事件
+                $("#mediaType").bind("change",function () {
+                    var val = $("#mediaType").val();
+                    if("1" == val){//视频
+                        $("#audioId").hide();
+                        // $("#pdfId").hide();
+                        $("#videoId").show();
+                    }else{//音频
+                        $("#videoId").hide();
+                        $("#audioId").show();
+                        // $("#pdfId").show();
+                    }
+                });
+                //获取老师名字
+                $('#class_id').change(function(){
+                    var class_id = $(this).val();
+                    if(class_id == '-1'){
+                        $('#teacher_name').val('');
+                        return false;
+                    }else{
+                        $.ajax({
+                            type: "post",
+                            url: "/chapter/getTeacherName",
+                            data: {'class_id':class_id},
+                            dataType: "json",
+                            success: function (data, textStatus) {
+                                if (data.code == 0) {
+                                    $.messager.alert('提示', data.msg, 'warning');
+                                } else {
+                                    $('#teacher_name').val(data.teacher_name);
+                                }
+                            },
+                            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                                $.messager.alert('提示', '数据添加失败,请重新提交或者寻求管理员帮助', 'error');
+                            }
+                        })
+                    }
+                });
+                // 上传
+                $('#cover_img_url, #audioUploadBtn, #videoUploadBtn, #uploadPPTBtn').on('change', function () {
+                    file = $(this)[0].files;
+                    formName = $(this).attr('id');
+                    obj = $(this).parents().siblings('.tu');
+                    uploads(file, 'POST', url, obj, formName);
+                });
+                 //表单提交
+                $('#saveBtn').on('click', function () {
+                    var data = $('#chapterForm').serialize();
+                    $.ajax({
+                        type: "post",
+                        url: "/chapter/add",
+                        data: data,
+                        dataType: "json",
+                        success: function (data, textStatus) {
+                            if (data.code == 0) {
+                                $.messager.alert('提示', data.msg, 'warning');
+                            } else {
+                                $.messager.alert('提示', '添加成功', 'info', function () {
+                                    window.location.href = "/chapter/list";
+                                });
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            $.messager.alert('提示', '数据更新失败,请重新提交或者寻求管理员帮助', 'error');
+                        }
+                    })
+                });
+            })
+        </script>
+    </body>
+</html>

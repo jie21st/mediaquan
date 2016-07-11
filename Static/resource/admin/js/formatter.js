@@ -55,6 +55,24 @@ function formatClassOperation(value,row,index){
 		//+ '<a href="'+app_url+'/class/' + id + '.html" target="_blank">查看</a>';
 }
 
+/**
+ * 章节管理列表
+ * @param value
+ * @param row
+ * @param index
+ * @returns {*}
+ */
+function formatChapterOperation(value, row, index){
+	var id = row.chapter_id;
+	return '<a href="/chapter/edit?chapter_id=' + id + '">编辑</a>';
+}
+function formatstatusOperation(value, row, index){
+	if ( value == 0 ) {
+			return "未上线";
+	}else if( value == 1 ){
+			return "已上线";
+	}
+}
 
 
 

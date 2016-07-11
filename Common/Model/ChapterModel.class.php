@@ -63,4 +63,17 @@ class ChapterModel extends CommonModel
         $result = $this->getCourseInfo($condition);
         return $result ? true : false;
     }
+
+    /**
+     * @param array $condition  查询条件
+     * @param string $field   查询字段
+     * @param string $order   排序
+     * @param int $page 页码
+     * @param int $limit  条数
+     * @return mixed
+     */
+    public function getChapterList($condition = array(), $field = '*', $order = '', $page = 1, $limit = 1000)
+    {
+         return $this->field($field)->where($condition)->order($order)->page($page)->limit($limit)->select();
+    }
 }
