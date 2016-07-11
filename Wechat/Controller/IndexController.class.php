@@ -4,7 +4,7 @@ namespace Wechat\Action;
 use \Org\Util\Wechat;
 use \Org\Util\WechatPlatform;
 
-class IndexAction extends \Think\Action
+class IndexController extends \Think\Controller
 {
     /**
      * wechat 
@@ -56,6 +56,12 @@ class IndexAction extends \Think\Action
         $this->booking($message);
         
         $pars = $this->analyze($message);
+        $pars[] = array(
+            // 压入默认
+            'message' => $message,
+            'module' => 'default',
+            'rule' => '-1',
+        );
     }
     
     private function booking($message) {
@@ -124,7 +130,10 @@ class IndexAction extends \Think\Action
     private function analyze(&$message) {
         $params = array();
         if ($message['MsgType'] == 'event') {
-            $params = $this->analyzeEvent(&$message);
+            $params = $this->analyzeEvent($message);
+            if (!empty($params)){
+                return $params;
+            }
         }
     }
     
@@ -136,7 +145,10 @@ class IndexAction extends \Think\Action
     
     private function analyzeSubscribe(&$message) {
         $params = array();
-        $setting = M('wechat_settings')->where(['store_id' => $this->account['store_id']])->find();
+        $message['type'] = 'text'; 
+        $message['redirection'] = true;
+        $message['source'] = 'subscribe';
+        $setting = M('store_settings')->where(['store_id' => $this->account['store_id']])->find();
         if (!empty($setting['welcome'])) {
             $message['content'] = $setting['welcome'];
             $params += $this->analyzeText($message);
@@ -146,6 +158,19 @@ class IndexAction extends \Think\Action
     }
     
     private function analyzeText(&$message) {
-        
+        $pars = array();
+        if(!isset($message['content'])) {
+            return $pars;
+        }
+
+        $keyword = M('rule_keyword')->where(['store_id' => $this->account['store_id']])->find();
+        $pars[] = [
+            'message' => $message,
+            'module' => $keyword['module'],
+            'rule' => $keyword['rid'],
+            'priority' => $keyword['order'],
+            'keyword' => $keyword,    
+        ];
+        return $pars;
     }
 }
