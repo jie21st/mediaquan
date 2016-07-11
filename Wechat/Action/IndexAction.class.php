@@ -48,82 +48,14 @@ class IndexAction extends \Think\Action
         $wechat->valid();
         
         $message = $wechat->getRev()->getRevData();
+        if (empty($message)) {
+            exit('request failed');
+        }
         $this->message = $message;
         
         $this->booking($message);
         
-        
-        /*
-        $type = $wechat->getRev()->getRevType();
-        switch($type) {
-            case Component::MSGTYPE_EVENT:
-                $event = $wechat->getRev()->getRevEvent();
-                $openid = $wechat->getRevFrom();
-                $fansModel = new \Common\Model\FansModel();
-                $fans = $fansModel->getFansInfo(['openid' => $openid]);
-                switch ($event['event']) {
-                    case 'subscribe':
-                        if ($appInfo['mp_verify_type'] != 0) {
-                            \Think\Log::write('该公众号未认证，不支持用户管理');
-                            break;
-                        }
-                        \Think\Log::write('关注人openid: '.$openid);
-                        $userInfo = $wechat->getUserInfo($appInfo['access_token'], $openid);
-                        \Think\Log::write('关注人信息: '.json_encode($userInfo) . $wechat->errMsg);
-                        $fansInfo = $fansModel->where(['openid' => $openid])->find();
-                        if (empty($fansInfo)) {
-                            $insert = array();
-                            $insert['store_id'] = $account['store_id'];
-                            $insert['user_id'] = 0;
-                            $insert['openid'] = $userInfo['openid'];
-                            $insert['fans_nickname'] = $userInfo['nickname'];
-                            $insert['fans_sex'] = $userInfo['sex'];
-                            $insert['fans_avatar'] = $userInfo['headimgurl'];
-                            $insert['fans_country'] = $userInfo['country'];
-                            $insert['fans_province'] = $userInfo['province'];
-                            $insert['fans_city'] = $userInfo['city'];
-                            $insert['subscribe_state'] = 1;
-                            $insert['subscribe_time'] = $userInfo['subscribe_time'];
-                            $insert['unsubscribe_time'] = 0;
-                            $insert['fans_remark'] = $userInfo['remark'];
-
-                            $fansModel->add($insert);
-                        } else {
-                            $update = array();
-                            $update['fans_nickname'] = $userInfo['nickname'];
-                            $update['fans_sex'] = $userInfo['sex'];
-                            $update['fans_avatar'] = $userInfo['headimgurl'];
-                            $update['fans_country'] = $userInfo['country'];
-                            $update['fans_province'] = $userInfo['province'];
-                            $update['fans_city'] = $userInfo['city'];
-                            $update['subscribe_state'] = 1;
-                            $update['subscribe_time'] = $userInfo['subscribe_time'];
-                            $update['fans_remark'] = $userInfo['remark'];
-                            $fansModel->where(['openid' => $openid])->save($update);
-                        }
-                        break;
-                    case 'unsubscribe':
-                        \Think\Log::write('取消关注openid: '.$openid);
-                        if ($appInfo['mp_verify_type'] != 0) {
-                            \Think\Log::write('该公众号未认证，不支持用户管理');
-                            break;
-                        }
-                        $fansModel->where(['openid' => $openid])->setField('subscribe_state', 0);
-                        break;
-                }
-                
-                break;
-            case Wechat::MSGTYPE_TEXT:
-            case Wechat::MSGTYPE_IMAGE:
-            case Wechat::MSGTYPE_VOICE:
-            case Wechat::MSGTYPE_SHORTVIDEO:
-                $wechat->transfer_customer_service()->reply();
-                break;
-            default:
-                $data = $wechat->getRevData();
-                \Think\Log::write('其他接收'.print_r($data, true));
-        }
-        */
+        $pars = $this->analyze($message);
     }
     
     private function booking($message) {
@@ -187,5 +119,33 @@ class IndexAction extends \Think\Action
                 $fansModel->add($data);
             }
         }
+    }
+    
+    private function analyze(&$message) {
+        $params = array();
+        if ($message['MsgType'] == 'event') {
+            $params = $this->analyzeEvent(&$message);
+        }
+    }
+    
+    private function analyzeEvent(&$message) {
+        if ($message['Event'] == 'subscribe') {
+            return $this->analyzeSubscribe($message);
+        }
+    }
+    
+    private function analyzeSubscribe(&$message) {
+        $params = array();
+        $setting = M('wechat_settings')->where(['store_id' => $this->account['store_id']])->find();
+        if (!empty($setting['welcome'])) {
+            $message['content'] = $setting['welcome'];
+            $params += $this->analyzeText($message);
+        }
+        
+        return $params;
+    }
+    
+    private function analyzeText(&$message) {
+        
     }
 }
