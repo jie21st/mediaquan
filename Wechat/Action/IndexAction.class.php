@@ -127,23 +127,64 @@ class IndexAction extends \Think\Action
     }
     
     private function booking($message) {
+        if ($message['Event'] == 'subscribe' || $message['Event'] == 'unsubscribe') {
+            $condition = array();
+            $condition['store_id'] = $this->account['store_id'];
+            $condition['date'] = date('Ymd');
+            $todaystat = M('stat_fans')->where($condition)->find();
+            if ($message['Event'] == 'subscribe') {
+                if (empty($todaystat)) {
+                    $data = array(
+                        'store_id' => $this->account['store_id'],
+                        'new' => 1,
+                        'cancel' => 0,
+                        'cumulate' => 0,
+                        'date' => date('Ymd'),
+                    );
+                    M('stat_fans')->add($data);
+                } else {
+                    $data = array();
+                    $data['new'] = ['exp', 'new+1'];
+                    $data['cumulate'] = 0;
+                    M('stat_fans')->where(['id' => $todaystat['id']])->setField($data);
+                }
+            } elseif ($message['Event'] == 'unsubscribe') {
+                if (empty($todaystat)) {
+                    $data = array(
+                        'store_id' => $this->account['store_id'],
+                        'new' => 0,
+                        'cancel' => 1,
+                        'cumulate' => 0,
+                        'date' => date('Ymd'),
+                    );
+                    M('stat_fans')->add($data);
+                } else {
+                    $data = array();
+                    $data['cancel'] = ['exp', 'cancel+1'];
+                    $data['cumulate'] = 0;
+                    M('stat_fans')->where(['id' => $todaystat['id']])->setField($data);
+                }
+            }
+        }
         $fansModel = new \Common\Model\FansModel();
         $fans = $fansModel->getFansInfo(['openid' => $message['FromUserName']]);
         if (!empty($fans)) {
             if ($message['Event'] == 'unsubscribe') {
-                $fansModel->where(['fans_id' => $fans['fans_id']])->save(['subscribe_state' => 0, 'unsubscribe_time' => time()]);
+                $data = array();
+                $data['subscribe_state'] = 0;
+                $data['unsubscribe_time'] = time();
+                $fansModel->where(['fans_id' => $fans['fans_id']])->save($data);
             }
         } else {
             if ($message['Event'] == 'subscribe' || $message['MsgType'] == 'text') {
-                $rec = array();
-                $rec['store_id'] = $this->account['store_id'];
-                $rec['user_id'] = 0;
-                $rec['openid'] = $message['FromUserName'];
-                $rec['subscribe_state'] = 1;
-                $rec['subscribe_time'] = $message['CreateTime'];
-                $rec['unsubscribe_time'] = 0;
-                
-                $fansModel->add($rec);
+                $data = array();
+                $data['store_id'] = $this->account['store_id'];
+                $data['user_id'] = 0;
+                $data['openid'] = $message['FromUserName'];
+                $data['subscribe_state'] = 1;
+                $data['subscribe_time'] = $message['CreateTime'];
+                $data['unsubscribe_time'] = 0;
+                $fansModel->add($data);
             }
         }
     }
