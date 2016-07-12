@@ -60,6 +60,7 @@ class ChapterAction extends CommonAction
 				$data['teacher_name']     = I('post.teacher_name');
 				$data['cover_img_url']     = I('post.cover_img_url');
 				$data['audio_url']       = I('post.audioUploadBtn');
+				$data['video_url']       = I('post.videoUploadBtn');
 				$data['ppt_dir']       = I('post.uploadPPTBtn');
 				$data['duration_start'] = I('post.duration_start', '0', 'intval');
 				$data['duration_end'] = I('post.duration_end', '0', 'intval');
@@ -164,6 +165,7 @@ class ChapterAction extends CommonAction
 				$data['teacher_name']     = I('post.teacher_name');
 				$data['cover_img_url']     = I('post.cover_img_url');
 				$data['audio_url']       = I('post.audioUploadBtn');
+				$data['video_url']       = I('post.videoUploadBtn');
 				$data['ppt_dir']       = I('post.uploadPPTBtn');
 				$data['duration_start'] = I('post.duration_start', '0', 'intval');
 				$data['duration_end'] = I('post.duration_end', '0', 'intval');
