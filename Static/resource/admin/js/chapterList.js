@@ -31,24 +31,22 @@ $(function(){
 		    //      }
         ],
         //onLoadError : function() { alert('数据加载失败!') },
-        //onLoadSuccess : function() {
-        //    $(".deleteBtn").click(function() {
-        //        var chapter_id = $(this).attr('chapter_id');
-        //        userPower(function(){
-        //    	    var data = {'chapter_id':chapter_id};
-        //            confirmDelete("确认禁用该课程吗?", function(){
-        //                getListAndReload('/chapter/del', data);
-        //            });
-        //        }, '106009009');
-			//});
-        //},
+        onLoadSuccess : function() {
+            $(".del").click(function() {
+                var chapter_id = $(this).attr('chapter_id');
+                var data = {'chapter_id':chapter_id};
+                confirmDelete("确认禁用该课程吗?", function(){
+                    getListAndReload('/chapter/del', data);
+                });
+			});
+        },
     };
 
     var getListAndReload = function (url, data) { // 获取数据重载
         $.post(url, data, function(){
             $obj.easyReload();
         },'json');
-    }
+    };
 
     $obj.easySubmitAjax(config); // 获取数据
     // 查询
@@ -58,5 +56,17 @@ $(function(){
         queryParams['chapter_title'] = chapter_title;
         queryParams['status'] = status;
         $obj.easySubmitAjax(config);
-    })
-})
+    });
+
+
+    //禁用课程
+    //$('.del').on('click', function(){
+    //    alert('aa');
+    //    var chapter_id    = $(this).attr('chapter_id');
+    //    var data        = {'chapter_id':chapter_id};
+    //    confirmDelete('确定禁用该课程?', function(){
+    //        getListAndReload('/chapter/del', data);
+    //    })
+    //});
+
+});

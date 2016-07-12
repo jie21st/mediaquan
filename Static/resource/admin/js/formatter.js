@@ -47,7 +47,7 @@ function formatClassOperation(value,row,index){
 	var id = row.class_id;
 	 //'<a href="/classUser/list?class_id=' + id + '">用户</a>'
 		//+ ' | '
-	return	'<a href="/class/edit?class_id=' + id + '">编辑</a>'
+	return	'<a href="/class/edit?class_id=' + id + '">编辑</a>';
 		//+ ' | '
 		//+ '<a href="javascript:void(0);" class_id="'+id+'" class="deleteBtn">禁用</a>'
 		//+ ' | '
@@ -64,7 +64,9 @@ function formatClassOperation(value,row,index){
  */
 function formatChapterOperation(value, row, index){
 	var id = row.chapter_id;
-	return '<a href="/chapter/edit?chapter_id=' + id + '">编辑</a>';
+	return '<a href="/chapter/edit?chapter_id=' + id + '">编辑</a>'
+		+ ' | '
+		+ '<a href="javascript:void(0);" chapter_id="'+id+'" class="del">禁用</a>';
 }
 function formatstatusOperation(value, row, index){
 	if ( value == 0 ) {

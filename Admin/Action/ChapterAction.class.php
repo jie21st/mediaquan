@@ -84,14 +84,14 @@ class ChapterAction extends CommonAction
 	 *禁用章节
 	 */
 	public function delOp(){
-		$store_id = I('store_id' , '0' , 'intval');
-		if(!IS_AJAX || $store_id == 0){
+		$chapter_id = I('chapter_id' , '0' , 'intval');
+		if(!IS_AJAX || $chapter_id == 0){
 			echo json_encode(array('code' => 0));
 			return;
 		}
-		$teachers = M('store_teacher')->field(array('teacher_id,teacher_name'))->where(array('store_id'=>$store_id))->select();
-		if($teachers){
-			$this->ajaxReturn(array('code' => 1 , 'data' => $teachers));
+		$bool = M('class_chapter')->where(array('chapter_id'=>$chapter_id))->save(array('status' => 0));
+		if($bool !== false){
+			$this->ajaxReturn(array('code' => 1 , 'data' => $bool));
 		}else{
 			$this->ajaxReturn(array('code' => 0));
 		}
@@ -181,6 +181,10 @@ class ChapterAction extends CommonAction
 			}
 		}
 	}
+	/**
+	 * 获取讲师信息
+	 * @return bool
+	 */
 	public function getTeacherNameOp(){
 		if(!IS_POST) return false;
 		$class_id = I('post.class_id', '-1', 'intval');
