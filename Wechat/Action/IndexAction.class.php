@@ -56,18 +56,15 @@ class IndexAction extends \Think\Controller
         $this->booking($message);
         
         $pars = $this->analyze($message);
-        $pars[] = array(
-            // 压入默认
-            'message' => $message,
-            'module' => 'default',
-            'rule' => '-1',
-        );
         
-        foreach ($pars as $par) {
-            $par['message'] = $message;
-            
-            $this->process($par);
-        }
+        \Think\Log::write('分析结果'.$pars);
+        
+        
+//        foreach ($pars as $par) {
+//            $par['message'] = $message;
+//            
+//            $this->process($par);
+//        }
 
     }
     
@@ -141,14 +138,30 @@ class IndexAction extends \Think\Controller
     
     private function analyze(&$message) {
         $params = array();
-        if ($message['MsgType'] == 'event') {
-            $params = $this->analyzeEvent($message);
-            if (!empty($params)){
-                return $params;
+//        if ($message['MsgType'] == 'event') {
+//            $params = $this->analyzeEvent($message);
+//            if (!empty($params)){
+//                return $params;
+//            }
+//        }
+        
+        if (method_exists($this, 'analyze' . $message['MsgType'])) {
+            $temp = call_user_func_array(array($this, 'analyze' . $message['MsgType']), array(&$message));
+            if(!empty($temp) && is_array($temp)){
+                    $params += $temp;
+            } else {
+                $params += $this->handler($message['MsgType']);
             }
         }
+        
+        return $params;
     }
     
+    private function handler($type) {
+        
+    }
+
+
     private function analyzeEvent(&$message) {
         if ($message['Event'] == 'subscribe') {
             return $this->analyzeSubscribe($message);
@@ -175,14 +188,10 @@ class IndexAction extends \Think\Controller
             return $pars;
         }
 
-        $keyword = M('rule_keyword')->where(['store_id' => $this->account['store_id']])->find();
-        $pars[] = [
-            'message' => $message,
-            'module' => $keyword['module'],
-            'rule' => $keyword['rid'],
-            'priority' => $keyword['order'],
-            'keyword' => $keyword,    
-        ];
-        return $pars;
+        $condition = array();
+        $condition['store_id'] = $this->account['store_id'];
+        $condition['keyword'] = $message['content'];
+        $keyword = M('rule_keyword')->where($condition)->find();
+        return $keyword;
     }
 }
