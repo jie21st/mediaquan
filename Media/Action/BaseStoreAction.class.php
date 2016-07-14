@@ -26,6 +26,7 @@ class BaseStoreAction extends CommonAction
         }
         
         session('current_store_id', $storeId);
+        cookie('_store_id_', $storeId);
         $this->storeInfo = $storeInfo;
 
         $this->fansLogin();
