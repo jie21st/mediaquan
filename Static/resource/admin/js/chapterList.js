@@ -13,7 +13,7 @@ $(function(){
 				 	handler:function(){
 				 		window.location.href = '/chapter/add';
 				 	}
-				 },
+				 }
 
 		    //      {
 				  //   text:'批量删除',
@@ -56,6 +56,46 @@ $(function(){
         queryParams['chapter_title'] = chapter_title;
         queryParams['status'] = status;
         $obj.easySubmitAjax(config);
+    });
+
+    //绑定课件类型的change事件
+    $("#mediaType").bind("change",function () {
+        var val = $("#mediaType").val();
+        if("1" == val){//视频
+            $("#audioId").hide();
+            // $("#pdfId").hide();
+            $("#videoId").show();
+        }else{//音频
+            $("#videoId").hide();
+            $("#audioId").show();
+            // $("#pdfId").show();
+        }
+    });
+
+    //获取老师名字
+    $('#class_id').change(function(){
+        var class_id = $(this).val();
+        if(class_id == '-1'){
+            $('#teacher_name').val('');
+            return false;
+        }else{
+            $.ajax({
+                type: "post",
+                url: "/chapter/getTeacherName",
+                data: {'class_id':class_id},
+                dataType: "json",
+                success: function (data, textStatus) {
+                    if (data.code == 0) {
+                        $.messager.alert('提示', data.msg, 'warning');
+                    } else {
+                        $('#teacher_name').val(data.teacher_name);
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $.messager.alert('提示', '数据添加失败,请重新提交或者寻求管理员帮助', 'error');
+                }
+            })
+        }
     });
 
 

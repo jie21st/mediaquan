@@ -17,7 +17,8 @@ class ChapterAction extends CommonAction
 	 * 章节列表页
 	 */
 	public function listOp(){
-		$this->display();
+		$Qiniu = new \Common\Service\QiniuService();
+//		$this->display();
 	}
 
 
@@ -103,17 +104,37 @@ class ChapterAction extends CommonAction
 	 **/
 	public function uploadImagesOp()
 	{
+		if (!IS_AJAX) {
+			return false;
+		}
+		$fileArr = array('image', 'file', 'video', 'audio');
+		$filetype = I('get.filetype', 'image');
+		if (!in_array($filetype, $fileArr)) $this->ajaxReturn(array('code' => 0, 'msg' => '上传类型错误!'));
+		$setting = (new \Common\Model\SettingModel())->get('upload')[$filetype];
 		$config = array(
-			'maxSize'  => 0,
+			'maxSize'  => $setting['limit']*1024,
 			'rootPath' => DIR_UPLOAD,
-			'savePath' => '/' . ATTACH_CHAPTER . '/',
+			'savePath' => '/' . ATTACH_CHAPTER . '/' . $filetype . '/',
 			'saveName' => array('uniqid', ''),
-			'exts'     => array('jpg', 'gif', 'png', 'jpeg', 'mp3', 'mp4', 'pdf'),
+			'exts'     => $setting['extentions'],
 			'autoSub'  => true,
 			'subName'  => array(),
 		);
-		$message = D('Chapter', 'Service')->uploadImages($config);
-		$this->ajaxReturn($message);
+		$upload = new \Think\Upload($config);
+		$info   =   $upload->uploadOne($_FILES['upload_file']);
+		if(!$info) {
+			$this->ajaxReturn(array('code'  =>  0, 'msg' => $upload->getError()));
+		}else {
+			//上传七牛
+			$message = array(
+				'code' => 1,
+				'data' => array(
+					'url' => C('UPLOADS_SITE_URL') . DS . ATTACH_CHAPTER . DS. $filetype . DS . $info['savename'],
+					'filename' => $info['savename'],
+				)
+			);
+			$this->ajaxReturn($message);
+		}
 	}
 	/**
 	 * 获取课程列表数据

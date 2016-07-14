@@ -4,7 +4,7 @@
 * @Last Modified by:   zenghp
 * @Last Modified time: 2016-03-30 17:47:15
 */
-function uploads(file, type, url, $obj, hiddenName)
+function uploads(file, url, success, error)
 {
     var data = new FormData;
     var images = file[0];
@@ -20,23 +20,13 @@ function uploads(file, type, url, $obj, hiddenName)
 
         $.ajax({
             url:url,
-            type:type,
+            type:'POST',
             data:data,
             cache: false,
             contentType: false,    //不可缺
             processData: false,    //不可缺
             success:function(e){
-                if(e.code == 0) {
-                    alert(e.msg);
-                    return false;
-                }
-                imagePath = e['data']['siteUrl'] + e['data']['imagePath'];
-                if($obj == undefined) {
-                    $('#images').empty().append('<img width="64" height="64" src="'+imagePath+'" alt="">');
-                } else {
-                    $obj.empty().append('<img width="64" height="64" src="'+imagePath+'" alt="">');
-                }
-                $('input[name='+hiddenName+']').attr({'value':e['data']['imagePath']});
+                (e.code == 0) ? error(e.msg) : success(e.data);
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 alert("上传失败，请检查网络后重试");

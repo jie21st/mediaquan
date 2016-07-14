@@ -47,7 +47,7 @@ class ChapterService {
 		if(empty($config))
 			return false;
 
-		$result = (new uploads)->imgUpload($config);
+		$result = (new uploads)->uploads($config);
 
 		if (isset($result['error'])) {
 			return array('code'=>'0', 'msg' => $result['error']);
