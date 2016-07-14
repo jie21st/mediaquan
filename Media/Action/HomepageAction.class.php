@@ -26,7 +26,10 @@ class HomepageAction extends BaseStoreAction
                 'status' => 1,
             ]);
         }
+        
+        $storeNav = (new \Media\Service\StoreService)->getStoreNav($this->storeInfo['store_id']);
         $this->assign('class_list', $classList);
+        $this->assign('store_nav', $storeNav);
         $this->display();
     }
 }
