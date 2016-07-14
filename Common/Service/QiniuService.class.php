@@ -1,29 +1,73 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: liyi
- * Date: 16/7/14
- * Time: 下午6:53
- * ps:七牛上传类
+ * 七牛文件类
  */
 namespace Common\Service;
-Vendor('qiniu.autoload');
-use \Qiniu\Auth;
-use \Qiniu\Storage\UploadManager;
+
 class QiniuService {
-	public function __construct(){
+    /**
+     * 鉴权对象
+     * @var object 
+     */
+    protected $auth;
+    
+    /**
+     * 上传空间名称
+     * @var string 
+     */
+    protected $bucket;
 
-
-	}
-
-	public function  initialize(){
-		$accessKey = 'CjaDbgNH6MjjulwpFSyfPAFv-MUkGH2BOM2noLC-';
-		$secretKey = 'kuFL_eo7yB8c60q1vdf9TiTNOB22UIqIkRHZEZs2';
-		$auth = new Auth($accessKey, $secretKey);
-		$bucket = 'test';
-		$token = $auth->uploadToken($bucket);
-	}
-	public function  get() {
-		echo 'aa';
-	}
+    /**
+     * 构造方法
+     */
+    public function __construct() {
+        require_once VENDOR_PATH . 'Qiniu/autoload.php';
+        $setting = (new \Common\Model\SettingModel())->get('remote');
+        if (empty($setting)) {
+            trigger_error('配置不正确', E_USER_ERROR);
+        }
+        
+        // 构建鉴权对象
+        $auth = new \Qiniu\Auth($setting['access_key'], $setting['secret_key']);
+        
+        $this->auth = $auth;
+        $this->bucket = $setting['bucket'];
+    }
+    
+    /**
+     * 文件上传
+     * 
+     * @param type $filepath 文件路径
+     * @param type $filename 文件名称（上传到七牛后保存的文件名）
+     * @return mixed 成功返回结果，失败返回false
+     */
+    public function upload($filepath, $filename)
+    {
+        // 生成上传Token
+        $token = $this->auth->uploadToken($this->bucket);
+        
+        // 构建 UploadManager 对象
+        $uploadMgr = new \Qiniu\Storage\UploadManager();
+        list($ret, $err) = $uploadMgr->putFile($token, $filename, $filepath);
+        
+        if ($err !== null) {
+            return false;
+        } else {
+            return $ret;
+        }
+    }
+    
+    /**
+     * 文件删除
+     * 
+     * @param string $filename 文件名称（上传到七牛后保存的文件名）
+     * @return boolean
+     */
+    public function delete($filename)
+    {
+        //初始化BucketManager
+        $bucketMgr = new \Qiniu\Storage\BucketManager($this->auth);
+        $err = $bucketMgr->delete($this->bucket, $filename);
+        return $err === null ? true : false;
+    }
 }
