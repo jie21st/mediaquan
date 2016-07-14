@@ -4,12 +4,12 @@
  */
 namespace Media\Action;
 
-class HomepageAction extends CommonAction
+class HomepageAction extends BaseStoreAction
 {
     public function indexOp()
     {
         $condition = array();
-        $condition['store_id'] = $GLOBALS['store_id'];
+        $condition['store_id'] = $this->storeInfo['store_id'];
         $classModel = new \Common\Model\ClassModel();
         $chapterModel = new \Common\Model\ChapterModel;
         $classService = new \Common\Service\ClassService();

@@ -20,7 +20,7 @@ class CommonAction extends Action
      * @return void
      */
     protected function _initialize()
-    {
+    {       
         if (APP_DEBUG && isset($_GET['debug']) && isset($_GET['user_id'])) {
             $userModel = new \Common\Model\UserModel;
             $userInfo = $userModel->getUserByUid($_GET['user_id']);
@@ -33,61 +33,14 @@ class CommonAction extends Action
             exit('登录成功'); 
         }
         
-        if ($storeId) {
-        }
-        
-        
         // 用户分享
-        $this->checkSeller();
+        //$this->checkSeller();
         
         // 判断是否登录
         if ($this->needAuth) {
             $this->checkLogin();
         }
-        
-        if ((new \Media\Service\AccountService())->isLogin()) {
-            $storeId = I('get.store_id', 0, 'intval');
-            if ($storeId) {
-                session('current_store_id', I('get.store_id'));
-                $this->checkStoreUserBind($storeId);
-            }
-        }
     }
-    
-    protected function checkStoreUserBind($storeId)
-    {
-        if (session('?store_fans_'.$storeId)) {
-            return;
-        }
-        $wechatModel = M('store_wechat');
-        $appInfo = $wechatModel->where(['store_id'=> $storeId])->find();
-        if (empty($appInfo) || $appInfo['auth_state'] == 0 || $appInfo['mp_type'] != 4) {
-            session('store_fans_'.$storeId, -1); // -1表示无法绑定
-            return;
-        }
-        $model = new \Common\Model\FansModel();
-        $condition = array();
-        $condition['store_id'] = $storeId;
-        $condition['user_id'] = session('user_id');
-        $fansInfo = $model->where($condition)->find();
-        if (is_array($fansInfo) && !empty($fansInfo)) {
-            session('store_fans_'.$storeId, $fansInfo['fans_id']);
-        } else {
-            $accountPlatform = new \Org\Util\WechatPlatform();
-            $state = session('state');
-            if (empty($state)) {
-                $state = md5(uniqid(rand(), true));
-                session('state', $state);
-            }
-            if (!session('?_dest_url')) {
-                session('_dest_url', getCurrentURL());
-            }
-            $callback = C('MEDIA_SITE_URL').'/login/bindStoreUser?store_id='.$storeId.'&scope=snsapi_base';
-            $loginUrl = $accountPlatform->getOauthRedirect($appInfo['appid'], $callback, $state, 'snsapi_base');
-            redirect($loginUrl);
-        }
-    }
-
 
     /**
      * 验证会员是否登录
