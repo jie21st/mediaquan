@@ -12,10 +12,16 @@ class QiniuService {
     protected $auth;
     
     /**
-     * 上传空间名称
+     * 空间名称
      * @var string 
      */
     protected $bucket;
+    
+    /**
+     * 域名
+     * @var string
+     */
+    protected $url;
 
     /**
      * 构造方法
@@ -31,6 +37,7 @@ class QiniuService {
         $auth = new \Qiniu\Auth($setting['access_key'], $setting['secret_key']);
         
         $this->auth = $auth;
+        $this->url = $setting['url'];
         $this->bucket = $setting['bucket'];
     }
     
@@ -43,9 +50,11 @@ class QiniuService {
      */
     public function upload($filepath, $filename)
     {
+        static $token = null;
         // 生成上传Token
-        $token = $this->auth->uploadToken($this->bucket);
-        
+        if (empty($token)) {
+            $token = $this->auth->uploadToken($this->bucket);
+        }
         // 构建 UploadManager 对象
         $uploadMgr = new \Qiniu\Storage\UploadManager();
         list($ret, $err) = $uploadMgr->putFile($token, $filename, $filepath);
@@ -69,5 +78,43 @@ class QiniuService {
         $bucketMgr = new \Qiniu\Storage\BucketManager($this->auth);
         $err = $bucketMgr->delete($this->bucket, $filename);
         return $err === null ? true : false;
+    }
+    
+    /**
+     * 
+     * @param type $filename   123.pdf
+     * @param type $savepath   /mnt/www/uploads/pdf
+     * @param type $width
+     * @param type $density
+     * @param type $quality
+     * @return mixed 失败返回false 成功返回['page_num' => 分数, 'list' => 文件列表]
+     */
+    public function pdfConvJpg($filename, $savepath, $width = 800, $density = 150, $quality = 80)
+    {
+        $url = $this->url . DS . $filename . '?odconv/jpg/info';
+        $urlUtil = new \Org\Util\URL();
+        $result = $urlUtil->get_contents($url);
+        if (! $result) {
+            return false;
+        }
+        $json = json_decode($result, true);
+        if ($json && $json['page_num']) {
+            $files = array();
+            for ($i=1; $i <= $json['page_num']; $i++) {
+                $url = $this->url .DS.$filename.'?odconv/jpg/page/'.$i.'/density/'.$density.'/quality/'.$quality.'/resize/'.$width;
+                $content = $urlUtil->get_contents($url);
+                $newpath = $savepath . DS . $i . '.jpg';
+                file_put_contents($newpath, $content);
+                $newname = $filename . DS . $i . '.jpg';
+                $this->upload($newpath, $newname);
+                $files[] = $newname;
+            }
+            
+            return array(
+                'page_num' => $json['page_num'],
+                'list' => $files
+            );
+        }
+        return false;
     }
 }
