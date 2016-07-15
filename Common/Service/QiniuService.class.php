@@ -104,11 +104,11 @@ class QiniuService {
             for ($i=1; $i <= $json['page_num']; $i++) {
                 $url = $this->url .DS.$filename.'?odconv/jpg/page/'.$i.'/density/'.$density.'/quality/'.$quality.'/resize/'.$width;
                 $content = $urlUtil->get_contents($url);
-                $newpath = $savepath . DS . $i . '.jpg';
+                
+                $name = str_pad($i, 2, "0", STR_PAD_LEFT);
+                $newpath = $savepath . DS . $name . '.jpg';
                 file_put_contents($newpath, $content);
-                $newname = $filename . DS . $i . '.jpg';
-                $this->upload($newpath, $newname);
-                $files[] = $newpath;
+                $files[] = $name . '.jpg';
             }
             
             return array(
