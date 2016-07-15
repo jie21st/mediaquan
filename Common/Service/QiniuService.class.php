@@ -92,6 +92,9 @@ class QiniuService {
      */
     public function pdf2jpg($filename, $savepath, $width = 800, $density = 150, $quality = 80)
     {
+        if (!is_dir($savepath)) {
+            mk_dir($savepath);
+        }
         $url = $this->url . DS . $filename . '?odconv/jpg/info';
         $urlUtil = new \Org\Util\URL();
         $result = $urlUtil->get_contents($url);
