@@ -24,7 +24,7 @@ $config = array(
         'poster'            => 'index/poster',
         'muzhiweike'        => 'index/muzhiweike',
         // 测试
-        'test/:appid'       => 'test2/receive',
+        //'test/:appid'       => 'test2/receive',
     ),
     
     // 海报时效
