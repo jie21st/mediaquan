@@ -88,6 +88,7 @@ class QiniuService {
      * @param type $density
      * @param type $quality
      * @return mixed 失败返回false 成功返回['page_num' => 分数, 'list' => 文件列表]
+     * course/pdf/123/1.jpg
      */
     public function pdf2jpg($filename, $savepath, $width = 800, $density = 150, $quality = 80)
     {
@@ -107,7 +108,7 @@ class QiniuService {
                 file_put_contents($newpath, $content);
                 $newname = $filename . DS . $i . '.jpg';
                 $this->upload($newpath, $newname);
-                $files[] = $newname;
+                $files[] = $newpath;
             }
             
             return array(
