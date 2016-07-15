@@ -17,8 +17,7 @@ class ChapterAction extends CommonAction
 	 * 章节列表页
 	 */
 	public function listOp(){
-		$Qiniu = new \Common\Service\QiniuService();
-//		$this->display();
+		$this->display();
 	}
 
 
@@ -61,8 +60,10 @@ class ChapterAction extends CommonAction
 				$data['teacher_name']     = I('post.teacher_name');
 				$data['cover_img_url']     = I('post.cover_img_url');
 				$data['audio_url']       = I('post.audioUploadBtn');
+				$data['audio_url_on_qiniu']       = I('post.audioUploadBtn');
 				$data['video_url']       = I('post.videoUploadBtn');
-				$data['ppt_dir']       = I('post.uploadPPTBtn');
+				$data['ppt_dir']       =  I('post.uploadPPTBtn');
+				$data['ppt_length']       = I('post.ppt_length', 0, 'intval');
 				$data['duration_start'] = I('post.duration_start', '0', 'intval');
 				$data['duration_end'] = I('post.duration_end', '0', 'intval');
 				$data['duration']        = I('post.duration_end', '0', 'intval') - I('post.duration_start', '0', 'intval');
@@ -120,20 +121,51 @@ class ChapterAction extends CommonAction
 			'autoSub'  => true,
 			'subName'  => array(),
 		);
-		$upload = new \Think\Upload($config);
-		$info   =   $upload->uploadOne($_FILES['upload_file']);
-		if(!$info) {
-			$this->ajaxReturn(array('code'  =>  0, 'msg' => $upload->getError()));
-		}else {
+
+		try {
+			$upload = new \Think\Upload($config);
+			$info = $upload->uploadOne($_FILES['upload_file']);
+			if (!$info) {
+				throw new \Exception($upload->getError());
+			}
+
 			//上传七牛
+			$filename = $filetype . DS . $info['savename'];
+			$filepath = DIR_UPLOAD . DS . ATTACH_CHAPTER . DS . $filename;
+			$QinniuService = new \Common\Service\QiniuService();
+			$res = $QinniuService->upload($filepath, $filename);
+			if (!$res) {
+				throw  new \Exception("上传失败");
+			}
 			$message = array(
 				'code' => 1,
 				'data' => array(
-					'url' => C('UPLOADS_SITE_URL') . DS . ATTACH_CHAPTER . DS. $filetype . DS . $info['savename'],
-					'filename' => $info['savename'],
+					'url' => C('UPLOADS_SITE_URL') . DS . ATTACH_CHAPTER . DS . $filetype . DS . $info['savename'],
+					'filename' => $filename,
 				)
 			);
+			//如果上传文件为PDF 则转图片
+			if ($filetype == 'file') {
+				//PDE转图片
+				$parts = pathinfo($filename);
+				$newdirname = $parts['dirname'] . DS . $parts['filename']; //pdf/new
+				$savepath = DIR_UPLOAD . DS . ATTACH_CHAPTER . DS . $newdirname;    //  /mnt/www/Static/uploads/pdf/new
+				$result = $QinniuService->pdf2jpg($filename, $savepath);
+				if ( !$result ){
+					throw new \Exception("PDF转图片失败!");
+				}
+				$message['data']['page_num'] = $result['page_num'];
+				foreach ($result['list'] as $file) {
+					$pdfRes = $QinniuService->upload($savepath . DS . $file, $newdirname . DS . $file);
+					if (!$pdfRes) {
+						throw new \Exception("PDF图片上传失败");
+					}
+				}
+				$message['data']['filename'] = $newdirname;
+			}
 			$this->ajaxReturn($message);
+		} catch (\Exception $e) {
+			$this->ajaxReturn(array('code' => 0, 'msg' => $e->getMessage()));
 		}
 	}
 	/**

@@ -99,7 +99,7 @@ class QiniuService {
         $urlUtil = new \Org\Util\URL();
         $result = $urlUtil->get_contents($url);
         if (! $result) {
-            return false;
+            return '获取PDF信息失败!';
         }
         $json = json_decode($result, true);
         if ($json && $json['page_num']) {

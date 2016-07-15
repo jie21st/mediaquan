@@ -102,17 +102,47 @@ class ClassAction extends CommonAction
 	 **/
 	public function uploadImagesOp()
 	{
+		if (!IS_AJAX) {
+			return false;
+		}
+		$fileArr = array('image', 'file', 'video', 'audio');
+		$filetype = I('get.filetype', 'image');
+		if (!in_array($filetype, $fileArr)) $this->ajaxReturn(array('code' => 0, 'msg' => '上传类型错误!'));
+		$setting = (new \Common\Model\SettingModel())->get('upload')[$filetype];
 		$config = array(
-			'maxSize'  => 3145728,
+			'maxSize'  => $setting['limit']*1024,
 			'rootPath' => DIR_UPLOAD,
-			'savePath' => '/' . ATTACH_CLASS . '/',
+			'savePath' => '/' . ATTACH_CLASS . '/' . $filetype . '/',
 			'saveName' => array('uniqid', ''),
-			'exts'     => array('jpg', 'gif', 'png', 'jpeg'),
+			'exts'     => $setting['extentions'],
 			'autoSub'  => true,
 			'subName'  => array(),
+		);try {
+		$upload = new \Think\Upload($config);
+		$info = $upload->uploadOne($_FILES['upload_file']);
+		if (!$info) {
+			throw new \Exception($upload->getError());
+		}
+		$message = array(
+			'code' => 1,
+			'data' => array(
+				'url' => C('UPLOADS_SITE_URL') . DS . ATTACH_CLASS . DS . $filetype . DS . $info['savename'],
+				'filename' => $info['savename'],
+			)
 		);
-		$message = D('Class', 'Service')->uploadImages($config);
+
+		//上传七牛
+		$filename = $filetype . DS . $info['savename'];
+		$filepath = DIR_UPLOAD . DS . ATTACH_CLASS . DS . $filename;
+		$QinniuService = new \Common\Service\QiniuService();
+		$res = $QinniuService->upload($filepath, $filename);
+		if (!$res) {
+			throw  new \Exception("上传失败");
+		}
 		$this->ajaxReturn($message);
+	} catch (\Exception $e) {
+		$this->ajaxReturn(array('code' => 0, 'msg' => $e->getMessage()));
+	}
 	}
 	
 	/**

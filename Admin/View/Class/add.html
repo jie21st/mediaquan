@@ -166,14 +166,20 @@
             </form>
         </div>
         <script type="text/javascript">
-            var url = '<{$Think.config.APP_SITE_URL}>/class/uploadImages';
+            var imgUrl = '<{$Think.config.APP_SITE_URL}>/class/uploadImages';
             $(function () {
                 // 图片上传
                 $('#class_image, #fx_img').on('change', function () {
                     file = $(this)[0].files;
                     formName = $(this).attr('id');
                     obj = $(this).parents().siblings('.tu');
-                    uploads(file, 'POST', url, obj, formName);
+                    var url = imgUrl + '?filetype=image';
+                    uploads(file, url, function(result){
+                        obj.empty().append('<img width="64" height="64" src="'+result.url+'" alt="">');
+                        $('input[name='+formName+']').val(result.filename);
+                    }, function(msg){
+                        alert(msg);
+                    });
                 });
                 //店铺选择讲师联动
                 $( '#store_id' ).on('change',function () {

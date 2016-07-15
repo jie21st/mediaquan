@@ -97,6 +97,21 @@ $(function(){
             })
         }
     });
+    // 上传
+    $('#cover_img_url, #videoUploadBtn, #audioUploadBtn, #uploadPPTBtn').on('change', function () {
+        var file = $(this)[0].files;
+        var formName = $(this).attr('id');
+        var filetype = $(this).attr('filetype') || 'image';
+        var url = imgUrl + '?filetype=' + filetype;
+        obj = $(this).parents().siblings('.tu');
+        uploads(file, url, function(result){
+            obj.empty().append('<img width="64" height="64" src="'+result.url+'" alt="">');
+            $('input[name='+formName+']').val(result.filename);
+            $('input[name=ppt_length]').val(result.page_num);
+        }, function(msg){
+            alert(msg);
+        });
+    });
 
 
     //禁用课程
