@@ -82,8 +82,8 @@ class QiniuService {
     
     /**
      * 
-     * @param type $filename   123.pdf
-     * @param type $savepath   /mnt/www/uploads/pdf
+     * @param type $filename   course/pdf/123.pdf
+     * @param type $savepath   /mnt/www/Static/uploads/course/pdf/123
      * @param type $width
      * @param type $density
      * @param type $quality
