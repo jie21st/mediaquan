@@ -89,7 +89,7 @@ class QiniuService {
      * @param type $quality
      * @return mixed 失败返回false 成功返回['page_num' => 分数, 'list' => 文件列表]
      */
-    public function pdfConvJpg($filename, $savepath, $width = 800, $density = 150, $quality = 80)
+    public function pdf2jpg($filename, $savepath, $width = 800, $density = 150, $quality = 80)
     {
         $url = $this->url . DS . $filename . '?odconv/jpg/info';
         $urlUtil = new \Org\Util\URL();
