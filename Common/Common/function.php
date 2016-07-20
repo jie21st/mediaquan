@@ -581,7 +581,12 @@ function is_serialized($data) {
  }
 
 /**
+ * PDF文件转图片
  * 
+ * @param type $filepath    PDF文件路径
+ * @param type $rootpath    生成图片的保存路径
+ * @param type $type        生成图片的类型
+ * @return boolean|array    失败返回false，成功返回图片列表
  */
 function pdf2image($filepath, $rootpath, $type = 'jpg'){
     if(!extension_loaded('imagick')){
@@ -603,14 +608,13 @@ function pdf2image($filepath, $rootpath, $type = 'jpg'){
     //$IM->setCompressionQuality(100);
     $im->readimage($filepath);
 
-    $i = 1;
+    $return = array();
     foreach ($im as $k => $v) {
         $v->setImageFormat($type);
-        $savename = str_pad($i, 2, '0', STR_PAD_LEFT) . '.' .$type;
+        $savename = str_pad(($k+1), 2, '0', STR_PAD_LEFT) . '.' .$type;
         $savepath = $rootpath . DS . $savename;
         if ($v->writeImage($savepath) == true) {
             $return[]= $savename;
-            $i++;
         }
     }
     return $return;
