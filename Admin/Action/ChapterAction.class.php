@@ -150,7 +150,7 @@ class ChapterAction extends CommonAction
 				$parts = pathinfo($filename);
 				$newdirname = $parts['dirname'] . DS . $parts['filename']; //pdf/new
 				$savepath = DIR_UPLOAD . DS . ATTACH_CHAPTER . DS . $newdirname;    //  /mnt/www/Static/uploads/pdf/new
-				$result = pdf2image($filename, $savepath);
+				$result = pdf2image($filepath, $savepath);
 				if ( !$result ){
 					throw new \Exception("PDF转图片失败!");
 				}
