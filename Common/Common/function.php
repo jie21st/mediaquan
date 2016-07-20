@@ -579,3 +579,39 @@ function is_serialized($data) {
      }
      return false;
  }
+
+/**
+ * 
+ */
+function pdf2image($filepath, $rootpath, $type = 'jpg'){
+    if(!extension_loaded('imagick')){
+        return false;
+    }
+    if(!file_exists($filepath)){
+        return false;
+    }
+
+    if (!is_dir($rootpath)) {
+        mk_dir($rootpath);
+    }
+    $types = array('jpg', 'png', 'gif');
+    if (!in_array($type, $types)) {
+        return false;
+    }
+    $im =new \imagick();
+    //$IM->setResolution(120,120);
+    //$IM->setCompressionQuality(100);
+    $im->readimage($filepath);
+
+    $i = 1;
+    foreach ($im as $k => $v) {
+        $v->setImageFormat($type);
+        $savename = str_pad($i, 2, '0', STR_PAD_LEFT) . '.' .$type;
+        $savepath = $rootpath . DS . $savename;
+        if ($v->writeImage($savepath) == true) {
+            $return[]= $savename;
+            $i++;
+        }
+    }
+    return $return;
+}
