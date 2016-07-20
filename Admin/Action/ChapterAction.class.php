@@ -150,12 +150,12 @@ class ChapterAction extends CommonAction
 				$parts = pathinfo($filename);
 				$newdirname = $parts['dirname'] . DS . $parts['filename']; //pdf/new
 				$savepath = DIR_UPLOAD . DS . ATTACH_CHAPTER . DS . $newdirname;    //  /mnt/www/Static/uploads/pdf/new
-				$result = $QinniuService->pdf2jpg($filename, $savepath);
+				$result = pdf2image($filename, $savepath);
 				if ( !$result ){
 					throw new \Exception("PDF转图片失败!");
 				}
-				$message['data']['page_num'] = $result['page_num'];
-				foreach ($result['list'] as $file) {
+				$message['data']['page_num'] = count($result);
+				foreach ($result as $file) {
 					$pdfRes = $QinniuService->upload($savepath . DS . $file, $newdirname . DS . $file);
 					if (!$pdfRes) {
 						throw new \Exception("PDF图片上传失败");
