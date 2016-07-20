@@ -20,10 +20,11 @@ define('DIR_UPLOAD', GLZH_ROOT_PATH . '/Static/uploads');
 define('DS', '/');
 define('ATTACH_COMMON','common');
 define('ATTACH_CLASS', 'class');
+define('ATTACH_CHAPTER', 'chapter');
 define('ATTACH_CLASS_GROUP', 'class/group');  // 班级图片上传目录
 define('ATTACH_CLASS_SHARE', 'class/share');  // 课程分享上传目录
 define('ATTACH_DIPLOMA', 'class/diploma');
-#define('ATTACH_EDITOR', 'UEditor');
+define('ATTACH_EDITOR', 'editor');
 define('ATTACH_AVATAR', 'avatar');
 #define('ATTACH_CAMP', 'camp');
 #define('ATTACH_CAMP_PLACE', 'camp/place');
