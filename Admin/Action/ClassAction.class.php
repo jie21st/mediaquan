@@ -123,16 +123,18 @@ class ClassAction extends CommonAction
 		if (!$info) {
 			throw new \Exception($upload->getError());
 		}
+
+		$filename = $filetype . DS . $info['savename'];
 		$message = array(
 			'code' => 1,
 			'data' => array(
 				'url' => C('UPLOADS_SITE_URL') . DS . ATTACH_CLASS . DS . $filetype . DS . $info['savename'],
-				'filename' => $info['savename'],
+				'filename' => $filename,
 			)
 		);
 
 		//上传七牛
-		$filename = $filetype . DS . $info['savename'];
+
 		$filepath = DIR_UPLOAD . DS . ATTACH_CLASS . DS . $filename;
 		$QinniuService = new \Common\Service\QiniuService();
 		$res = $QinniuService->upload($filepath, $filename);
